@@ -1,7 +1,6 @@
 import { type Accessor, createContext, useContext } from "solid-js";
-
-import type { Locale } from "../locale";
 import type { dict } from "../i18n/en";
+import type { Locale } from "../locale";
 
 type NestedPaths<T> = T extends object
 	? {

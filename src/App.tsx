@@ -1,19 +1,5 @@
 import * as i18n from "@solid-primitives/i18n";
-
-import { type Locale, fetchDictionary, localeDirections } from "./locale";
-import { dict as en_dict } from "./i18n/en.ts";
-
 import { Route, Router } from "@solidjs/router";
-import {
-	ErrorBoundary,
-	For,
-	Show,
-	createEffect,
-	createResource,
-	createSignal,
-	onCleanup,
-	onMount,
-} from "solid-js";
 import {
 	bindMiniAppCssVars,
 	bindThemeParamsCssVars,
@@ -28,23 +14,33 @@ import {
 	viewport,
 } from "@telegram-apps/sdk-solid";
 import {
+	createEffect,
+	createResource,
+	createSignal,
+	ErrorBoundary,
+	For,
+	onCleanup,
+	onMount,
+	Show,
+} from "solid-js";
+import { Dynamic, Portal } from "solid-js/web";
+import {
+	type TranslationContextType,
+	TranslationProvider,
+} from "./contexts/TranslationContext.ts";
+import { dict as en_dict } from "./i18n/en.ts";
+import { fetchDictionary, type Locale, localeDirections } from "./locale";
+import PageError from "./pages/Error";
+import PageHome from "./pages/Home.tsx";
+import { setIsRTL } from "./utils/i18n.ts";
+import { modals, setModals } from "./utils/modal.ts";
+import { initializeSettings, settings } from "./utils/settings.ts";
+import {
 	invokeHapticFeedbackImpact,
 	isVersionAtLeast,
 	postEvent,
 	setThemeColor,
 } from "./utils/telegram.ts";
-
-import PageError from "./pages/Error";
-import PageHome from "./pages/Home.tsx";
-
-import {
-	type TranslationContextType,
-	TranslationProvider,
-} from "./contexts/TranslationContext.ts";
-import { modals, setModals } from "./utils/modal.ts";
-import { initializeSettings, settings } from "./utils/settings.ts";
-import { setIsRTL } from "./utils/i18n.ts";
-import { Dynamic, Portal } from "solid-js/web";
 
 const App = () => {
 	const [locale, setLocale] = createSignal<Locale>("en");

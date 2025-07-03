@@ -1,10 +1,13 @@
 .sb-overlay {
-	background-color: rgba(var(--black-rgb), 0.625);
-	touch-action: none;
-	backdrop-filter: blur(8px);
+   background-color: rgba(var(--black-rgb), 0.625);
+   touch-action: none;
+   backdrop-filter: blur(8px);
 }
 
 .sb-content {
-	background-color: var(--bg-color) !important;
-	padding-bottom: calc(var(--tg-viewport-safe-area-inset-bottom) + var(--tg-viewport-content-safe-area-inset-bottom));
+   background-color: var(--bg-color) !important;
+   padding-bottom: calc(
+      var(--tg-viewport-safe-area-inset-bottom) +
+         var(--tg-viewport-content-safe-area-inset-bottom)
+   );
 }

@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
-import ModalSettings from "../modals/Settings";
 import { createStore } from "solid-js/store";
+import ModalSettings from "../modals/Settings";
 
 type ModalState = {
 	open: boolean;

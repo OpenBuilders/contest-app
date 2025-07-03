@@ -1,80 +1,83 @@
 *,
 *::before,
 *::after {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
-	outline: none;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	-webkit-tap-highlight-color: transparent;
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	line-height: normal;
-	overscroll-behavior: none;
+   box-sizing: border-box;
+   padding: 0;
+   margin: 0;
+   outline: none;
+   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+   -webkit-tap-highlight-color: transparent;
+   user-select: none;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   line-height: normal;
+   overscroll-behavior: none;
 }
 
 :root {
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+   font-synthesis: none;
+   text-rendering: optimizeLegibility;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
 }
 
 html:dir(ltr),
 body:dir(ltr) {
-	font-family:
-		'Inter',
-		-apple-system,
-		BlinkMacSystemFont,
-		Segoe UI,
-		Roboto,
-		Oxygen,
-		Ubuntu,
-		Cantarell,
-		Fira Sans,
-		Droid Sans,
-		Helvetica Neue,
-		sans-serif;
+   font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      Segoe UI,
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      Fira Sans,
+      Droid Sans,
+      Helvetica Neue,
+      sans-serif;
 }
 
 html,
 body,
 #root {
-	display: flex;
-	height: 100vh;
-	width: 100vw;
-	flex-direction: column;
-	position: relative;
-	min-height: max(var(--ptg-viewport-height), 100vh);
-	pointer-events: auto !important;
-	overflow: hidden;
+   display: flex;
+   height: 100vh;
+   width: 100vw;
+   flex-direction: column;
+   position: relative;
+   min-height: max(var(--ptg-viewport-height), 100vh);
+   pointer-events: auto !important;
+   overflow: hidden;
 }
 
 #root {
-	isolation: isolate;
+   isolation: isolate;
 }
 
 body {
-	background-color: var(--bg-color);
-	color: var(--text-color);
+   background-color: var(--bg-color);
+   color: var(--text-color);
 }
 
 ul,
 ol {
-	list-style: none;
+   list-style: none;
 }
 
 a,
 button,
 i,
 svg {
-	touch-action: none;
+   touch-action: none;
 }
 
 .page {
-	display: flex;
-	flex-direction: column;
-	position: relative;
-	padding-top: calc(var(--tg-viewport-safe-area-inset-top) + var(--tg-viewport-content-safe-area-inset-top));
+   display: flex;
+   flex-direction: column;
+   position: relative;
+   padding-top: calc(
+      var(--tg-viewport-safe-area-inset-top) +
+         var(--tg-viewport-content-safe-area-inset-top)
+   );
 }

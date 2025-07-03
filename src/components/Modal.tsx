@@ -1,10 +1,9 @@
 import "solid-bottomsheet/styles.css";
 import "./Modal.scss";
 
-import { onCleanup, onMount, type ParentComponent } from "solid-js";
-
 // @ts-ignore
 import { SolidBottomsheet } from "solid-bottomsheet";
+import { onCleanup, onMount, type ParentComponent } from "solid-js";
 
 const Modal: ParentComponent<{
 	class?: string;

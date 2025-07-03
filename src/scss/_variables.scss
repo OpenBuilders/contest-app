@@ -1,21 +1,21 @@
 :root {
-	--white: #ffffff;
-	--black: #000000;
-	--white-rgb: 255, 255, 255;
-	--black-rgb: 0, 0, 0;
-	--bg-color: var(--white);
-	--bg-color-rgb: var(--white-rgb);
-	--text-color: var(--black);
-	--text-color-rgb: var(--black-rgb);
+   --white: #ffffff;
+   --black: #000000;
+   --white-rgb: 255, 255, 255;
+   --black-rgb: 0, 0, 0;
+   --bg-color: var(--white);
+   --bg-color-rgb: var(--white-rgb);
+   --text-color: var(--black);
+   --text-color-rgb: var(--black-rgb);
 
-	--animate-duration: 0.5s;
-	--animate-delay: 0;
-	--animate-repeat: 1;
+   --animate-duration: 0.5s;
+   --animate-delay: 0;
+   --animate-repeat: 1;
 }
 
-body[data-theme=dark] {
-	--bg-color: var(--black);
-	--bg-color-rgb: var(--black-rgb);
-	--text-color: var(--white);
-	--text-color-rgb: var(--white-rgb);
+body[data-theme="dark"] {
+   --bg-color: var(--black);
+   --bg-color-rgb: var(--black-rgb);
+   --text-color: var(--white);
+   --text-color-rgb: var(--white-rgb);
 }

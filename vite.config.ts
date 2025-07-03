@@ -1,9 +1,9 @@
-import { defineConfig, type UserConfig } from "vite";
-import solid from "vite-plugin-solid";
 import tailwindcss from "@tailwindcss/vite";
-import solidSvg from "vite-plugin-solid-svg";
-import pluginPurgeCss from "vite-plugin-purgecss";
 import devtools from "solid-devtools/vite";
+import { defineConfig, type UserConfig } from "vite";
+import pluginPurgeCss from "vite-plugin-purgecss";
+import solid from "vite-plugin-solid";
+import solidSvg from "vite-plugin-solid-svg";
 
 export default defineConfig((config) => {
 	const isDevMode = config.mode === "development";
@@ -31,7 +31,7 @@ export default defineConfig((config) => {
 						"ol",
 						"svg",
 					],
-					greedy: [/container\-/, /sb\-/],
+					greedy: [/container-/, /sb-/],
 				},
 				defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
 			}) as any,

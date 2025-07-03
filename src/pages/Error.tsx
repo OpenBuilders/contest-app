@@ -1,10 +1,10 @@
 import "./Error.scss";
 
-import { invokeHapticFeedbackNotification } from "../utils/telegram";
-import { onMount, type Component } from "solid-js";
-import { useTranslation } from "../contexts/TranslationContext";
 import { RiUserFacesAliensLine } from "solid-icons/ri";
 import { VsBracketError } from "solid-icons/vs";
+import { type Component, onMount } from "solid-js";
+import { useTranslation } from "../contexts/TranslationContext";
+import { invokeHapticFeedbackNotification } from "../utils/telegram";
 
 type PageErrorProps = {
 	title?: string;

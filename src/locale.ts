@@ -1,5 +1,5 @@
-import type * as en from "./i18n/en.ts";
 import * as i18n from "@solid-primitives/i18n";
+import type * as en from "./i18n/en.ts";
 
 import { dict as en_dict } from "./i18n/en.ts";
 

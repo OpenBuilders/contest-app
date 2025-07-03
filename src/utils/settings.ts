@@ -1,8 +1,8 @@
-import type { Locale } from "../locale";
-import { createStore, type SetStoreFunction } from "solid-js/store";
-import { isVersionAtLeast } from "./telegram";
-import { setMotionMultipler } from "./motion";
 import { isTMA, retrieveLaunchParams } from "@telegram-apps/sdk-solid";
+import { createStore, type SetStoreFunction } from "solid-js/store";
+import type { Locale } from "../locale";
+import { setMotionMultipler } from "./motion";
+import { isVersionAtLeast } from "./telegram";
 
 type SettingsStorage = "DeviceStorage" | "LocalStorage";
 

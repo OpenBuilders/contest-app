@@ -32,7 +32,7 @@ export const requestAPI = async (
 			return result;
 		}
 		return false;
-	} catch (e) {
+	} catch (_) {
 		return null;
 	}
 };
