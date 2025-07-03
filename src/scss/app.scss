@@ -1,0 +1,11 @@
+@use "sass:meta";
+@charset "UTF-8";
+
+@include meta.load-css("animate.css");
+
+@include meta.load-css("variables");
+@include meta.load-css("fonts");
+@include meta.load-css("general");
+@include meta.load-css("rtl");
+@include meta.load-css("responsive");
+@include meta.load-css("reduced-motion");
