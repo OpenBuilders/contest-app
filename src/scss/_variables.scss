@@ -11,6 +11,11 @@
    --animate-duration: 0.5s;
    --animate-delay: 0;
    --animate-repeat: 1;
+
+   --accent: var(--tg-theme-accent-text-color);
+
+   --shimmer-bg: #e0e0e0; // light base
+   --shimmer-highlight: #f5f5f5; // light shimmer
 }
 
 body[data-theme="dark"] {
@@ -18,4 +23,7 @@ body[data-theme="dark"] {
    --bg-color-rgb: var(--black-rgb);
    --text-color: var(--white);
    --text-color-rgb: var(--white-rgb);
+
+   --shimmer-bg: #2e2e2e; // dark base
+   --shimmer-highlight: #3c3c3c; // dark shimmer
 }

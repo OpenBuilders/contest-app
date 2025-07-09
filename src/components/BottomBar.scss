@@ -1,0 +1,35 @@
+#container-bottombar {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   width: 100%;
+   gap: 1rem;
+   padding: 0.5rem 1rem
+      calc(
+         var(--tg-viewport-safe-area-inset-bottom) +
+            var(--tg-viewport-content-safe-area-inset-bottom)
+      );
+
+   > a {
+      display: flex;
+      width: 100%;
+      flex-grow: 1;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.3125rem;
+
+      > svg {
+         font-size: 1.75rem;
+      }
+
+      > span {
+         font-size: 0.75rem;
+      }
+
+      &.profile {
+         > svg {
+            font-size: 1.8125rem;
+         }
+      }
+   }
+}

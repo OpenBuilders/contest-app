@@ -1,2 +1,37 @@
 #container-page-home {
+   > div:first-child {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+   }
+}
+
+#container-home-contests-empty {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 1.125rem;
+   flex-grow: 1;
+
+   .lottie-animation {
+      width: 8rem;
+   }
+
+   > span {
+      font-size: 1rem;
+   }
+
+   > button {
+      color: var(--accent);
+      cursor: pointer;
+      margin-top: 0.25rem;
+      font-size: 1.125rem;
+   }
+}
+
+#container-home-contests-loading {
+}
+
+#container-home-contests {
 }

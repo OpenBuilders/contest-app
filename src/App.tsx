@@ -30,8 +30,12 @@ import {
 } from "./contexts/TranslationContext.ts";
 import { dict as en_dict } from "./i18n/en.ts";
 import { fetchDictionary, type Locale, localeDirections } from "./locale";
+import PageContests from "./pages/Contests.tsx";
+import PageCreate from "./pages/Create.tsx";
 import PageError from "./pages/Error";
 import PageHome from "./pages/Home.tsx";
+import PageProfile from "./pages/Profile.tsx";
+import PageSplash from "./pages/Splash.tsx";
 import { setIsRTL } from "./utils/i18n.ts";
 import { modals, setModals } from "./utils/modal.ts";
 import { initializeSettings, settings } from "./utils/settings.ts";
@@ -116,6 +120,11 @@ const App = () => {
 			bindViewportCssVars();
 		}
 
+		if (themeParams.mountSync.isAvailable() && !themeParams.isMounted()) {
+			themeParams.mountSync();
+			bindThemeParamsCssVars();
+		}
+
 		if (miniApp.mountSync.isAvailable() && !miniApp.isMounted()) {
 			miniApp.mountSync();
 			bindMiniAppCssVars();
@@ -130,11 +139,6 @@ const App = () => {
 
 			handleTheme(miniApp.isDark());
 			miniApp.isDark.sub(handleTheme);
-		}
-
-		if (themeParams.mountSync.isAvailable() && !miniApp.isMounted()) {
-			themeParams.mountSync();
-			bindThemeParamsCssVars();
 		}
 
 		setTimeout(() => {
@@ -239,6 +243,10 @@ const App = () => {
 						)}
 					>
 						<Route path="/" component={PageHome} />
+						<Route path="/splash/:slug?" component={PageSplash} />
+						<Route path="/profile" component={PageProfile} />
+						<Route path="/contests" component={PageContests} />
+						<Route path="/create" component={PageCreate} />
 					</Router>
 				</ErrorBoundary>
 			</Show>
