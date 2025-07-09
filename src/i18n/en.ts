@@ -7,7 +7,13 @@ const dict = {
 		ru: "Русский",
 		hi: "हिन्दी",
 	},
-	general: {},
+	general: {
+		bottombar: {
+			home: "Home",
+			contests: "Contests",
+			profile: "Profile",
+		},
+	},
 	pages: {
 		error: {
 			title: "Error",
@@ -23,6 +29,14 @@ const dict = {
 			title: "Invalid Environment",
 			description:
 				"This app is designed to run in Telegram Mini Apps environment.",
+		},
+		home: {
+			contests: {
+				empty: {
+					title: "You’re not part of any contests yet.",
+					create: "Let's create one!",
+				},
+			},
 		},
 	},
 	modals: {},
