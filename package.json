@@ -14,13 +14,17 @@
 		"@solidjs/router": "^0.15.3",
 		"@telegram-apps/sdk-solid": "^3.0.30",
 		"animate.css": "^4.1.1",
+		"gsap": "^3.13.0",
+		"pako": "^2.1.0",
 		"solid-bottomsheet": "^1.1.0",
 		"solid-icons": "^1.1.0",
-		"solid-js": "^1.9.7"
+		"solid-js": "^1.9.7",
+		"uuid": "^11.1.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.0.6",
+		"@biomejs/biome": "^2.1.1",
 		"@tailwindcss/vite": "^4.1.11",
+		"@types/pako": "^2.0.3",
 		"autoprefixer": "^10.4.21",
 		"postcss": "^8.5.6",
 		"postcss-reporter": "^7.1.0",
@@ -28,7 +32,7 @@
 		"solid-devtools": "^0.34.3",
 		"tailwindcss": "^4.1.11",
 		"typescript": "~5.8.3",
-		"vite": "^7.0.2",
+		"vite": "^7.0.3",
 		"vite-plugin-purgecss": "^0.2.13",
 		"vite-plugin-solid": "^2.11.7",
 		"vite-plugin-solid-svg": "^0.8.1"
