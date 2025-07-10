@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "@solidjs/router";
 import { setStore, store } from "../utils/store";
 import "./Splash.scss";
 
-import { retrieveRawInitData } from "@telegram-apps/sdk-solid";
+import { postEvent, retrieveRawInitData } from "@telegram-apps/sdk-solid";
 import { type Component, onMount } from "solid-js";
 import { requestAPI } from "../utils/api";
 import { urlParseQueryString } from "../utils/auth";
@@ -54,6 +54,8 @@ const PageSplash: Component = () => {
 				} else {
 					navigate("/", { replace: true });
 				}
+			} else {
+				postEvent("web_app_close");
 			}
 		});
 	});

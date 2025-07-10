@@ -12,11 +12,18 @@
    > a {
       display: flex;
       width: 100%;
-      flex-grow: 1;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       gap: 0.3125rem;
+      transition:
+         color 0.125s,
+         opacity 0.125s;
+
+      &[aria-current="page"] {
+         opacity: 1;
+         color: var(--accent);
+      }
 
       > svg {
          font-size: 1.75rem;
@@ -24,11 +31,23 @@
 
       > span {
          font-size: 0.75rem;
+         font-weight: 500;
       }
 
       &.profile {
-         > svg {
-            font-size: 1.8125rem;
+         > div {
+            height: 1.75rem;
+            width: 1.75rem;
+            border-radius: 50%;
+            border: 0.125rem solid rgba(var(--text-color-rgb), 0.25);
+            overflow: hidden;
+            transition: border-color 0.125s;
+         }
+
+         &[aria-current="page"] {
+            > div {
+               border-color: var(--accent);
+            }
          }
       }
    }

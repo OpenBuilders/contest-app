@@ -1,14 +1,16 @@
 import * as i18n from "@solid-primitives/i18n";
-import { Route, Router } from "@solidjs/router";
+import { Route, Router, useLocation } from "@solidjs/router";
 import {
+	backButton,
 	bindMiniAppCssVars,
 	bindThemeParamsCssVars,
 	bindViewportCssVars,
 	init,
 	isTMA,
+	mainButton,
 	miniApp,
-	on,
-	retrieveLaunchParams,
+	secondaryButton,
+	settingsButton,
 	themeParams,
 	themeParamsBackgroundColor,
 	viewport,
@@ -20,10 +22,13 @@ import {
 	ErrorBoundary,
 	For,
 	onCleanup,
+	on as onEffect,
 	onMount,
 	Show,
 } from "solid-js";
 import { Dynamic, Portal } from "solid-js/web";
+import BottomBar, { bottomBarValidPaths } from "./components/BottomBar.tsx";
+import SettingsButton from "./components/SettingsButton.tsx";
 import {
 	type TranslationContextType,
 	TranslationProvider,
@@ -42,6 +47,7 @@ import { initializeSettings, settings } from "./utils/settings.ts";
 import {
 	invokeHapticFeedbackImpact,
 	isVersionAtLeast,
+	lp,
 	postEvent,
 	setThemeColor,
 } from "./utils/telegram.ts";
@@ -86,7 +92,6 @@ const App = () => {
 
 	const initializeTMA = async () => {
 		init();
-		const lp = retrieveLaunchParams();
 
 		channel.postMessage({
 			type: "launch",
@@ -96,21 +101,29 @@ const App = () => {
 		postEvent("iframe_ready");
 		postEvent("web_app_expand");
 
-		postEvent("web_app_setup_back_button", {
-			is_visible: false,
-		});
+		if (!mainButton.isMounted()) {
+			mainButton.mount();
+			mainButton.setParams({
+				isVisible: false,
+			});
+		}
 
-		postEvent("web_app_setup_main_button", {
-			is_visible: false,
-		});
+		if (!secondaryButton.isMounted()) {
+			secondaryButton.mount();
+			secondaryButton.setParams({
+				isVisible: false,
+			});
+		}
 
-		postEvent("web_app_setup_secondary_button", {
-			is_visible: false,
-		});
+		if (settingsButton.isSupported() && !settingsButton.isMounted()) {
+			settingsButton.mount();
+			settingsButton.hide();
+		}
 
-		postEvent("web_app_setup_settings_button", {
-			is_visible: false,
-		});
+		if (backButton.isSupported() && !backButton.isMounted()) {
+			backButton.mount();
+			backButton.hide();
+		}
 
 		if (
 			viewport.mount.isAvailable() &&
@@ -159,16 +172,6 @@ const App = () => {
 				);
 			}
 		});
-
-		if (isVersionAtLeast("6.1")) {
-			postEvent("web_app_setup_settings_button", {
-				is_visible: true,
-			});
-
-			on("settings_button_pressed", () => {
-				setModals("settings", "open", true);
-			});
-		}
 
 		if (isVersionAtLeast("6.2")) {
 			postEvent("web_app_setup_closing_behavior", {
@@ -228,19 +231,42 @@ const App = () => {
 			>
 				<ErrorBoundary fallback={<PageError />}>
 					<Router
-						root={(props) => (
-							<>
-								{props.children}
+						root={(props) => {
+							const location = useLocation();
 
-								<Portal mount={document.body}>
-									<For
-										each={Object.values(modals).filter((modal) => modal.open)}
-									>
-										{(modal) => <Dynamic component={modal.component} />}
-									</For>
-								</Portal>
-							</>
-						)}
+							createEffect(
+								onEffect(
+									() => location.pathname,
+									() => {
+										invokeHapticFeedbackImpact("soft");
+									},
+								),
+							);
+
+							return (
+								<>
+									{props.children}
+
+									<Show when={bottomBarValidPaths.includes(location.pathname)}>
+										<BottomBar />
+									</Show>
+
+									<Portal mount={document.body}>
+										<For
+											each={Object.values(modals).filter((modal) => modal.open)}
+										>
+											{(modal) => <Dynamic component={modal.component} />}
+										</For>
+									</Portal>
+
+									<SettingsButton
+										onClick={() => {
+											setModals("settings", "open", true);
+										}}
+									/>
+								</>
+							);
+						}}
 					>
 						<Route path="/" component={PageHome} />
 						<Route path="/splash/:slug?" component={PageSplash} />

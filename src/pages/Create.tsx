@@ -1,9 +1,8 @@
 import "./Create.scss";
 import { useNavigate } from "@solidjs/router";
-import { off, on } from "@telegram-apps/sdk-solid";
-import { type Component, onCleanup, onMount } from "solid-js";
+import type { Component } from "solid-js";
+import BackButton from "../components/BackButton";
 import { store } from "../utils/store";
-import { postEvent } from "../utils/telegram";
 
 const PageCreate: Component = () => {
 	const navigate = useNavigate();
@@ -22,28 +21,20 @@ const PageCreate: Component = () => {
 		});
 	};
 
-	onMount(async () => {
-		postEvent("web_app_setup_back_button", {
-			is_visible: true,
-		});
-
-		on("back_button_pressed", onBackButton);
-	});
-
-	onCleanup(() => {
-		off("back_button_pressed", onBackButton);
-	});
-
 	const SectionCreateForm = () => {
 		return <div>Section Create Form</div>;
 	};
 
 	return (
-		<div id="container-page-create" class="page">
-			<div>
-				<SectionCreateForm />
+		<>
+			<div id="container-page-create" class="page">
+				<div>
+					<SectionCreateForm />
+				</div>
 			</div>
-		</div>
+
+			<BackButton onClick={onBackButton} />
+		</>
 	);
 };
 

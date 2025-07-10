@@ -1,8 +1,8 @@
-import { isTMA, retrieveLaunchParams } from "@telegram-apps/sdk-solid";
+import { isTMA } from "@telegram-apps/sdk-solid";
 import { createStore, type SetStoreFunction } from "solid-js/store";
 import type { Locale } from "../locale";
 import { setMotionMultipler } from "./motion";
-import { isVersionAtLeast } from "./telegram";
+import { isVersionAtLeast, lp } from "./telegram";
 
 type SettingsStorage = "DeviceStorage" | "LocalStorage";
 
@@ -52,7 +52,7 @@ export const initializeSettings = () => {
 		settingsStorage = "LocalStorage";
 
 		const localSettings = localStorage.getItem(
-			`settings_${retrieveLaunchParams().tgWebAppData?.user?.id}`,
+			`settings_${lp.tgWebAppData?.user?.id}`,
 		);
 
 		if (localSettings) {
@@ -79,7 +79,7 @@ export const setSettings: SetStoreFunction<Settings> = (...args: any) => {
 	if (settingsStorage === "DeviceStorage") {
 	} else if (settingsStorage === "LocalStorage") {
 		localStorage.setItem(
-			`settings_${retrieveLaunchParams().tgWebAppData?.user?.id}`,
+			`settings_${lp.tgWebAppData?.user?.id}`,
 			JSON.stringify(settings),
 		);
 	}

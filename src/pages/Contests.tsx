@@ -1,7 +1,6 @@
 import "./Contests.scss";
 import { useNavigate } from "@solidjs/router";
 import type { Component } from "solid-js";
-import BottomBar from "../components/BottomBar";
 import { store } from "../utils/store";
 
 const PageContests: Component = () => {
@@ -16,7 +15,6 @@ const PageContests: Component = () => {
 	return (
 		<div id="container-page-contests" class="page">
 			<div>Contests</div>
-			<BottomBar />
 		</div>
 	);
 };

@@ -1,7 +1,6 @@
 import "./Profile.scss";
 import { useNavigate } from "@solidjs/router";
 import type { Component } from "solid-js";
-import BottomBar from "../components/BottomBar";
 import { store } from "../utils/store";
 
 const PageProfile: Component = () => {
@@ -16,7 +15,6 @@ const PageProfile: Component = () => {
 	return (
 		<div id="container-page-profile" class="page">
 			<div>Profile</div>
-			<BottomBar />
 		</div>
 	);
 };

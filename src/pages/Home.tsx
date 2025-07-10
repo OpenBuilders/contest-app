@@ -3,12 +3,10 @@ import { setStore, store } from "../utils/store";
 import "./Home.scss";
 
 import { type Component, onMount, Show } from "solid-js";
-import BottomBar from "../components/BottomBar";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
-import { postEvent } from "../utils/telegram";
 
 const PageHome: Component = () => {
 	const navigate = useNavigate();
@@ -39,10 +37,6 @@ const PageHome: Component = () => {
 	};
 
 	onMount(async () => {
-		postEvent("web_app_setup_back_button", {
-			is_visible: false,
-		});
-
 		if (!store.contests?.my) {
 			await fetchContents();
 		}
@@ -55,7 +49,7 @@ const PageHome: Component = () => {
 	const SectionContestsEmpty = () => {
 		return (
 			<div id="container-home-contests-empty">
-				<LottiePlayerMotion src={TGS.duckEgg.url} autoplay />
+				<LottiePlayerMotion src={TGS.duckEgg.url} autoplay playOnClick />
 
 				<span class="text-secondary">
 					{t("pages.home.contests.empty.title")}
@@ -88,8 +82,6 @@ const PageHome: Component = () => {
 					</Show>
 				</Show>
 			</div>
-
-			<BottomBar />
 		</div>
 	);
 };
