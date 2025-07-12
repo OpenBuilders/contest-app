@@ -1,0 +1,14 @@
+.modal-create {
+   display: flex;
+   flex-direction: column;
+   height: calc(
+      96vh - calc(
+            var(--tg-viewport-safe-area-inset-bottom) +
+               var(--tg-viewport-content-safe-area-inset-bottom)
+         ) - calc(
+            var(--tg-viewport-safe-area-inset-top) +
+               var(--tg-viewport-content-safe-area-inset-top)
+         ) -
+         2.25rem
+   );
+}
