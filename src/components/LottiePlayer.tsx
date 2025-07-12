@@ -1,3 +1,4 @@
+import "./LottiePlayer.scss";
 import type { Component, JSX } from "solid-js";
 import { createSignal, onCleanup, onMount, Show } from "solid-js";
 
@@ -10,6 +11,7 @@ export type LottiePlayerProps = {
 	loop?: boolean;
 	fallback?: JSX.Element;
 	playOnClick?: boolean;
+	outline?: string;
 };
 
 export const LottiePlayerFileCache: { [key: string]: Uint8Array } = {};
@@ -61,6 +63,17 @@ const LottiePlayer: Component<LottiePlayerProps> = (props) => {
 		}
 	};
 
+	const Outline = () => {
+		return (
+			<div
+				class="shimmer"
+				style={{
+					"mask-image": `url("data:image/svg+xml;base64,${btoa(props.outline!)}")`,
+				}}
+			/>
+		);
+	};
+
 	return (
 		<div
 			ref={element}
@@ -73,6 +86,10 @@ const LottiePlayer: Component<LottiePlayerProps> = (props) => {
 				}
 			>
 				{props.fallback}
+			</Show>
+
+			<Show when={!loaded()}>
+				<Outline />
 			</Show>
 
 			<canvas

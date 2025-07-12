@@ -1,11 +1,10 @@
+// @ts-ignore
+import Module from "../thorvg/thorvg-wasm.js";
 import type {
 	LottixConfig,
 	PlayerEvent,
 	PlayerState,
 } from "../utils/lottix.js";
-
-// @ts-ignore
-import Module from "../thorvg/thorvg-wasm.js";
 
 declare const self: Worker;
 
@@ -361,6 +360,8 @@ type LottixWorkerResponseState = {
 
 const instances: { [key: string]: LottixWorker } = {};
 
+const pendingObservabilities: { [key: string]: boolean } = {};
+
 self.addEventListener(
 	"message",
 	async (message: MessageEvent<LottixWorkerMessage>) => {
@@ -372,10 +373,14 @@ self.addEventListener(
 				break;
 
 			case "observability":
+				pendingObservabilities[data.id] = data.observable;
 				while (!(data.id in instances)) {
 					await sleep(100);
 				}
-				instances[data.id].setObservable(data.observable);
+				if (data.id in pendingObservabilities) {
+					instances[data.id].setObservable(pendingObservabilities[data.id]);
+					delete pendingObservabilities[data.id];
+				}
 				break;
 
 			case "state":

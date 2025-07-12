@@ -1,10 +1,10 @@
+import { v4 } from "uuid";
 import type {
 	LottixWorkerMessage,
 	LottixWorkerResponse,
 } from "../workers/lottix";
 import LottixWorker from "../workers/lottix?worker";
 import { inflateWorker } from "./inflate";
-import { v4 } from "uuid";
 
 export type LottixConfig = {
 	src: string | Uint8Array;
