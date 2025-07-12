@@ -5,3 +5,45 @@
       flex-direction: column;
    }
 }
+
+#container-create {
+   display: flex;
+   flex-direction: column;
+   flex-grow: 1;
+}
+
+#container-create-section-intro {
+   display: flex;
+   flex-direction: column;
+   flex-grow: 1;
+   align-items: center;
+   justify-content: center;
+   gap: 1rem;
+   padding: 0 1rem;
+
+   > div {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 0 1rem;
+
+      .lottie-animation {
+         width: 10rem;
+      }
+
+      > h1 {
+         font-size: 1.25rem;
+         font-weight: 600;
+         padding-top: 1rem;
+      }
+
+      > p {
+         font-size: 0.9375rem;
+         text-align: center;
+         line-height: 1.625;
+      }
+   }
+}

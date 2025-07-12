@@ -7,6 +7,10 @@
    --bg-color-rgb: var(--white-rgb);
    --text-color: var(--black);
    --text-color-rgb: var(--black-rgb);
+   --secondary-color: #efeef4;
+   --secondary-color-rgb: 239, 238, 244;
+
+   --modal-bg: var(--bg-color);
 
    --animate-duration: 0.5s;
    --animate-delay: 0;
@@ -14,8 +18,8 @@
 
    --accent: var(--tg-theme-accent-text-color);
 
-   --shimmer-bg: #e0e0e0; // light base
-   --shimmer-highlight: #f5f5f5; // light shimmer
+   --shimmer-bg: #e0e0e0;
+   --shimmer-highlight: #f5f5f5;
 }
 
 body[data-theme="dark"] {
@@ -24,6 +28,11 @@ body[data-theme="dark"] {
    --text-color: var(--white);
    --text-color-rgb: var(--white-rgb);
 
-   --shimmer-bg: #2e2e2e; // dark base
-   --shimmer-highlight: #3c3c3c; // dark shimmer
+   --secondary-color: #1c1c1c;
+   --secondary-color-rgb: 28, 28, 28;
+
+   --modal-bg: var(--bg-color);
+
+   --shimmer-bg: #2e2e2e;
+   --shimmer-highlight: #3c3c3c;
 }

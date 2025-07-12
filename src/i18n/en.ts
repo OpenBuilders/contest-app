@@ -38,6 +38,14 @@ const dict = {
 				},
 			},
 		},
+		create: {
+			intro: {
+				title: "What is a Contest?",
+				description:
+					"Contests are interactive events where creators set challenges, participants compete, and moderators pick winners—with prizes. They’re a fun way to engage your community, reward talent, and grow your audience.",
+				button: "Create Contest",
+			},
+		},
 	},
 	modals: {},
 };

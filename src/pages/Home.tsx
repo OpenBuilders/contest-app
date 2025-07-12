@@ -7,6 +7,7 @@ import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
+import { setModals } from "../utils/modal";
 
 const PageHome: Component = () => {
 	const navigate = useNavigate();
@@ -31,9 +32,10 @@ const PageHome: Component = () => {
 	};
 
 	const onClickButtonCreate = () => {
-		navigate("/create", {
-			replace: true,
-		});
+		setModals("create", "open", true);
+		// navigate("/create", {
+		// 	replace: true,
+		// });
 	};
 
 	onMount(async () => {
@@ -49,7 +51,12 @@ const PageHome: Component = () => {
 	const SectionContestsEmpty = () => {
 		return (
 			<div id="container-home-contests-empty">
-				<LottiePlayerMotion src={TGS.duckEgg.url} autoplay playOnClick />
+				<LottiePlayerMotion
+					src={TGS.duckEgg.url}
+					outline={TGS.duckEgg.outline}
+					autoplay
+					playOnClick
+				/>
 
 				<span class="text-secondary">
 					{t("pages.home.contests.empty.title")}
