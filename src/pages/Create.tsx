@@ -1,5 +1,6 @@
 import "./Create.scss";
 import { useNavigate } from "@solidjs/router";
+import { TbPhotoPlus } from "solid-icons/tb";
 import {
 	type Accessor,
 	type Component,
@@ -14,9 +15,9 @@ import { createStore, type SetStoreFunction } from "solid-js/store";
 import BackButton from "../components/BackButton";
 import CustomMainButton from "../components/CustomMainButton";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
-import MainButton from "../components/MainButton";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
+import { hideKeyboardOnEnter } from "../utils/input";
 import { store } from "../utils/store";
 import { invokeHapticFeedbackImpact } from "../utils/telegram";
 
@@ -43,10 +44,7 @@ type CreateFormSectionProps = {
 const SectionIntro: Component<CreateFormSectionProps> = (props) => {
 	const { t } = useTranslation();
 
-	const [step, setStep] = props.stepSignal;
-	const [form, setForm] = props.formStore;
-
-	const buttonDisabled = createMemo(() => false);
+	const [, setStep] = props.stepSignal;
 
 	const onClickButton = () => {
 		setStep("basic");
@@ -74,7 +72,6 @@ const SectionIntro: Component<CreateFormSectionProps> = (props) => {
 			<CustomMainButton
 				onClick={onClickButton}
 				text={t("pages.create.intro.button")}
-				disabled={buttonDisabled()}
 			/>
 		</div>
 	);
@@ -83,10 +80,12 @@ const SectionIntro: Component<CreateFormSectionProps> = (props) => {
 const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 	const { t } = useTranslation();
 
-	const [step, setStep] = props.stepSignal;
+	const [, setStep] = props.stepSignal;
 	const [form, setForm] = props.formStore;
 
-	const buttonDisabled = createMemo(() => false);
+	const buttonDisabled = createMemo(() => {
+		return form.title.trim().length < 3;
+	});
 
 	const onClickButton = () => {
 		setStep("public");
@@ -98,11 +97,26 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 
 	return (
 		<div id="container-create-section-basic">
-			<div>Section Basic</div>
+			<div>
+				<header>
+					<button type="button">
+						<TbPhotoPlus />
+					</button>
+
+					<input
+						class="input"
+						placeholder={t("pages.create.basic.name.placeholder")}
+						value={form.title}
+						onInput={(e) => setForm("title", e.currentTarget.value)}
+						onBlur={(e) => setForm("title", e.currentTarget.value.trim())}
+						onKeyDown={hideKeyboardOnEnter}
+					/>
+				</header>
+			</div>
 
 			<CustomMainButton
 				onClick={onClickButton}
-				text={t("pages.create.intro.button")}
+				text={t("general.continue")}
 				disabled={buttonDisabled()}
 			/>
 		</div>
@@ -112,8 +126,8 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 const SectionPublic: Component<CreateFormSectionProps> = (props) => {
 	const { t } = useTranslation();
 
-	const [step, setStep] = props.stepSignal;
-	const [form, setForm] = props.formStore;
+	const [, setStep] = props.stepSignal;
+	// const [form, setForm] = props.formStore;
 
 	const buttonDisabled = createMemo(() => false);
 
@@ -131,7 +145,7 @@ const SectionPublic: Component<CreateFormSectionProps> = (props) => {
 
 			<CustomMainButton
 				onClick={onClickButton}
-				text={t("pages.create.intro.button")}
+				text={t("general.continue")}
 				disabled={buttonDisabled()}
 			/>
 		</div>
@@ -141,8 +155,8 @@ const SectionPublic: Component<CreateFormSectionProps> = (props) => {
 const SectionAnonymous: Component<CreateFormSectionProps> = (props) => {
 	const { t } = useTranslation();
 
-	const [step, setStep] = props.stepSignal;
-	const [form, setForm] = props.formStore;
+	const [, setStep] = props.stepSignal;
+	// const [form, setForm] = props.formStore;
 
 	const buttonDisabled = createMemo(() => false);
 
@@ -160,7 +174,7 @@ const SectionAnonymous: Component<CreateFormSectionProps> = (props) => {
 
 			<CustomMainButton
 				onClick={onClickButton}
-				text={t("pages.create.intro.button")}
+				text={t("general.continue")}
 				disabled={buttonDisabled()}
 			/>
 		</div>
@@ -170,13 +184,13 @@ const SectionAnonymous: Component<CreateFormSectionProps> = (props) => {
 const SectionFee: Component<CreateFormSectionProps> = (props) => {
 	const { t } = useTranslation();
 
-	const [step, setStep] = props.stepSignal;
-	const [form, setForm] = props.formStore;
+	const [, setStep] = props.stepSignal;
+	// const [form, setForm] = props.formStore;
 
 	const buttonDisabled = createMemo(() => false);
 
 	const onClickButton = () => {
-		// setStep("basic");
+		setStep("basic");
 	};
 
 	onMount(async () => {
@@ -189,7 +203,7 @@ const SectionFee: Component<CreateFormSectionProps> = (props) => {
 
 			<CustomMainButton
 				onClick={onClickButton}
-				text={t("pages.create.intro.button")}
+				text={t("general.continue")}
 				disabled={buttonDisabled()}
 			/>
 		</div>

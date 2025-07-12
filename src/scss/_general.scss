@@ -57,6 +57,7 @@ body,
 body {
    background-color: var(--bg-color);
    color: var(--text-color);
+   caret-color: var(--accent);
 }
 
 ul,
@@ -104,4 +105,16 @@ svg {
 
 .text-secondary {
    opacity: 0.75;
+}
+
+input,
+textarea {
+   &::placeholder {
+      color: rgba(var(--text-color-rgb), 0.5);
+   }
+}
+
+.input {
+   line-height: normal;
+   padding: 0.5rem 0;
 }
