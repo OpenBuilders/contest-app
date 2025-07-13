@@ -109,6 +109,11 @@
             > svg {
                font-size: 1.625rem;
             }
+
+            > canvas {
+               width: 100%;
+               height: 100%;
+            }
          }
 
          > input {
@@ -138,4 +143,13 @@
          }
       }
    }
+}
+
+cropper-canvas {
+   position: fixed;
+   inset: 0;
+}
+
+cropper-shade {
+   outline: var(--theme-color) solid 1px;
 }

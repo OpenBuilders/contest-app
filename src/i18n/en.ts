@@ -47,7 +47,9 @@ const dict = {
 				button: "Create Contest",
 			},
 			basic: {
-				image: {},
+				image: {
+					crop: "Crop Image",
+				},
 				name: {
 					placeholder: "Contest Name",
 				},

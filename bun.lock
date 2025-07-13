@@ -9,6 +9,7 @@
         "@telegram-apps/sdk-solid": "^3.0.30",
         "@types/pell": "^1.0.4",
         "animate.css": "^4.1.1",
+        "cropperjs": "^2.0.0",
         "dompurify": "^3.2.6",
         "gsap": "^3.13.0",
         "pako": "^2.1.0",
@@ -93,6 +94,28 @@
     "@biomejs/cli-win32-arm64": ["@biomejs/cli-win32-arm64@2.1.1", "", { "os": "win32", "cpu": "arm64" }, "sha512-vEHK0v0oW+E6RUWLoxb2isI3rZo57OX9ZNyyGH701fZPj6Il0Rn1f5DMNyCmyflMwTnIQstEbs7n2BxYSqQx4Q=="],
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.1.1", "", { "os": "win32", "cpu": "x64" }, "sha512-i2PKdn70kY++KEF/zkQFvQfX1e8SkA8hq4BgC+yE9dZqyLzB/XStY2MvwI3qswlRgnGpgncgqe0QYKVS1blksg=="],
+
+    "@cropper/element": ["@cropper/element@2.0.0", "", { "dependencies": { "@cropper/utils": "^2.0.0" } }, "sha512-lsthn0nQq73GExUE7Mg/ss6Q3RXADGDv055hxoLFwvl/wGHgy6ZkYlfLZ/VmgBHC6jDK5IgPBFnqrPqlXWSGBA=="],
+
+    "@cropper/element-canvas": ["@cropper/element-canvas@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-GPtGJgSm92crJhhhwUsaMw3rz2KfJWWSz7kRAlufFEV/EHTP5+6r6/Z1BCGRna830i+Avqbm435XLOtA7PVJwA=="],
+
+    "@cropper/element-crosshair": ["@cropper/element-crosshair@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-KfPfyrdeFvUC31Ws7ATtcalWWSaMtrC6bMoCipZhqbUOE7wZoL4ecDSL6BUOZxPa74awZUqfzirCDjHvheBfyw=="],
+
+    "@cropper/element-grid": ["@cropper/element-grid@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-i78SQ0IJTLFveKX6P7svkfMYVdgHrQ8ZmmEw8keFy9n1ZVbK+SK0UHK5FNMRNI/gtVhKJOGEnK/zeyjUdj4Iyw=="],
+
+    "@cropper/element-handle": ["@cropper/element-handle@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-ZJvW+0MkK9E8xYymGdoruaQn2kwjSHFpNSWinjyq6csuVQiCPxlX5ovAEDldmZ9MWePPtWEi3vLKQOo2Yb0T8g=="],
+
+    "@cropper/element-image": ["@cropper/element-image@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-9BxiTS/aHRmrjopaFQb9mQQXmx4ruhYHGkDZMVz24AXpMFjUY6OpqrWse/WjzD9tfhMFvEdu17b3VAekcAgpeg=="],
+
+    "@cropper/element-selection": ["@cropper/element-selection@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/element-image": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-ensNnbIfJsJ8bhbJTH/RXtk2URFvTOO4TvfRk461n2FPEC588D7rwBmUJxQg74IiTi4y1JbCI+6j+4LyzYBLCQ=="],
+
+    "@cropper/element-shade": ["@cropper/element-shade@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/element-selection": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-jv/2bbNZnhU4W+T4G0c8ADocLIZvQFTXgCf2RFDNhI5UVxurzWBnDdb8Mx8LnVplnkTqO+xUmHZYve0CwgWo+Q=="],
+
+    "@cropper/element-viewer": ["@cropper/element-viewer@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/element-image": "^2.0.0", "@cropper/element-selection": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-zY+3VRN5TvpM8twlphYtXw0tzJL2VgzeK7ufhL1BixVqOdRxwP13TprYIhqwGt9EW/SyJZUiaIu396T89kRX8A=="],
+
+    "@cropper/elements": ["@cropper/elements@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/element-crosshair": "^2.0.0", "@cropper/element-grid": "^2.0.0", "@cropper/element-handle": "^2.0.0", "@cropper/element-image": "^2.0.0", "@cropper/element-selection": "^2.0.0", "@cropper/element-shade": "^2.0.0", "@cropper/element-viewer": "^2.0.0" } }, "sha512-PQkPo1nUjxLFUQuHYu+6atfHxpX9B41Xribao6wpvmvmNIFML6LQdNqqWYb6LyM7ujsu71CZdBiMT5oetjJVoQ=="],
+
+    "@cropper/utils": ["@cropper/utils@2.0.0", "", {}, "sha512-cprLYr+7kK3faGgoOsTW9gIn5sefDr2KwOmgyjzIXk+8PLpW8FgFKEg5FoWfRD5zMAmkCBuX6rGKDK3VdUEGrg=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.25.5", "", { "os": "aix", "cpu": "ppc64" }, "sha512-9o3TMmpmftaCMepOdA5k/yDw8SfInyzWWTjYTFCX3kPSDJMROQTb8jg+h9Cnwnmm1vOzvxN7gIfB5V2ewpjtGA=="],
 
@@ -375,6 +398,8 @@
     "consola": ["consola@3.4.2", "", {}, "sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA=="],
 
     "convert-source-map": ["convert-source-map@2.0.0", "", {}, "sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg=="],
+
+    "cropperjs": ["cropperjs@2.0.0", "", { "dependencies": { "@cropper/elements": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-TO2j0Qre01kPHbow4FuTrbdEB4jTmGRySxW49jyEIqlJZuEBfrvCTT0vC3eRB2WBXudDfKi1Onako6DKWKxeAQ=="],
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 

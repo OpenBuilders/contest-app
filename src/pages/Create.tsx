@@ -1,4 +1,12 @@
 import "./Create.scss";
+
+import CropperCanvas from "@cropper/element-canvas";
+import CropperGrid from "@cropper/element-grid";
+import CropperHandle from "@cropper/element-handle";
+import CropperImage from "@cropper/element-image";
+import CropperSelection from "@cropper/element-selection";
+import CropperShade from "@cropper/element-shade";
+
 import { useNavigate } from "@solidjs/router";
 import { TbPhotoPlus } from "solid-icons/tb";
 import {
@@ -9,23 +17,47 @@ import {
 	Match,
 	onMount,
 	type Setter,
+	Show,
 	Switch,
 } from "solid-js";
 import { createStore, type SetStoreFunction } from "solid-js/store";
+import { Portal } from "solid-js/web";
 import BackButton from "../components/BackButton";
 import CustomMainButton from "../components/CustomMainButton";
 import Editor from "../components/Editor";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
+import MainButton from "../components/MainButton";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { hideKeyboardOnEnter } from "../utils/input";
 import { store } from "../utils/store";
 import { invokeHapticFeedbackImpact } from "../utils/telegram";
 
+declare module "solid-js" {
+	namespace JSX {
+		interface IntrinsicElements {
+			"cropper-canvas": any;
+			"cropper-image": any;
+			"cropper-shade": any;
+			"cropper-handle": any;
+			"cropper-selection": any;
+			"cropper-grid": any;
+			"cropper-crosshair": any;
+		}
+	}
+}
+
+CropperCanvas.$define();
+CropperImage.$define();
+CropperHandle.$define();
+CropperShade.$define();
+CropperSelection.$define();
+CropperGrid.$define();
+
 type CreateFormStore = {
 	title: string;
 	description: string;
-	image?: string;
+	image?: HTMLCanvasElement;
 	date: {
 		start?: number;
 		end?: number;
@@ -84,6 +116,11 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 	const [, setStep] = props.stepSignal;
 	const [form, setForm] = props.formStore;
 
+	const [imagePicker, setImagePicker] = createStore({
+		active: false,
+		src: "",
+	});
+
 	const buttonDisabled = createMemo(() => {
 		if (form.description) {
 			const {
@@ -102,47 +139,128 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 		setStep("public");
 	};
 
+	const onClickImage = () => {
+		const filePicker = document.createElement("input");
+		filePicker.type = "file";
+		filePicker.accept = "image/*";
+
+		filePicker.onchange = (event) => {
+			const file = (event.target as HTMLInputElement).files?.[0];
+
+			if (file?.type.startsWith("image/")) {
+				setImagePicker({
+					active: true,
+					src: URL.createObjectURL(file),
+				});
+			}
+		};
+
+		filePicker.click();
+	};
+
+	const ImagePicker = () => {
+		const [processing, setProcessing] = createSignal(false);
+
+		const onClickButtonCrop = async () => {
+			setProcessing(true);
+			const cropperCanvas = document.querySelector("cropper-selection")! as any;
+			setForm("image", await cropperCanvas.$toCanvas());
+			setImagePicker("active", false);
+			setProcessing(false);
+		};
+
+		return (
+			<Show when={imagePicker.active && imagePicker.src.length > 0}>
+				<Portal mount={document.body}>
+					<cropper-canvas background>
+						<cropper-image
+							src={imagePicker.src}
+							translatable
+							scalable
+						></cropper-image>
+						<cropper-shade></cropper-shade>
+						<cropper-handle action="select" plain></cropper-handle>
+						<cropper-selection
+							initial-coverage="0.5"
+							aspect-ratio="1"
+							movable
+							resizable
+						>
+							<cropper-grid role="grid" covered></cropper-grid>
+							<cropper-crosshair centered></cropper-crosshair>
+							<cropper-handle
+								action="move"
+								theme-color="rgba(255, 255, 255, 0.35)"
+							></cropper-handle>
+							<cropper-handle action="n-resize"></cropper-handle>
+							<cropper-handle action="e-resize"></cropper-handle>
+							<cropper-handle action="s-resize"></cropper-handle>
+							<cropper-handle action="w-resize"></cropper-handle>
+							<cropper-handle action="ne-resize"></cropper-handle>
+							<cropper-handle action="nw-resize"></cropper-handle>
+							<cropper-handle action="se-resize"></cropper-handle>
+							<cropper-handle action="sw-resize"></cropper-handle>
+						</cropper-selection>
+					</cropper-canvas>
+				</Portal>
+
+				<MainButton
+					loading={processing()}
+					disabled={processing()}
+					onClick={onClickButtonCrop}
+					text={t("pages.create.basic.image.crop")}
+				/>
+			</Show>
+		);
+	};
+
 	onMount(async () => {
 		invokeHapticFeedbackImpact("soft");
 	});
 
 	return (
-		<div id="container-create-section-basic">
-			<div>
-				<header>
-					<button type="button">
-						<TbPhotoPlus />
-					</button>
+		<>
+			<div id="container-create-section-basic">
+				<div>
+					<header>
+						<button type="button" onClick={onClickImage}>
+							<Show when={form.image} fallback={<TbPhotoPlus />}>
+								{form.image}
+							</Show>
+						</button>
 
-					<input
-						class="input"
-						placeholder={t("pages.create.basic.name.placeholder")}
-						value={form.title}
-						onInput={(e) => setForm("title", e.currentTarget.value)}
-						onBlur={(e) => setForm("title", e.currentTarget.value.trim())}
-						onKeyDown={hideKeyboardOnEnter}
-						maxLength={64}
-					/>
-				</header>
+						<input
+							class="input"
+							placeholder={t("pages.create.basic.name.placeholder")}
+							value={form.title}
+							onInput={(e) => setForm("title", e.currentTarget.value)}
+							onBlur={(e) => setForm("title", e.currentTarget.value.trim())}
+							onKeyDown={hideKeyboardOnEnter}
+							maxLength={64}
+						/>
+					</header>
 
-				<section>
-					<Editor
-						value={form.description}
-						setValue={(data) => setForm("description", data)}
-						placeholder={t("pages.create.basic.description.placeholder")}
-						maxLength={2048}
-					/>
+					<section>
+						<Editor
+							value={form.description}
+							setValue={(data) => setForm("description", data)}
+							placeholder={t("pages.create.basic.description.placeholder")}
+							maxLength={2048}
+						/>
 
-					<p class="text-hint">{t("pages.create.basic.description.hint")}</p>
-				</section>
+						<p class="text-hint">{t("pages.create.basic.description.hint")}</p>
+					</section>
+				</div>
+
+				<CustomMainButton
+					onClick={onClickButton}
+					text={t("general.continue")}
+					disabled={buttonDisabled()}
+				/>
 			</div>
 
-			<CustomMainButton
-				onClick={onClickButton}
-				text={t("general.continue")}
-				disabled={buttonDisabled()}
-			/>
-		</div>
+			<ImagePicker />
+		</>
 	);
 };
 
