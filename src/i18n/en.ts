@@ -58,6 +58,11 @@ const dict = {
 			},
 		},
 	},
+	components: {
+		editor: {
+			url: "Please enter the link URL",
+		},
+	},
 	modals: {},
 };
 
