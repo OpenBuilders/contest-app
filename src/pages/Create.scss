@@ -10,6 +10,7 @@
    display: flex;
    flex-direction: column;
    flex-grow: 1;
+   overflow: hidden;
 }
 
 #container-create-section-intro {
@@ -56,6 +57,7 @@
    justify-content: center;
    gap: 1rem;
    padding: 0 1rem;
+   overflow: hidden;
 
    > div {
       display: flex;
@@ -64,6 +66,7 @@
       align-items: center;
       gap: 1rem;
       width: 100%;
+      overflow: hidden;
 
       > header {
          display: flex;
@@ -73,6 +76,7 @@
          border-radius: 0.6875rem;
          padding: 0.75rem;
          gap: 1rem;
+         flex-shrink: 0;
 
          > button {
             display: flex;
@@ -109,6 +113,28 @@
 
          > input {
             flex-grow: 1;
+            font-size: 1.0625rem;
+         }
+      }
+
+      > section {
+         display: flex;
+         align-items: center;
+         width: 100%;
+         flex-grow: 1;
+         flex-direction: column;
+         gap: 0.5rem;
+         overflow: hidden;
+
+         > div {
+            background-color: var(--secondary-color);
+            border-radius: 0.6875rem;
+            padding: 0.625rem;
+         }
+
+         > p {
+            font-size: 0.8125rem;
+            width: 100%;
          }
       }
    }

@@ -14,6 +14,7 @@ import {
 import { createStore, type SetStoreFunction } from "solid-js/store";
 import BackButton from "../components/BackButton";
 import CustomMainButton from "../components/CustomMainButton";
+import Editor from "../components/Editor";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
@@ -84,7 +85,17 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 	const [form, setForm] = props.formStore;
 
 	const buttonDisabled = createMemo(() => {
-		return form.title.trim().length < 3;
+		if (form.description) {
+			const {
+				body: { textContent },
+			} = new DOMParser().parseFromString(form.description, "text/html");
+
+			if ((textContent?.length ?? 0) > 2048) {
+				return true;
+			}
+		}
+
+		return form.title.trim().length < 3 || form.title.trim().length > 64;
 	});
 
 	const onClickButton = () => {
@@ -110,8 +121,20 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 						onInput={(e) => setForm("title", e.currentTarget.value)}
 						onBlur={(e) => setForm("title", e.currentTarget.value.trim())}
 						onKeyDown={hideKeyboardOnEnter}
+						maxLength={64}
 					/>
 				</header>
+
+				<section>
+					<Editor
+						value={form.description}
+						setValue={(data) => setForm("description", data)}
+						placeholder={t("pages.create.basic.description.placeholder")}
+						maxLength={2048}
+					/>
+
+					<p class="text-hint">{t("pages.create.basic.description.hint")}</p>
+				</section>
 			</div>
 
 			<CustomMainButton
