@@ -120,7 +120,9 @@ const Editor: Component<EditorProps> = (props) => {
 		pellEditor.setAttribute("dir", "auto");
 
 		pellEditor.addEventListener("paste", onPaste);
-		pellEditor.addEventListener("blur", onBlur);
+		pellEditor.addEventListener("blur", onBlur, {
+			passive: true,
+		});
 
 		onCleanup(() => {
 			pellEditor.removeEventListener("paste", onPaste);

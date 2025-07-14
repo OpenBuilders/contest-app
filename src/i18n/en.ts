@@ -57,6 +57,18 @@ const dict = {
 					placeholder: "Contest Description",
 					hint: "You can provide an optional description for your contest.",
 				},
+				submissions: {
+					title: "Submissions",
+					hint: "All timestamps are interpreted as UTC.",
+					from: {
+						label: "Start Date",
+						placeholder: "Choose submission start date",
+					},
+					to: {
+						label: "End Date",
+						placeholder: "Choose submission end date",
+					},
+				},
 			},
 		},
 	},

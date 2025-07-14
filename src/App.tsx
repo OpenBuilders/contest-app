@@ -26,7 +26,7 @@ import {
 	onMount,
 	Show,
 } from "solid-js";
-import { Dynamic, Portal } from "solid-js/web";
+import { Dynamic } from "solid-js/web";
 import BottomBar, { bottomBarValidPaths } from "./components/BottomBar.tsx";
 import SettingsButton from "./components/SettingsButton.tsx";
 import {
@@ -251,13 +251,11 @@ const App = () => {
 										<BottomBar />
 									</Show>
 
-									<Portal mount={document.body}>
-										<For
-											each={Object.values(modals).filter((modal) => modal.open)}
-										>
-											{(modal) => <Dynamic component={modal.component} />}
-										</For>
-									</Portal>
+									<For
+										each={Object.values(modals).filter((modal) => modal.open)}
+									>
+										{(modal) => <Dynamic component={modal.component} />}
+									</For>
 
 									<SettingsButton
 										onClick={() => {

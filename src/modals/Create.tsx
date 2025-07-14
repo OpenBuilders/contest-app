@@ -7,8 +7,10 @@ import { setModals } from "../utils/modal";
 const ModalContestCreate: Component = () => {
 	return (
 		<Modal
+			containerClass="container-modal-create"
 			class="modal-create"
 			onClose={() => setModals("create", "open", false)}
+			portalParent={document.querySelector("#modals")!}
 		>
 			<SectionCreateForm />
 		</Modal>

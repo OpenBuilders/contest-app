@@ -8,6 +8,7 @@ import CropperSelection from "@cropper/element-selection";
 import CropperShade from "@cropper/element-shade";
 
 import { useNavigate } from "@solidjs/router";
+import dayjs from "dayjs";
 import { TbPhotoPlus } from "solid-icons/tb";
 import {
 	type Accessor,
@@ -24,6 +25,7 @@ import { createStore, type SetStoreFunction } from "solid-js/store";
 import { Portal } from "solid-js/web";
 import BackButton from "../components/BackButton";
 import CustomMainButton from "../components/CustomMainButton";
+import Datepicker from "../components/Datepicker";
 import Editor from "../components/Editor";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import MainButton from "../components/MainButton";
@@ -59,8 +61,8 @@ type CreateFormStore = {
 	description: string;
 	image?: HTMLCanvasElement;
 	date: {
-		start?: number;
-		end?: number;
+		start: number;
+		end: number;
 	};
 	fee: number;
 	public: boolean;
@@ -132,6 +134,16 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 			}
 		}
 
+		if (!(form.date.start || form.date.end)) return true;
+
+		if (form.date.start < Math.trunc(dayjs().unix() / 86400) * 86400) {
+			return true;
+		}
+
+		if (form.date.end <= form.date.start) {
+			return true;
+		}
+
 		return form.title.trim().length < 3 || form.title.trim().length > 64;
 	});
 
@@ -167,6 +179,7 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 			setForm("image", await cropperCanvas.$toCanvas());
 			setImagePicker("active", false);
 			setProcessing(false);
+			invokeHapticFeedbackImpact("medium");
 		};
 
 		return (
@@ -186,7 +199,7 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 							movable
 							resizable
 						>
-							<cropper-grid role="grid" covered></cropper-grid>
+							<cropper-grid covered></cropper-grid>
 							<cropper-crosshair centered></cropper-crosshair>
 							<cropper-handle
 								action="move"
@@ -250,6 +263,44 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 
 						<p class="text-hint">{t("pages.create.basic.description.hint")}</p>
 					</section>
+
+					<footer>
+						<span class="text-secondary">
+							{t("pages.create.basic.submissions.title")}
+						</span>
+
+						<div>
+							<div>
+								<Datepicker
+									label={t("pages.create.basic.submissions.from.label")}
+									pickerLabel={t(
+										"pages.create.basic.submissions.from.placeholder",
+									)}
+									value={form.date.start}
+									setValue={(value) => {
+										setForm("date", "start", value);
+									}}
+									minDate={dayjs().format("YYYY-MM-D")}
+								/>
+							</div>
+
+							<div>
+								<Datepicker
+									label={t("pages.create.basic.submissions.to.label")}
+									pickerLabel={t(
+										"pages.create.basic.submissions.to.placeholder",
+									)}
+									value={form.date.end}
+									setValue={(value) => {
+										setForm("date", "end", value);
+									}}
+									minDate={dayjs(Date.now() + 86400_000).format("YYYY-MM-D")}
+								/>
+							</div>
+						</div>
+
+						<p class="text-hint">{t("pages.create.basic.submissions.hint")}</p>
+					</footer>
 				</div>
 
 				<CustomMainButton
@@ -356,7 +407,10 @@ export const SectionCreateForm = () => {
 	const [form, setForm] = createStore<CreateFormStore>({
 		title: "",
 		description: "",
-		date: {},
+		date: {
+			start: Math.trunc(Date.now() / 86400) * 86400,
+			end: Math.trunc((Date.now() + 7 * 86400 * 1000) / 86400) * 86400,
+		},
 		fee: 0,
 		public: false,
 		anonymous: false,
