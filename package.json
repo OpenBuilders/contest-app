@@ -16,12 +16,12 @@
 		"@types/pell": "^1.0.4",
 		"animate.css": "^4.1.1",
 		"cropperjs": "^2.0.0",
+		"dayjs": "^1.11.13",
 		"dompurify": "^3.2.6",
 		"gsap": "^3.13.0",
 		"pako": "^2.1.0",
 		"pell": "^1.0.6",
 		"snarkdown": "^2.0.0",
-		"solid-bottomsheet": "^1.1.0",
 		"solid-icons": "^1.1.0",
 		"solid-js": "^1.9.7",
 		"uuid": "^11.1.0"
