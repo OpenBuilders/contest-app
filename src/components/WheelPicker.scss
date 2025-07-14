@@ -1,0 +1,50 @@
+.container-wheel-picker {
+   height: 100%;
+   position: relative;
+   overflow: hidden;
+
+   &.mask {
+      &::before {
+         content: "";
+         height: var(--item-height);
+         background-color: var(--text-color);
+         opacity: 0.125;
+         position: absolute;
+         top: calc(50% - var(--item-height) / 2);
+         left: 0;
+         right: 0;
+         z-index: -1;
+         pointer-events: none;
+      }
+   }
+
+   > div {
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      overscroll-behavior: auto;
+      z-index: 0;
+      perspective: 1000px;
+
+      &::-webkit-scrollbar {
+         display: none;
+      }
+
+      > div {
+         display: flex;
+         height: var(--item-height);
+         align-items: center;
+         justify-content: center;
+         font-size: 1rem;
+         transition:
+            transform 0.2s ease,
+            opacity 0.2s ease;
+         transform-origin: center;
+         scroll-snap-align: start;
+         cursor: pointer;
+      }
+   }
+}
