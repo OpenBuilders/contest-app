@@ -68,6 +68,37 @@ const Editor: Component<EditorProps> = (props) => {
 		(document.activeElement as HTMLElement)?.blur();
 	};
 
+	const handleSelection = () => {
+		const selection = window.getSelection();
+		const actionbar = document.querySelector(".pell-actionbar") as HTMLElement;
+
+		if (
+			selection &&
+			!selection.isCollapsed &&
+			editor!.contains(selection.anchorNode)
+		) {
+			const selection = window.getSelection();
+
+			if (selection && selection.rangeCount > 0) {
+				const range = selection.getRangeAt(0);
+				const editorRect = editor!.getBoundingClientRect();
+				const rect = range.getBoundingClientRect();
+
+				actionbar.style.display = "flex";
+				actionbar.style.left = `${Math.min(rect.left - editorRect.left, editorRect.right - actionbar.offsetWidth - 28)}px`;
+				actionbar.style.top = `${rect.top - editorRect.top - 28}px`;
+			}
+		} else {
+			actionbar.style.display = "none";
+			actionbar.style.left = `0px`;
+			actionbar.style.top = `0px`;
+		}
+	};
+
+	const handleSelectionDelayed = () => {
+		setTimeout(handleSelection, 50);
+	};
+
 	onMount(() => {
 		if (!editor) return;
 
@@ -124,9 +155,19 @@ const Editor: Component<EditorProps> = (props) => {
 			passive: true,
 		});
 
+		document.addEventListener("mouseup", handleSelectionDelayed, {
+			passive: true,
+		});
+		document.addEventListener("touchend", handleSelectionDelayed, {
+			passive: true,
+		});
+
 		onCleanup(() => {
 			pellEditor.removeEventListener("paste", onPaste);
 			pellEditor.removeEventListener("blur", onBlur);
+
+			document.removeEventListener("mouseup", handleSelectionDelayed);
+			document.removeEventListener("touchend", handleSelectionDelayed);
 		});
 	});
 
