@@ -12,7 +12,6 @@ import {
 	secondaryButton,
 	settingsButton,
 	themeParams,
-	themeParamsBackgroundColor,
 	viewport,
 } from "@telegram-apps/sdk-solid";
 import {
@@ -145,9 +144,11 @@ const App = () => {
 			const handleTheme = (isDark: boolean) => {
 				document.body.setAttribute("data-theme", isDark ? "dark" : "light");
 
-				setTimeout(() => {
-					setThemeColor(themeParamsBackgroundColor()!);
-				});
+				setThemeColor(
+					getComputedStyle(document.body)
+						.getPropertyValue("--bg-color")
+						.trim() as any,
+				);
 			};
 
 			handleTheme(miniApp.isDark());
