@@ -45,7 +45,7 @@ const BottomBar: Component = () => {
 
 			<A href="/profile" class="profile text-secondary">
 				<Show
-					when={lp.tgWebAppData?.user?.photo_url}
+					when={lp!.tgWebAppData?.user?.photo_url}
 					fallback={
 						<Show
 							when={location.pathname === "/profile"}
@@ -55,7 +55,7 @@ const BottomBar: Component = () => {
 						</Show>
 					}
 				>
-					<ImageLoader src={lp.tgWebAppData?.user?.photo_url!} />
+					<ImageLoader src={lp!.tgWebAppData?.user?.photo_url!} />
 				</Show>
 
 				<span>{t("general.bottombar.profile")}</span>

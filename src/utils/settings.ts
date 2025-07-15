@@ -52,7 +52,7 @@ export const initializeSettings = () => {
 		settingsStorage = "LocalStorage";
 
 		const localSettings = localStorage.getItem(
-			`settings_${lp.tgWebAppData?.user?.id}`,
+			`settings_${lp?.tgWebAppData?.user?.id}`,
 		);
 
 		if (localSettings) {
@@ -79,7 +79,7 @@ export const setSettings: SetStoreFunction<Settings> = (...args: any) => {
 	if (settingsStorage === "DeviceStorage") {
 	} else if (settingsStorage === "LocalStorage") {
 		localStorage.setItem(
-			`settings_${lp.tgWebAppData?.user?.id}`,
+			`settings_${lp?.tgWebAppData?.user?.id}`,
 			JSON.stringify(settings),
 		);
 	}

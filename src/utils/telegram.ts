@@ -6,7 +6,15 @@ import {
 } from "@telegram-apps/sdk-solid";
 import { settings } from "./settings";
 
-export const lp = retrieveLaunchParams();
+const retrieveLaunchParamsSafe = () => {
+	try {
+		return retrieveLaunchParams();
+	} catch (_) {
+		return undefined;
+	}
+};
+
+export const lp = retrieveLaunchParamsSafe();
 
 export const setHeaderColor = (color: `#${string}`) => {
 	postEvent("web_app_set_header_color", {
@@ -59,7 +67,7 @@ export const invokeHapticFeedbackSelectionChanged = () => {
 };
 
 export const isVersionAtLeast = (version: string) => {
-	const v1 = (lp.tgWebAppVersion ?? "0").replace(/^\s+|\s+$/g, "").split(".");
+	const v1 = (lp?.tgWebAppVersion ?? "0").replace(/^\s+|\s+$/g, "").split(".");
 	const v2 = version.replace(/^\s+|\s+$/g, "").split(".");
 	const a = Math.max(v1.length, v2.length);
 	let p1: number | undefined;

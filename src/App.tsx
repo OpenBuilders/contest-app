@@ -190,7 +190,9 @@ const App = () => {
 				locked: true,
 			});
 
-			if (["ios", "android"].includes(lp.tgWebAppPlatform.toLowerCase())) {
+			if (
+				["ios", "android"].includes(lp?.tgWebAppPlatform.toLowerCase() ?? "")
+			) {
 				postEvent("web_app_request_fullscreen");
 			}
 		}
