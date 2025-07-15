@@ -87,7 +87,9 @@ const Datepicker: Component<DatepickerProps> = (props) => {
 	const pickerDays = createMemo(() => {
 		return Array.from(
 			new Array(
-				dayjs(`${datepicker.year}-${datepicker.month}-1`).daysInMonth(),
+				dayjs(
+					`${datepicker.year}-${Number.parseInt(datepicker.month) + 1}-1`,
+				).daysInMonth(),
 			),
 		)
 
