@@ -31,7 +31,7 @@ export default defineConfig((config) => {
 						"ol",
 						"svg",
 					],
-					greedy: [/container-/, /modal-/, /pell/],
+					greedy: [/container-/, /modal-/, /pell/, /tippy/],
 				},
 				defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
 			}) as any,

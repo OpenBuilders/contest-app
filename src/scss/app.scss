@@ -3,6 +3,7 @@
 
 @include meta.load-css("animate.css");
 @include meta.load-css("pell/dist/pell.min.css");
+@include meta.load-css("tippy.js/dist/tippy.css");
 
 @include meta.load-css("variables");
 @include meta.load-css("fonts");
