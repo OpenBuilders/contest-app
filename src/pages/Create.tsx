@@ -118,6 +118,8 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 	const [, setStep] = props.stepSignal;
 	const [form, setForm] = props.formStore;
 
+	let filePickerImage: HTMLInputElement | undefined;
+
 	const [imagePicker, setImagePicker] = createStore({
 		active: false,
 		src: "",
@@ -152,11 +154,9 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 	};
 
 	const onClickImage = () => {
-		const filePicker = document.createElement("input");
-		filePicker.type = "file";
-		filePicker.accept = "image/*";
+		if (!filePickerImage) return;
 
-		filePicker.onchange = (event) => {
+		filePickerImage.onchange = (event) => {
 			const file = (event.target as HTMLInputElement).files?.[0];
 
 			if (file?.type.startsWith("image/")) {
@@ -167,7 +167,7 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 			}
 		};
 
-		filePicker.click();
+		filePickerImage.click();
 	};
 
 	const ImagePicker = () => {
@@ -192,9 +192,9 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 							scalable
 						></cropper-image>
 						<cropper-shade></cropper-shade>
-						<cropper-handle action="select" plain></cropper-handle>
+						<cropper-handle action="move" plain></cropper-handle>
 						<cropper-selection
-							initial-coverage="0.5"
+							initial-coverage="1"
 							aspect-ratio="1"
 							movable
 							resizable
@@ -309,6 +309,13 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 					disabled={buttonDisabled()}
 				/>
 			</div>
+
+			<input
+				ref={filePickerImage}
+				type="file"
+				accept="image/*"
+				style={{ display: "none" }}
+			/>
 
 			<ImagePicker />
 		</>
