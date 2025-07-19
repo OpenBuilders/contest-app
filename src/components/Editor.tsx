@@ -226,6 +226,10 @@ const Editor: Component<EditorProps> = (props) => {
 			document.removeEventListener("touchend", handleSelectionDelayed);
 
 			actionbar?.destroy();
+			actionbar = undefined;
+
+			actionbarContainer.remove();
+
 			observer.disconnect();
 		});
 	});

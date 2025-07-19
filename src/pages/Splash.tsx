@@ -33,6 +33,7 @@ const PageSplash: Component = () => {
 			setStore({
 				token: result.token,
 				user: result.user,
+				categories: result.categories,
 				version: result.version,
 			});
 

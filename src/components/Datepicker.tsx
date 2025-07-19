@@ -5,9 +5,11 @@ import {
 	createEffect,
 	createMemo,
 	createSignal,
+	on,
 	Show,
 } from "solid-js";
 import { createStore } from "solid-js/store";
+import { useTranslation } from "../contexts/TranslationContext";
 import { invokeHapticFeedbackImpact } from "../utils/telegram";
 import Modal from "./Modal";
 import WheelPicker from "./WheelPicker";
@@ -39,6 +41,8 @@ const { months } = {
 };
 
 const Datepicker: Component<DatepickerProps> = (props) => {
+	const { t } = useTranslation();
+
 	const [modal, setModal] = createSignal(false);
 
 	const date = dayjs(props.value);
@@ -116,13 +120,31 @@ const Datepicker: Component<DatepickerProps> = (props) => {
 			});
 	});
 
-	createEffect(() => {
+	const updateValue = () => {
 		props.setValue(
 			dayjs(
 				`${datepicker.year}-${Number.parseInt(datepicker.month) + 1}-${datepicker.day}`,
 			).unix() * 1000,
 		);
-	});
+	};
+
+	createEffect(
+		on(() => datepicker.day, updateValue, {
+			defer: true,
+		}),
+	);
+
+	createEffect(
+		on(() => datepicker.month, updateValue, {
+			defer: true,
+		}),
+	);
+
+	createEffect(
+		on(() => datepicker.year, updateValue, {
+			defer: true,
+		}),
+	);
 
 	const onClick = () => {
 		setModal(true);
@@ -136,7 +158,9 @@ const Datepicker: Component<DatepickerProps> = (props) => {
 					<span>{props.label}</span>
 				</Show>
 
-				<div class="text-secondary">{dateFormatted()}</div>
+				<div class="text-secondary">
+					{props.value ? dateFormatted() : t("components.datepicker.notSet")}
+				</div>
 			</div>
 
 			<Show when={modal()}>

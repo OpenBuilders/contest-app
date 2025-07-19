@@ -1,4 +1,6 @@
 html[prefer-reduced-motion="true"] {
+   --motion-multiplier: 0;
+
    .animate__animated {
       animation: none;
       animation-duration: 0;

@@ -57,16 +57,45 @@ const dict = {
 					placeholder: "Contest Description",
 					hint: "You can provide an optional description for your contest.",
 				},
-				submissions: {
-					title: "Submissions",
-					hint: "All timestamps are interpreted as UTC.",
-					from: {
-						label: "Start Date",
-						placeholder: "Choose submission start date",
+			},
+			options: {
+				contest: {
+					label: "Contest",
+					duration: {
+						label: "Duration",
+						options: {
+							day: "1 Day",
+							week: "1 Week",
+							month: "1 Month",
+							custom: "Set Custom Time",
+						},
+						custom: {
+							label: "Contest ends in...",
+							singular: "{day} day",
+							plural: "{day} days",
+						},
 					},
-					to: {
-						label: "End Date",
-						placeholder: "Choose submission end date",
+					prize: {
+						label: "Prize Pool",
+					},
+				},
+				participants: {
+					label: "Participants",
+					anonymous: {
+						label: "Anonymous",
+					},
+					fee: {
+						label: "Entry Fee",
+					},
+				},
+				visibility: {
+					label: "Visibility",
+					public: {
+						label: "Public",
+					},
+					category: {
+						label: "Category",
+						default: "Not Set",
 					},
 				},
 			},
@@ -76,8 +105,19 @@ const dict = {
 		editor: {
 			url: "Please enter the link URL",
 		},
+		datepicker: {
+			notSet: "Not Set",
+		},
 	},
-	modals: {},
+	modals: {
+		create: {
+			public: {
+				title: "Public or Private?",
+				description:
+					"Decide whether your contest is Public—visible in our discovery listings and open to a wider audience—or Private, hidden from public view but still accessible via a unique invite link.",
+			},
+		},
+	},
 };
 
 export { dict };

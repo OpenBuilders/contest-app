@@ -60,11 +60,13 @@ const App = () => {
 
 	dict();
 
-	const t: TranslationContextType["t"] = i18n.translator(dict);
+	const t: TranslationContextType["t"] = i18n.translator(dict) as any;
 	const td: TranslationContextType["td"] = (path, data) => {
 		let text = t(path);
-		for (const [key, value] of Object.entries(data)) {
-			text = text.replace(`%${key}%`, value);
+		if (data) {
+			for (const [key, value] of Object.entries(data)) {
+				text = text.replace(`{${key}}`, value);
+			}
 		}
 		return text;
 	};

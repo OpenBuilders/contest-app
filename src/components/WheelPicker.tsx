@@ -11,7 +11,7 @@ import {
 	onMount,
 } from "solid-js";
 
-type WheelPickerItem = {
+export type WheelPickerItem = {
 	value: string;
 	label: string;
 };

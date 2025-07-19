@@ -8,14 +8,16 @@ import CropperSelection from "@cropper/element-selection";
 import CropperShade from "@cropper/element-shade";
 
 import { useNavigate } from "@solidjs/router";
-import dayjs from "dayjs";
 import { TbPhotoPlus } from "solid-icons/tb";
 import {
 	type Accessor,
+	batch,
 	type Component,
+	createEffect,
 	createMemo,
 	createSignal,
 	Match,
+	on,
 	onMount,
 	type Setter,
 	Show,
@@ -25,10 +27,17 @@ import { createStore, type SetStoreFunction } from "solid-js/store";
 import { Portal } from "solid-js/web";
 import BackButton from "../components/BackButton";
 import CustomMainButton from "../components/CustomMainButton";
-import Datepicker from "../components/Datepicker";
 import Editor from "../components/Editor";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import MainButton from "../components/MainButton";
+import Modal from "../components/Modal";
+import {
+	SectionList,
+	SectionListPicker,
+	SectionListSelect,
+	SectionListSwitch,
+} from "../components/Section";
+import WheelPicker from "../components/WheelPicker";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { hideKeyboardOnEnter } from "../utils/input";
@@ -60,16 +69,17 @@ type CreateFormStore = {
 	title: string;
 	description: string;
 	image?: HTMLCanvasElement;
+	prize: string;
 	date: {
-		start: number;
 		end: number;
 	};
+	category: string;
 	fee: number;
 	public: boolean;
 	anonymous: boolean;
 };
 
-type CreateFormStep = "intro" | "basic" | "fee" | "public" | "anonymous";
+type CreateFormStep = "intro" | "basic" | "options";
 
 type CreateFormSectionProps = {
 	stepSignal: [Accessor<CreateFormStep>, Setter<CreateFormStep>];
@@ -136,21 +146,11 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 			}
 		}
 
-		if (!(form.date.start || form.date.end)) return true;
-
-		if (form.date.start < Math.trunc(dayjs().unix() / 86400) * 86400) {
-			return true;
-		}
-
-		if (form.date.end <= form.date.start) {
-			return true;
-		}
-
 		return form.title.trim().length < 3 || form.title.trim().length > 64;
 	});
 
 	const onClickButton = () => {
-		setStep("public");
+		setStep("options");
 	};
 
 	const onClickImage = () => {
@@ -244,6 +244,7 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 
 						<input
 							class="input"
+							type="text"
 							placeholder={t("pages.create.basic.name.placeholder")}
 							value={form.title}
 							onInput={(e) => setForm("title", e.currentTarget.value)}
@@ -263,44 +264,6 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 
 						<p class="text-hint">{t("pages.create.basic.description.hint")}</p>
 					</section>
-
-					<footer>
-						<span class="text-secondary">
-							{t("pages.create.basic.submissions.title")}
-						</span>
-
-						<div>
-							<div>
-								<Datepicker
-									label={t("pages.create.basic.submissions.from.label")}
-									pickerLabel={t(
-										"pages.create.basic.submissions.from.placeholder",
-									)}
-									value={form.date.start}
-									setValue={(value) => {
-										setForm("date", "start", value);
-									}}
-									minDate={dayjs().format("YYYY-MM-D")}
-								/>
-							</div>
-
-							<div>
-								<Datepicker
-									label={t("pages.create.basic.submissions.to.label")}
-									pickerLabel={t(
-										"pages.create.basic.submissions.to.placeholder",
-									)}
-									value={form.date.end}
-									setValue={(value) => {
-										setForm("date", "end", value);
-									}}
-									minDate={dayjs(Date.now() + 86400_000).format("YYYY-MM-D")}
-								/>
-							</div>
-						</div>
-
-						<p class="text-hint">{t("pages.create.basic.submissions.hint")}</p>
-					</footer>
 				</div>
 
 				<CustomMainButton
@@ -322,83 +285,213 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 	);
 };
 
-const SectionPublic: Component<CreateFormSectionProps> = (props) => {
-	const { t } = useTranslation();
+const SectionOptions: Component<CreateFormSectionProps> = (props) => {
+	const { t, td } = useTranslation();
 
 	const [, setStep] = props.stepSignal;
-	// const [form, setForm] = props.formStore;
+	const [form, setForm] = props.formStore;
 
-	const buttonDisabled = createMemo(() => false);
+	const buttonDisabled = createMemo(() => {
+		return false;
+	});
 
 	const onClickButton = () => {
-		setStep("anonymous");
+		setStep("intro");
 	};
 
 	onMount(async () => {
 		invokeHapticFeedbackImpact("soft");
 	});
 
-	return (
-		<div id="container-create-section-public">
-			<div>Section Public</div>
+	const SubsectionContest = () => {
+		const [duration, setDuration] = createSignal("7");
+		const [modal, setModal] = createSignal(false);
 
-			<CustomMainButton
-				onClick={onClickButton}
-				text={t("general.continue")}
-				disabled={buttonDisabled()}
+		createEffect(
+			on(duration, (current, prev) => {
+				if (current === "0") {
+					batch(() => {
+						setDuration(prev ?? "7");
+						setModal(true);
+					});
+					return;
+				}
+
+				setForm(
+					"date",
+					"end",
+					Math.trunc(Date.now() / 86400) * 86400 +
+						Number.parseInt(duration()) * 86400_000,
+				);
+			}),
+		);
+
+		return (
+			<>
+				<SectionList
+					items={[
+						{
+							label: t("pages.create.options.contest.duration.label"),
+							placeholder: () => (
+								<SectionListSelect
+									value={duration()}
+									setValue={setDuration}
+									items={[
+										{
+											value: "1",
+											label: t(
+												"pages.create.options.contest.duration.options.day",
+											),
+										},
+										{
+											value: "7",
+											label: t(
+												"pages.create.options.contest.duration.options.week",
+											),
+										},
+										{
+											value: "30",
+											label: t(
+												"pages.create.options.contest.duration.options.month",
+											),
+										},
+										{
+											value: "0",
+											label: t(
+												"pages.create.options.contest.duration.options.custom",
+											),
+										},
+										...Array.from(new Array(60))
+											.map((_, i) => ({
+												value: (i + 1).toString(),
+												label: td(
+													"pages.create.options.contest.duration.custom.plural",
+													{
+														day: (i + 1).toString(),
+													},
+												),
+												disabled: true,
+												hidden: true,
+											}))
+											.filter((_, i) => ![1, 7, 30].includes(i + 1)),
+									]}
+								/>
+							),
+						},
+						{
+							label: t("pages.create.options.contest.prize.label"),
+							placeholder: () => <span>Prize</span>,
+						},
+					]}
+				/>
+
+				<Show when={modal()}>
+					<Modal
+						onClose={() => setModal(false)}
+						portalParent={document.querySelector("#portals")!}
+						class="modal-section-list-picker"
+					>
+						<p>{t("pages.create.options.contest.duration.custom.label")}</p>
+
+						<WheelPicker
+							items={Array.from(new Array(60)).map((_, index) => ({
+								value: (index + 1).toString(),
+								label:
+									index === 0
+										? td(
+												"pages.create.options.contest.duration.custom.singular",
+												{
+													day: (index + 1).toString(),
+												},
+											)
+										: td(
+												"pages.create.options.contest.duration.custom.plural",
+												{
+													day: (index + 1).toString(),
+												},
+											),
+							}))}
+							setValue={setDuration}
+							value={duration()}
+						/>
+					</Modal>
+				</Show>
+			</>
+		);
+	};
+
+	const SubsectionVisibility = () => {
+		return (
+			<SectionList
+				items={[
+					{
+						label: t("pages.create.options.visibility.public.label"),
+						placeholder: () => (
+							<SectionListSwitch
+								value={form.public}
+								setValue={(value) => setForm("public", value)}
+							/>
+						),
+					},
+					{
+						label: t("pages.create.options.visibility.category.label"),
+						placeholder: () => (
+							<SectionListPicker
+								value={form.category}
+								setValue={(value) => setForm("category", value)}
+								items={[
+									{
+										value: "none",
+										label: t(
+											"pages.create.options.visibility.category.default",
+										),
+									},
+									...Object.entries(store.categories!).map(
+										([value, label]) => ({
+											value,
+											label,
+										}),
+									),
+								]}
+							/>
+						),
+					},
+				]}
 			/>
-		</div>
-	);
-};
-
-const SectionAnonymous: Component<CreateFormSectionProps> = (props) => {
-	const { t } = useTranslation();
-
-	const [, setStep] = props.stepSignal;
-	// const [form, setForm] = props.formStore;
-
-	const buttonDisabled = createMemo(() => false);
-
-	const onClickButton = () => {
-		setStep("fee");
+		);
 	};
 
-	onMount(async () => {
-		invokeHapticFeedbackImpact("soft");
-	});
-
-	return (
-		<div id="container-create-section-anonymous">
-			<div>Section Anonymous</div>
-
-			<CustomMainButton
-				onClick={onClickButton}
-				text={t("general.continue")}
-				disabled={buttonDisabled()}
+	const SubsectionParticipants = () => {
+		return (
+			<SectionList
+				items={[
+					{
+						label: t("pages.create.options.participants.anonymous.label"),
+						placeholder: () => (
+							<SectionListSwitch
+								value={form.anonymous}
+								setValue={(value) => setForm("anonymous", value)}
+							/>
+						),
+					},
+					{
+						label: t("pages.create.options.participants.fee.label"),
+						placeholder: () => <span>Fee</span>,
+					},
+				]}
 			/>
-		</div>
-	);
-};
-
-const SectionFee: Component<CreateFormSectionProps> = (props) => {
-	const { t } = useTranslation();
-
-	const [, setStep] = props.stepSignal;
-	// const [form, setForm] = props.formStore;
-
-	const buttonDisabled = createMemo(() => false);
-
-	const onClickButton = () => {
-		setStep("basic");
+		);
 	};
 
-	onMount(async () => {
-		invokeHapticFeedbackImpact("soft");
-	});
-
 	return (
-		<div id="container-create-section-fee">
-			<div>Section Fee</div>
+		<div id="container-create-section-options">
+			<div>
+				<SubsectionContest />
+
+				<SubsectionVisibility />
+
+				<SubsectionParticipants />
+			</div>
 
 			<CustomMainButton
 				onClick={onClickButton}
@@ -414,17 +507,18 @@ export const SectionCreateForm = () => {
 	const [form, setForm] = createStore<CreateFormStore>({
 		title: "",
 		description: "",
+		prize: "",
 		date: {
-			start: Math.trunc(Date.now() / 86400) * 86400,
 			end: Math.trunc((Date.now() + 7 * 86400 * 1000) / 86400) * 86400,
 		},
+		category: "none",
 		fee: 0,
 		public: false,
 		anonymous: false,
 	});
 
 	return (
-		<div id="container-create">
+		<div id="container-create" data-step={step()}>
 			<Switch>
 				<Match when={step() === "intro"}>
 					<SectionIntro
@@ -440,22 +534,8 @@ export const SectionCreateForm = () => {
 					/>
 				</Match>
 
-				<Match when={step() === "fee"}>
-					<SectionFee
-						formStore={[form, setForm]}
-						stepSignal={[step, setStep]}
-					/>
-				</Match>
-
-				<Match when={step() === "public"}>
-					<SectionPublic
-						formStore={[form, setForm]}
-						stepSignal={[step, setStep]}
-					/>
-				</Match>
-
-				<Match when={step() === "anonymous"}>
-					<SectionAnonymous
+				<Match when={step() === "options"}>
+					<SectionOptions
 						formStore={[form, setForm]}
 						stepSignal={[step, setStep]}
 					/>
