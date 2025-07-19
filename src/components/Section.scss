@@ -1,0 +1,226 @@
+.container-section {
+   display: flex;
+   flex-direction: column;
+   flex-shrink: 0;
+   width: 100%;
+   gap: 0.75rem;
+
+   > span {
+      text-transform: uppercase;
+      opacity: 0.625;
+      font-size: 0.75rem;
+      padding-inline-start: 1rem;
+   }
+
+   > p {
+      opacity: 0.425;
+      font-size: 0.75rem;
+      padding-inline-start: 1rem;
+   }
+
+   > div {
+      display: flex;
+      flex-direction: column;
+      background-color: var(--section-bg-color);
+      border-radius: 0.75rem;
+      overflow: hidden;
+   }
+}
+
+.container-section-list {
+   display: flex;
+   flex-direction: column;
+
+   > div {
+      display: flex;
+      position: relative;
+      align-items: center;
+      height: 2.75rem;
+      padding-inline-start: 1rem;
+      padding-inline-end: 0;
+
+      > div.prepend {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         text-align: center;
+         width: 1rem;
+         overflow: hidden;
+      }
+
+      > span {
+         font-size: 1rem;
+         flex-grow: 1;
+      }
+
+      > div.placeholder {
+         font-size: 1rem;
+         color: rgba(var(--text-color-rgb), 0.5);
+         display: flex;
+         align-items: center;
+         height: 100%;
+
+         > svg {
+            color: rgba(var(--text-color-rgb), 0.25);
+         }
+      }
+
+      &:has(.prepend) {
+         > span {
+            padding-inline-start: 1rem;
+         }
+
+         &::after {
+            inset-inline-start: 3rem;
+         }
+      }
+
+      &::after {
+         content: "";
+         position: absolute;
+         top: 0;
+         bottom: 0;
+         inset-inline-end: 0;
+         inset-inline-start: 1rem;
+         border-bottom: 1px solid rgba(var(--text-color-rgb), 0.1875);
+         pointer-events: none;
+      }
+
+      &:last-child {
+         &::after {
+            border-bottom: none;
+         }
+      }
+
+      &.clickable {
+         cursor: pointer;
+
+         &:focus,
+         &:active {
+            background-color: rgba(var(--text-color-rgb), 0.125);
+         }
+      }
+   }
+}
+
+.container-section-list-switch {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   height: 100%;
+   padding: 0 1rem;
+   cursor: pointer;
+
+   > button {
+      position: relative;
+      height: 2rem;
+      width: 3.375rem;
+      background-color: #d4d4d6;
+      border-radius: 10rem;
+      cursor: pointer;
+      transition: background-color calc(0.25s * var(--motion-multiplier)) ease;
+
+      > div.thumb {
+         position: absolute;
+         width: 1.75rem;
+         height: 1.75rem;
+         background-color: #ffffff;
+         top: 0.125rem;
+         left: 0.125rem;
+         transition: transform calc(0.25s * var(--motion-multiplier)) ease;
+         will-change: transform;
+         border-radius: 50%;
+         box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.175);
+      }
+
+      &.active {
+         background-color: #66c466 !important;
+
+         > div.thumb {
+            transform: translateX(1.375rem);
+         }
+      }
+   }
+}
+
+.container-section-list-select {
+   display: flex;
+   align-items: center;
+   height: 100%;
+   position: relative;
+
+   > select {
+      width: auto;
+      text-align: end;
+      cursor: pointer;
+      height: 100%;
+      padding-inline-end: 2.75rem;
+      min-width: 8rem;
+      font-size: 1rem;
+   }
+
+   > svg {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      inset-inline-end: 1rem;
+      font-size: 1.375rem;
+      opacity: 0.75;
+      pointer-events: none;
+   }
+}
+
+.container-section-list-picker {
+   display: flex;
+   flex-direction: column;
+   height: 100%;
+   align-items: center;
+   justify-content: center;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   width: 100%;
+
+   > span {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      padding: 0 1rem;
+      cursor: pointer;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      gap: 0.75rem;
+
+      > svg {
+         font-size: 1rem;
+         opacity: 0.75;
+         pointer-events: none;
+      }
+   }
+}
+
+.modal-section-list-picker {
+   display: flex;
+   flex-direction: column;
+   padding: 0 1rem;
+   gap: 1rem;
+
+   > p {
+      flex-shrink: 0;
+      text-align: center;
+      justify-content: center;
+      padding-top: 1rem;
+      font-size: 1rem;
+      font-weight: 500;
+   }
+
+   .container-wheel-picker {
+      flex-grow: 1;
+
+      &::before {
+         border-radius: 0.5rem;
+      }
+   }
+}
