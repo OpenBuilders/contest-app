@@ -16,8 +16,7 @@
 #container-create-section-intro,
 .modal-create-public,
 .modal-create-category,
-.modal-create-anonymous,
-.modal-create-prize {
+.modal-create-anonymous {
    display: flex;
    flex-direction: column;
    flex-grow: 1;
@@ -200,7 +199,7 @@
       align-items: center;
       width: 100%;
       overflow: hidden;
-      gap: 1.5rem;
+      gap: 1.25rem;
    }
 }
 

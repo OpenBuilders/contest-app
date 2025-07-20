@@ -3,7 +3,6 @@ import { createStore } from "solid-js/store";
 import ModalContestCreate from "../modals/Create";
 import ModalContestCreateAnonymous from "../modals/CreateAnonymous";
 import ModalContestCreateCategory from "../modals/CreateCategory";
-import ModalContestCreatePrize from "../modals/CreatePrize";
 import ModalContestCreatePublic from "../modals/CreatePublic";
 import ModalSettings from "../modals/Settings";
 
@@ -16,7 +15,6 @@ type ModalsStore = {
 	settings: ModalState;
 	create: ModalState;
 	createPublic: ModalState;
-	createPrize: ModalState;
 	createAnonymous: ModalState;
 	createCategory: ModalState;
 };
@@ -33,10 +31,6 @@ export const [modals, setModals] = createStore<ModalsStore>({
 	createPublic: {
 		open: false,
 		component: ModalContestCreatePublic,
-	},
-	createPrize: {
-		open: false,
-		component: ModalContestCreatePrize,
 	},
 	createAnonymous: {
 		open: false,

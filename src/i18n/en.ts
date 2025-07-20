@@ -62,8 +62,6 @@ const dict = {
 			options: {
 				contest: {
 					label: "Contest",
-					description:
-						"Define the duration and rewards of your contest. Set how long it runs and specify the <clickable id='prize'>Prize Pool</clickable> participants will compete for.",
 					duration: {
 						label: "Duration",
 						options: {
@@ -133,11 +131,6 @@ const dict = {
 				title: "What Is Anonymous Mode?",
 				description:
 					"Participant identities are hidden from the public and replaced with fun aliases. Moderators and the contest owner can still see who joined.",
-			},
-			prize: {
-				title: "What Is the Prize Pool?",
-				description:
-					"The prize pool is shown for informational purposes only. We don’t handle or distribute it. It can be anything—cash, tokens, NFTs, or rewards of your choice.",
 			},
 		},
 	},

@@ -335,16 +335,6 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 			<>
 				<SectionList
 					title={t("pages.create.options.contest.label")}
-					description={() => (
-						<ClickableText
-							text={t("pages.create.options.contest.description")}
-							listeners={{
-								prize: () => {
-									setModals("createPrize", "open", true);
-								},
-							}}
-						/>
-					)}
 					items={[
 						{
 							label: t("pages.create.options.contest.duration.label"),
