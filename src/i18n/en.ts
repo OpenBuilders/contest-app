@@ -13,6 +13,7 @@ const dict = {
 			contests: "Contests",
 			profile: "Profile",
 		},
+		ok: "Ok",
 		continue: "Continue",
 	},
 	pages: {
@@ -61,6 +62,8 @@ const dict = {
 			options: {
 				contest: {
 					label: "Contest",
+					description:
+						"Define the duration and rewards of your contest. Set how long it runs and specify the <clickable id='prize'>Prize Pool</clickable> participants will compete for.",
 					duration: {
 						label: "Duration",
 						options: {
@@ -79,23 +82,28 @@ const dict = {
 						label: "Prize Pool",
 					},
 				},
-				participants: {
-					label: "Participants",
-					anonymous: {
-						label: "Anonymous",
-					},
-					fee: {
-						label: "Entry Fee",
-					},
-				},
 				visibility: {
 					label: "Visibility",
+					description:
+						"Control who can discover your contest. Make it <clickable id='public'>Public</clickable> so anyone can find and join, and assign a <clickable id='category'>Category</clickable> to help users explore similar contests.",
 					public: {
 						label: "Public",
 					},
 					category: {
 						label: "Category",
 						default: "Not Set",
+					},
+				},
+				participants: {
+					label: "Participants",
+					description:
+						"Set who can join and how. Enable <clickable id='anonymous'>Anonymous</clickable> mode to keep participant identities hidden. Choose whether joining is <b>Free</b> or requires an <b>Entry Fee</b>.",
+					anonymous: {
+						label: "Anonymous",
+					},
+					fee: {
+						label: "Entry Fee",
+						free: "Free",
 					},
 				},
 			},
@@ -114,7 +122,22 @@ const dict = {
 			public: {
 				title: "Public or Private?",
 				description:
-					"Decide whether your contest is Public—visible in our discovery listings and open to a wider audience—or Private, hidden from public view but still accessible via a unique invite link.",
+					"Public contests may appear in discovery and can be joined by anyone. Private contests are hidden and only accessible via a unique invite link.",
+			},
+			category: {
+				title: "What Are Categories?",
+				description:
+					"Categories help users discover contests by topic—like Photography, Writing, or Design. Choose one that best fits your contest so the right audience can find it.",
+			},
+			anonymous: {
+				title: "What Is Anonymous Mode?",
+				description:
+					"Participant identities are hidden from the public and replaced with fun aliases. Moderators and the contest owner can still see who joined.",
+			},
+			prize: {
+				title: "What Is the Prize Pool?",
+				description:
+					"The prize pool is shown for informational purposes only. We don’t handle or distribute it. It can be anything—cash, tokens, NFTs, or rewards of your choice.",
 			},
 		},
 	},

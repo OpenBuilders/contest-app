@@ -8,6 +8,7 @@ import CropperSelection from "@cropper/element-selection";
 import CropperShade from "@cropper/element-shade";
 
 import { useNavigate } from "@solidjs/router";
+import { CustomIcon } from "solid-icons";
 import { TbPhotoPlus } from "solid-icons/tb";
 import {
 	type Accessor,
@@ -26,6 +27,7 @@ import {
 import { createStore, type SetStoreFunction } from "solid-js/store";
 import { Portal } from "solid-js/web";
 import BackButton from "../components/BackButton";
+import ClickableText from "../components/ClickableText";
 import CustomMainButton from "../components/CustomMainButton";
 import Editor from "../components/Editor";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
@@ -33,6 +35,7 @@ import MainButton from "../components/MainButton";
 import Modal from "../components/Modal";
 import {
 	SectionList,
+	SectionListInput,
 	SectionListPicker,
 	SectionListSelect,
 	SectionListSwitch,
@@ -41,6 +44,8 @@ import WheelPicker from "../components/WheelPicker";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { hideKeyboardOnEnter } from "../utils/input";
+import { setModals } from "../utils/modal";
+import { clamp } from "../utils/number";
 import { store } from "../utils/store";
 import { invokeHapticFeedbackImpact } from "../utils/telegram";
 
@@ -329,6 +334,17 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 		return (
 			<>
 				<SectionList
+					title={t("pages.create.options.contest.label")}
+					description={() => (
+						<ClickableText
+							text={t("pages.create.options.contest.description")}
+							listeners={{
+								prize: () => {
+									setModals("createPrize", "open", true);
+								},
+							}}
+						/>
+					)}
 					items={[
 						{
 							label: t("pages.create.options.contest.duration.label"),
@@ -361,7 +377,7 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 												"pages.create.options.contest.duration.options.custom",
 											),
 										},
-										...Array.from(new Array(60))
+										...Array.from(new Array(90))
 											.map((_, i) => ({
 												value: (i + 1).toString(),
 												label: td(
@@ -380,7 +396,15 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 						},
 						{
 							label: t("pages.create.options.contest.prize.label"),
-							placeholder: () => <span>Prize</span>,
+							placeholder: () => (
+								<SectionListInput
+									type="text"
+									placeholder="$10,000 USDT"
+									value={form.prize}
+									setValue={(value) => setForm("prize", value)}
+									maxLength={32}
+								/>
+							),
 						},
 					]}
 				/>
@@ -394,7 +418,7 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 						<p>{t("pages.create.options.contest.duration.custom.label")}</p>
 
 						<WheelPicker
-							items={Array.from(new Array(60)).map((_, index) => ({
+							items={Array.from(new Array(90)).map((_, index) => ({
 								value: (index + 1).toString(),
 								label:
 									index === 0
@@ -423,6 +447,20 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 	const SubsectionVisibility = () => {
 		return (
 			<SectionList
+				title={t("pages.create.options.visibility.label")}
+				description={() => (
+					<ClickableText
+						text={t("pages.create.options.visibility.description")}
+						listeners={{
+							public: () => {
+								setModals("createPublic", "open", true);
+							},
+							category: () => {
+								setModals("createCategory", "open", true);
+							},
+						}}
+					/>
+				)}
 				items={[
 					{
 						label: t("pages.create.options.visibility.public.label"),
@@ -462,8 +500,28 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 	};
 
 	const SubsectionParticipants = () => {
+		const updateValue = (input: string) => {
+			const value = clamp(
+				Number.isNaN(Number.parseFloat(input)) ? 0 : Number.parseFloat(input),
+				0,
+				1000,
+			);
+			setForm("fee", value);
+		};
+
 		return (
 			<SectionList
+				title={t("pages.create.options.participants.label")}
+				description={() => (
+					<ClickableText
+						text={t("pages.create.options.participants.description")}
+						listeners={{
+							anonymous: () => {
+								setModals("createAnonymous", "open", true);
+							},
+						}}
+					/>
+				)}
 				items={[
 					{
 						label: t("pages.create.options.participants.anonymous.label"),
@@ -476,7 +534,26 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 					},
 					{
 						label: t("pages.create.options.participants.fee.label"),
-						placeholder: () => <span>Fee</span>,
+						placeholder: () => (
+							<SectionListInput
+								class="input-fee"
+								type="number"
+								inputmode="decimal"
+								placeholder={t("pages.create.options.participants.fee.free")}
+								value={form.fee > 0 ? form.fee.toString() : ""}
+								setValue={updateValue}
+								min={0}
+								max={1000}
+								append={() => (
+									<CustomIcon
+										src={{
+											a: { fill: "currentColor", viewBox: "0 0 56 56" },
+											c: "<path d='M9.8 1.2h36.7a9 9 0 0 1 4 .8 7.5 7.5 0 0 1 3.2 3c.7 1.4 1 2.7 1 4.2 0 1.4-.2 3-1 4.2l-23.2 40a2.9 2.9 0 0 1-5 0L2.7 13.5c-.5-.9-1.3-2.2-1.5-3.9a7.8 7.8 0 0 1 4.5-7.7c1.5-.7 3-.7 4-.7zM25 7H9.8c-1 0-1.4 0-1.7.2a2 2 0 0 0-1.2 2c0 .3.1.6.7 1.5l17.5 30.6ZM31 7v34.5l17.9-30.8c.2-.3.3-.9.3-1.4 0-.5-.1-.8-.3-1.2l-.5-.6-.2-.2c-.4-.2-.9-.3-1.6-.3z' />",
+										}}
+									/>
+								)}
+							/>
+						),
 					},
 				]}
 			/>

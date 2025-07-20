@@ -13,7 +13,11 @@
    overflow: hidden;
 }
 
-#container-create-section-intro {
+#container-create-section-intro,
+.modal-create-public,
+.modal-create-category,
+.modal-create-anonymous,
+.modal-create-prize {
    display: flex;
    flex-direction: column;
    flex-grow: 1;
@@ -196,7 +200,7 @@
       align-items: center;
       width: 100%;
       overflow: hidden;
-      gap: 1rem;
+      gap: 1.5rem;
    }
 }
 
@@ -213,5 +217,18 @@ cropper-shade {
    .modal-content:has(#container-create[data-step="basic"]),
    .modal-content:has(#container-create[data-step="options"]) {
       background-color: var(--secondary-color) !important;
+   }
+}
+
+.input-fee {
+   padding-inline-end: 1rem;
+   gap: 0.5rem !important;
+
+   > svg {
+      opacity: 0.75;
+   }
+
+   > input {
+      padding-inline-end: 0 !important;
    }
 }

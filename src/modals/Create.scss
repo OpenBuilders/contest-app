@@ -12,3 +12,10 @@
          2.25rem
    );
 }
+
+.modal-create-public,
+.modal-create-category,
+.modal-create-anonymous,
+.modal-create-prize {
+   height: 80vh;
+}

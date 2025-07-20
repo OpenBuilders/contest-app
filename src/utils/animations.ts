@@ -1,6 +1,8 @@
 import OutlineCustomize from "../assets/outlines/duck-customize-outline.svg?raw";
 import OutlineDuckEgg from "../assets/outlines/duck-egg-outline.svg?raw";
 import OutlineDuckEnter from "../assets/outlines/duck-enter-outline.svg?raw";
+import OutlineDuckEnterPrivate from "../assets/outlines/duck-enter-private-outline.svg?raw";
+import OutlineDuckHashtags from "../assets/outlines/duck-hashtags-outline.svg?raw";
 import OutlineDuckMoney from "../assets/outlines/duck-money-outline.svg?raw";
 import OutlineDuckTrophy from "../assets/outlines/duck-trophy-outline.svg?raw";
 
@@ -21,8 +23,16 @@ export const TGS = {
 		url: "/assets/tgs/duck-enter.tgs",
 		outline: OutlineDuckEnter,
 	},
+	duckEnterPrivate: {
+		url: "/assets/tgs/duck-enter-private.tgs",
+		outline: OutlineDuckEnterPrivate,
+	},
 	duckMoney: {
 		url: "/assets/tgs/duck-money.tgs",
 		outline: OutlineDuckMoney,
+	},
+	duckHashtags: {
+		url: "/assets/tgs/duck-hashtags.tgs",
+		outline: OutlineDuckHashtags,
 	},
 };
