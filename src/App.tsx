@@ -20,12 +20,14 @@ import {
 	createSignal,
 	ErrorBoundary,
 	For,
+	lazy,
 	onCleanup,
 	on as onEffect,
 	onMount,
 	Show,
 } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import { register as registerSwiper } from "swiper/element";
 import BottomBar, { bottomBarValidPaths } from "./components/BottomBar.tsx";
 import SettingsButton from "./components/SettingsButton.tsx";
 import {
@@ -51,7 +53,18 @@ import {
 	setThemeColor,
 } from "./utils/telegram.ts";
 
+declare module "solid-js" {
+	namespace JSX {
+		interface IntrinsicElements {
+			"swiper-container": any;
+			"swiper-slide": any;
+		}
+	}
+}
+
 const App = () => {
+	registerSwiper();
+
 	const [locale, setLocale] = createSignal<Locale>("en");
 
 	const [dict] = createResource(locale, fetchDictionary, {
@@ -214,8 +227,24 @@ const App = () => {
 			setLocale((settings.language ?? "en") as Locale);
 		}
 
+		let debugPageAttemps: number[] = [];
 		document.addEventListener("contextmenu", (event) => {
 			event.preventDefault();
+
+			if (import.meta.env.DEV) {
+				const now = Date.now();
+
+				debugPageAttemps.push(now);
+
+				debugPageAttemps = debugPageAttemps.filter(
+					(timestamp) => now - timestamp <= 5_000,
+				);
+
+				if (debugPageAttemps.length >= 5) {
+					debugPageAttemps = [];
+					location.href = "/debug";
+				}
+			}
 		});
 	});
 
@@ -271,6 +300,13 @@ const App = () => {
 							);
 						}}
 					>
+						<Show when={import.meta.env.DEV}>
+							<Route
+								path="/debug"
+								component={lazy(() => import("./pages/Debug"))}
+							/>
+						</Show>
+
 						<Route path="/" component={PageHome} />
 						<Route path="/splash/:slug?" component={PageSplash} />
 						<Route path="/profile" component={PageProfile} />

@@ -47,7 +47,11 @@ export default defineConfig((config) => {
 			rollupOptions: {
 				output: {
 					manualChunks: {
-						svgAssets: ["solid-icons", "src/utils/animations.ts"],
+						svgAssets: [
+							"solid-icons",
+							"src/utils/animations.ts",
+							"src/utils/symbols.ts",
+						],
 					},
 				},
 			},

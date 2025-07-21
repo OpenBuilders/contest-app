@@ -104,6 +104,9 @@ const dict = {
 						free: "Free",
 					},
 				},
+				themes: {
+					label: "Themes",
+				},
 			},
 		},
 	},

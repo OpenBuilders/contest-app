@@ -17,6 +17,7 @@ import {
 	createEffect,
 	createMemo,
 	createSignal,
+	For,
 	Match,
 	on,
 	onMount,
@@ -34,12 +35,14 @@ import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import MainButton from "../components/MainButton";
 import Modal from "../components/Modal";
 import {
+	Section,
 	SectionList,
 	SectionListInput,
 	SectionListPicker,
 	SectionListSelect,
 	SectionListSwitch,
 } from "../components/Section";
+import ThemePreview from "../components/ThemePreview";
 import WheelPicker from "../components/WheelPicker";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
@@ -47,7 +50,12 @@ import { hideKeyboardOnEnter } from "../utils/input";
 import { setModals } from "../utils/modal";
 import { clamp } from "../utils/number";
 import { store } from "../utils/store";
-import { invokeHapticFeedbackImpact } from "../utils/telegram";
+import { getSymbolSVGString } from "../utils/symbols";
+import {
+	invokeHapticFeedbackImpact,
+	invokeHapticFeedbackSelectionChanged,
+} from "../utils/telegram";
+import { ContestThemeBackdrops, ContestThemes } from "../utils/themes";
 
 declare module "solid-js" {
 	namespace JSX {
@@ -77,6 +85,10 @@ type CreateFormStore = {
 	prize: string;
 	date: {
 		end: number;
+	};
+	theme: {
+		backdrop?: number;
+		symbol?: string;
 	};
 	category: string;
 	fee: number;
@@ -550,6 +562,105 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 		);
 	};
 
+	const SubsectionThemes = () => {
+		const activeSlideIndex = createMemo(() => {
+			if (form.theme.backdrop === undefined && form.theme.symbol === undefined)
+				return 0;
+
+			return (
+				ContestThemes.findIndex(
+					(item) =>
+						item.backdrop === form.theme.backdrop &&
+						item.symbol === form.theme.symbol,
+				) ?? 0
+			);
+		});
+
+		const onClick = (e: MouseEvent) => {
+			const backdrop = (e.currentTarget as HTMLElement).getAttribute(
+				"data-backdrop",
+			);
+			const symbol = (e.currentTarget as HTMLElement).getAttribute(
+				"data-symbol",
+			);
+
+			if (!(backdrop && symbol)) return;
+			selectTheme(Number.parseInt(backdrop), symbol);
+		};
+
+		const selectTheme = (
+			backdrop: number | undefined,
+			symbol: string | undefined,
+		) => {
+			invokeHapticFeedbackSelectionChanged();
+			setForm("theme", {
+				backdrop,
+				symbol,
+			});
+		};
+
+		createEffect(
+			on(activeSlideIndex, () => {
+				(
+					document.querySelector(".slider-theme-preview") as any
+				)?.swiper.slideTo(activeSlideIndex());
+			}),
+		);
+
+		return (
+			<Section
+				class="container-section-themes"
+				title={t("pages.create.options.themes.label")}
+			>
+				<swiper-container
+					class="slider-theme-preview"
+					slides-per-view={3.5}
+					space-between={16}
+					slides-offset-before={16}
+					slides-offset-after={16}
+					initial-slide={activeSlideIndex()}
+				>
+					<swiper-slide>
+						<div
+							class="theme-preview"
+							style="background-color: var(--secondary-color);"
+							classList={{
+								active:
+									form.theme.backdrop === undefined &&
+									form.theme.symbol === undefined,
+							}}
+							onClick={() => selectTheme(undefined, undefined)}
+						></div>
+					</swiper-slide>
+
+					<For each={ContestThemes}>
+						{(theme) => (
+							<swiper-slide>
+								<ThemePreview
+									onClick={onClick}
+									classList={{
+										active:
+											form.theme.backdrop === theme.backdrop &&
+											form.theme.symbol === theme.symbol,
+									}}
+									backdrop={
+										ContestThemeBackdrops.find(
+											(item) => item.id === theme.backdrop,
+										)!
+									}
+									symbol={{
+										id: theme.symbol,
+										component: getSymbolSVGString(theme.symbol),
+									}}
+								/>
+							</swiper-slide>
+						)}
+					</For>
+				</swiper-container>
+			</Section>
+		);
+	};
+
 	return (
 		<div id="container-create-section-options">
 			<div>
@@ -558,6 +669,8 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 				<SubsectionVisibility />
 
 				<SubsectionParticipants />
+
+				<SubsectionThemes />
 			</div>
 
 			<CustomMainButton
@@ -578,6 +691,7 @@ export const SectionCreateForm = () => {
 		date: {
 			end: Math.trunc((Date.now() + 7 * 86400 * 1000) / 86400) * 86400,
 		},
+		theme: {},
 		category: "none",
 		fee: 0,
 		public: false,

@@ -199,7 +199,7 @@
       align-items: center;
       width: 100%;
       overflow: hidden;
-      gap: 1.25rem;
+      gap: 1.125rem;
    }
 }
 
@@ -229,5 +229,11 @@ cropper-shade {
 
    > input {
       padding-inline-end: 0 !important;
+   }
+}
+
+.container-section-themes {
+   > div {
+      padding: 1rem 0;
    }
 }
