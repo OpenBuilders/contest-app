@@ -1,5 +1,6 @@
 import "./Create.scss";
 import { type Component, onMount } from "solid-js";
+import CustomMainButton from "../components/CustomMainButton";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import Modal from "../components/Modal";
 import { useTranslation } from "../contexts/TranslationContext";
@@ -38,6 +39,8 @@ const ModalContestCreateAnonymous: Component = () => {
 
 				<p class="text-secondary">{t("modals.create.anonymous.description")}</p>
 			</div>
+
+			<CustomMainButton text={t("general.ok")} onClick={onClose} />
 		</Modal>
 	);
 };

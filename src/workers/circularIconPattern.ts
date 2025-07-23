@@ -54,8 +54,8 @@ const drawCircularIconPattern = (
 				ctx.globalAlpha = alpha;
 				ctx.drawImage(
 					symbol,
-					(x - size / 2) * dpi,
-					(y - size / 2) * dpi,
+					x - (size * dpi) / 2,
+					y - (size * dpi) / 2,
 					size * dpi,
 					size * dpi,
 				);

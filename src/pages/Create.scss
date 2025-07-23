@@ -67,7 +67,6 @@
       flex-direction: column;
       flex-grow: 1;
       align-items: center;
-      /* gap: 1rem; */
       width: 100%;
       overflow: hidden;
 
@@ -235,5 +234,11 @@ cropper-shade {
 .container-section-themes {
    > div {
       padding: 1rem 0;
+   }
+}
+
+.slider-theme-preview {
+   swiper-slide {
+      padding: 0 0.5rem;
    }
 }

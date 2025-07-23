@@ -1,5 +1,6 @@
 import "./Create.scss";
 import { type Component, onMount } from "solid-js";
+import CustomMainButton from "../components/CustomMainButton";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import Modal from "../components/Modal";
 import { useTranslation } from "../contexts/TranslationContext";
@@ -38,6 +39,8 @@ const ModalContestCreateCategory: Component = () => {
 
 				<p class="text-secondary">{t("modals.create.category.description")}</p>
 			</div>
+
+			<CustomMainButton text={t("general.ok")} onClick={onClose} />
 		</Modal>
 	);
 };

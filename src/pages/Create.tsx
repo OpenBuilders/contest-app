@@ -46,6 +46,7 @@ import ThemePreview from "../components/ThemePreview";
 import WheelPicker from "../components/WheelPicker";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
+import { isRTL } from "../utils/i18n";
 import { hideKeyboardOnEnter } from "../utils/input";
 import { setModals } from "../utils/modal";
 import { clamp } from "../utils/number";
@@ -614,11 +615,12 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 			>
 				<swiper-container
 					class="slider-theme-preview"
-					slides-per-view={3.5}
-					space-between={16}
-					slides-offset-before={16}
-					slides-offset-after={16}
+					slides-per-view={3.75}
+					slides-offset-before={8}
+					slides-offset-after={8}
 					initial-slide={activeSlideIndex()}
+					dir={isRTL() ? "rtl" : "ltr"}
+					free-mode="true"
 				>
 					<swiper-slide>
 						<div
