@@ -46,10 +46,13 @@ import ThemePreview from "../components/ThemePreview";
 import WheelPicker from "../components/WheelPicker";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
+import { requestAPI } from "../utils/api";
+import { canvasToBlob } from "../utils/general";
 import { isRTL } from "../utils/i18n";
 import { hideKeyboardOnEnter } from "../utils/input";
 import { setModals } from "../utils/modal";
 import { clamp } from "../utils/number";
+import { toggleSignal } from "../utils/signals";
 import { store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
@@ -95,9 +98,10 @@ type CreateFormStore = {
 	fee: number;
 	public: boolean;
 	anonymous: boolean;
+	slug?: string;
 };
 
-type CreateFormStep = "intro" | "basic" | "options";
+type CreateFormStep = "intro" | "basic" | "options" | "done";
 
 type CreateFormSectionProps = {
 	stepSignal: [Accessor<CreateFormStep>, Setter<CreateFormStep>];
@@ -159,12 +163,18 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 				body: { textContent },
 			} = new DOMParser().parseFromString(form.description, "text/html");
 
-			if ((textContent?.length ?? 0) > 2048) {
+			if (
+				(textContent?.length ?? 0) >
+				store.limits!.form.create.description.maxLength
+			) {
 				return true;
 			}
 		}
 
-		return form.title.trim().length < 3 || form.title.trim().length > 64;
+		return (
+			form.title.trim().length < store.limits!.form.create.title.minLength ||
+			form.title.trim().length > store.limits!.form.create.title.maxLength
+		);
 	});
 
 	const onClickButton = () => {
@@ -268,7 +278,7 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 							onInput={(e) => setForm("title", e.currentTarget.value)}
 							onBlur={(e) => setForm("title", e.currentTarget.value.trim())}
 							onKeyDown={hideKeyboardOnEnter}
-							maxLength={64}
+							maxLength={store.limits!.form.create.title.maxLength}
 						/>
 					</header>
 
@@ -277,7 +287,7 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 							value={form.description}
 							setValue={(data) => setForm("description", data)}
 							placeholder={t("pages.create.basic.description.placeholder")}
-							maxLength={2048}
+							maxLength={store.limits!.form.create.description.maxLength}
 						/>
 
 						<p class="text-hint">{t("pages.create.basic.description.hint")}</p>
@@ -308,13 +318,67 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 
 	const [, setStep] = props.stepSignal;
 	const [form, setForm] = props.formStore;
+	const [processing, setProcessing] = createSignal(false);
 
 	const buttonDisabled = createMemo(() => {
+		if (form.date.end < Math.trunc(Date.now() / 86400_000 + 1) * 86400_000) {
+			return true;
+		}
+
+		if (form.prize.length > store.limits!.form.create.prize.maxLength) {
+			return true;
+		}
+
+		if (form.public && form.category === "none") {
+			return true;
+		}
+
+		if (form.category !== "none" && !(form.category in store.categories!)) {
+			return true;
+		}
+
+		if (
+			form.fee < store.limits!.form.create.fee.min ||
+			form.fee > store.limits!.form.create.fee.max
+		) {
+			return true;
+		}
+
 		return false;
 	});
 
-	const onClickButton = () => {
-		setStep("intro");
+	const onClickButton = async () => {
+		if (processing()) return;
+		setProcessing(true);
+
+		const request = await requestAPI(
+			"/contest/create",
+			{
+				title: form.title,
+				description: form.description,
+				prize: form.prize,
+				date: JSON.stringify(form.date),
+				theme: JSON.stringify(form.theme),
+				category: form.category,
+				fee: form.fee.toString(),
+				public: form.public ? "true" : "false",
+				anonymous: form.anonymous ? "true" : "false",
+				image: form.image
+					? ((await canvasToBlob(form.image, "image/webp", 0.95)) ?? undefined)
+					: undefined,
+			},
+			"POST",
+		);
+
+		if (request) {
+			const { result } = request;
+
+			batch(() => {
+				setForm("slug", result.slug);
+				setStep("done");
+				toggleSignal("fetchMyContests");
+			});
+		}
 	};
 
 	onMount(async () => {
@@ -405,7 +469,7 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 									placeholder="$10,000 USDT"
 									value={form.prize}
 									setValue={(value) => setForm("prize", value)}
-									maxLength={32}
+									maxLength={store.limits!.form.create.prize.maxLength}
 								/>
 							),
 						},
@@ -505,12 +569,18 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 	const SubsectionParticipants = () => {
 		const updateValue = (input: string) => {
 			const value = clamp(
-				Number.isNaN(Number.parseFloat(input)) ? 0 : Number.parseFloat(input),
-				0,
-				1000,
+				Number.isNaN(Number.parseFloat(input))
+					? store.limits!.form.create.fee.min
+					: Number.parseFloat(input),
+				store.limits!.form.create.fee.min,
+				store.limits!.form.create.fee.max,
 			);
 			setForm("fee", value);
 		};
+
+		const displayValue = createMemo(() =>
+			form.fee > 0 ? form.fee.toString() : "",
+		);
 
 		return (
 			<SectionList
@@ -543,10 +613,10 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 								type="number"
 								inputmode="decimal"
 								placeholder={t("pages.create.options.participants.fee.free")}
-								value={form.fee > 0 ? form.fee.toString() : ""}
+								value={displayValue()}
 								setValue={updateValue}
-								min={0}
-								max={1000}
+								min={store.limits!.form.create.fee.min}
+								max={store.limits!.form.create.fee.max}
 								append={() => (
 									<CustomIcon
 										src={{
@@ -678,7 +748,49 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 			<CustomMainButton
 				onClick={onClickButton}
 				text={t("general.continue")}
-				disabled={buttonDisabled()}
+				disabled={buttonDisabled() || processing()}
+				loading={processing()}
+			/>
+		</div>
+	);
+};
+
+const SectionDone: Component<CreateFormSectionProps> = (props) => {
+	const navigate = useNavigate();
+	const { t } = useTranslation();
+
+	const [form] = props.formStore;
+
+	const onClickButton = () => {
+		setModals("create", "open", false);
+
+		navigate(`/contest/${form.slug}`, {
+			replace: true,
+		});
+	};
+
+	onMount(async () => {
+		invokeHapticFeedbackImpact("soft");
+	});
+
+	return (
+		<div id="container-create-section-done">
+			<div>
+				<LottiePlayerMotion
+					src={TGS.duckConfetti.url}
+					outline={TGS.duckConfetti.outline}
+					autoplay
+					loop
+				/>
+
+				<h1>{t("pages.create.done.title")}</h1>
+
+				<p class="text-secondary">{t("pages.create.done.description")}</p>
+			</div>
+
+			<CustomMainButton
+				onClick={onClickButton}
+				text={t("pages.create.done.buttons.view")}
 			/>
 		</div>
 	);
@@ -723,6 +835,13 @@ export const SectionCreateForm = () => {
 						stepSignal={[step, setStep]}
 					/>
 				</Match>
+
+				<Match when={step() === "done"}>
+					<SectionDone
+						formStore={[form, setForm]}
+						stepSignal={[step, setStep]}
+					/>
+				</Match>
 			</Switch>
 		</div>
 	);
@@ -732,7 +851,6 @@ const PageCreate: Component = () => {
 	const navigate = useNavigate();
 
 	if (!store.token) {
-		const navigate = useNavigate();
 		navigate("/splash/create", {
 			replace: true,
 		});

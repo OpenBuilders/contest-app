@@ -1,3 +1,4 @@
+import OutlineDuckConfetti from "../assets/outlines/duck-confetti-outline.svg?raw";
 import OutlineCustomize from "../assets/outlines/duck-customize-outline.svg?raw";
 import OutlineDuckEgg from "../assets/outlines/duck-egg-outline.svg?raw";
 import OutlineDuckEnter from "../assets/outlines/duck-enter-outline.svg?raw";
@@ -29,5 +30,9 @@ export const TGS = {
 	duckHashtags: {
 		url: "/assets/tgs/duck-hashtags.tgs",
 		outline: OutlineDuckHashtags,
+	},
+	duckConfetti: {
+		url: "/assets/tgs/duck-confetti.tgs",
+		outline: OutlineDuckConfetti,
 	},
 };

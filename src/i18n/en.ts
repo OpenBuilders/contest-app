@@ -108,6 +108,14 @@ const dict = {
 					label: "Themes",
 				},
 			},
+			done: {
+				title: "Done!",
+				description:
+					"You can now view your contest, invite moderators, or share it with others.",
+				buttons: {
+					view: "View Contest",
+				},
+			},
 		},
 	},
 	components: {

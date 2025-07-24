@@ -29,6 +29,7 @@ import {
 import { Dynamic } from "solid-js/web";
 import { register as registerSwiper } from "swiper/element";
 import BottomBar, { bottomBarValidPaths } from "./components/BottomBar.tsx";
+import PlausibleTracker from "./components/PlausibleTracker.tsx";
 import SettingsButton from "./components/SettingsButton.tsx";
 import {
 	type TranslationContextType,
@@ -36,6 +37,7 @@ import {
 } from "./contexts/TranslationContext.ts";
 import { dict as en_dict } from "./i18n/en.ts";
 import { fetchDictionary, type Locale, localeDirections } from "./locale";
+import PageContest from "./pages/Contest.tsx";
 import PageContests from "./pages/Contests.tsx";
 import PageCreate from "./pages/Create.tsx";
 import PageError from "./pages/Error";
@@ -296,6 +298,8 @@ const App = () => {
 											setModals("settings", "open", true);
 										}}
 									/>
+
+									<PlausibleTracker />
 								</>
 							);
 						}}
@@ -311,6 +315,7 @@ const App = () => {
 						<Route path="/splash/:slug?" component={PageSplash} />
 						<Route path="/profile" component={PageProfile} />
 						<Route path="/contests" component={PageContests} />
+						<Route path="/contest/:slug" component={PageContest} />
 						<Route path="/create" component={PageCreate} />
 					</Router>
 				</ErrorBoundary>

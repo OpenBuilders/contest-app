@@ -27,6 +27,7 @@ type Contest = {
 export type Store = {
 	token?: string;
 	categories?: { [key: string]: string };
+	limits?: { [key: string]: any };
 	contests: {
 		my?: Contest[];
 	};

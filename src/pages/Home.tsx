@@ -2,12 +2,13 @@ import { useNavigate } from "@solidjs/router";
 import { setStore, store } from "../utils/store";
 import "./Home.scss";
 
-import { type Component, onMount, Show } from "solid-js";
+import { type Component, createEffect, on, onMount, Show } from "solid-js";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
 import { setModals } from "../utils/modal";
+import { signals } from "../utils/signals";
 
 const PageHome: Component = () => {
 	const navigate = useNavigate();
@@ -76,6 +77,19 @@ const PageHome: Component = () => {
 			</div>
 		);
 	};
+
+	createEffect(
+		on(
+			() => signals.fetchMyContests,
+			async () => {
+				setStore("contests", "my", undefined);
+				await fetchContents();
+			},
+			{
+				defer: true,
+			},
+		),
+	);
 
 	return (
 		<div id="container-page-home" class="page">

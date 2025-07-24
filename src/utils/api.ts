@@ -3,7 +3,7 @@ import { store } from "./store";
 
 export const requestAPI = async (
 	path = "/",
-	params: { [key: string]: string } = {},
+	params: { [key: string]: string | Blob | undefined } = {},
 	method: "GET" | "POST" = "POST",
 ): Promise<any> => {
 	try {
@@ -11,7 +11,9 @@ export const requestAPI = async (
 
 		const FD = new FormData();
 		for (const [key, item] of Object.entries(params)) {
-			FD.append(key, item);
+			if (item) {
+				FD.append(key, item);
+			}
 		}
 
 		if (store.token) {

@@ -33,6 +33,7 @@ const PageSplash: Component = () => {
 			setStore({
 				token: result.token,
 				user: result.user,
+				limits: result.limits,
 				categories: result.categories,
 				version: result.version,
 			});
@@ -51,7 +52,13 @@ const PageSplash: Component = () => {
 		Promise.all(promises).then((result) => {
 			if (result.filter(Boolean).length === promises.length) {
 				if (params.slug) {
-					navigate(`/${params.slug}`, { replace: true });
+					if (params.slug.startsWith("contest-")) {
+						navigate(`/contest/${params.slug.replace("contest-", "")}`, {
+							replace: true,
+						});
+					} else {
+						navigate(`/${params.slug}`, { replace: true });
+					}
 				} else {
 					navigate("/", { replace: true });
 				}
