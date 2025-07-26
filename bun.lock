@@ -9,7 +9,7 @@
         "@telegram-apps/sdk-solid": "^3.0.30",
         "@types/pell": "^1.0.4",
         "animate.css": "^4.1.1",
-        "cropperjs": "^2.0.0",
+        "cropperjs": "^2.0.1",
         "dayjs": "^1.11.13",
         "dompurify": "^3.2.6",
         "gsap": "^3.13.0",
@@ -98,27 +98,27 @@
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.1.2", "", { "os": "win32", "cpu": "x64" }, "sha512-9zajnk59PMpjBkty3bK2IrjUsUHvqe9HWwyAWQBjGLE7MIBjbX2vwv1XPEhmO2RRuGoTkVx3WCanHrjAytICLA=="],
 
-    "@cropper/element": ["@cropper/element@2.0.0", "", { "dependencies": { "@cropper/utils": "^2.0.0" } }, "sha512-lsthn0nQq73GExUE7Mg/ss6Q3RXADGDv055hxoLFwvl/wGHgy6ZkYlfLZ/VmgBHC6jDK5IgPBFnqrPqlXWSGBA=="],
+    "@cropper/element": ["@cropper/element@2.0.1", "", { "dependencies": { "@cropper/utils": "^2.0.1" } }, "sha512-Jn1hR7XWzWQM/QfXRGMGzdkJ2gG/UcLdQPZQ7OKs0JiFfRzKpzu4u/nYrXHeH3MM2iOslLqh2kqYju6mjZLMJQ=="],
 
-    "@cropper/element-canvas": ["@cropper/element-canvas@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-GPtGJgSm92crJhhhwUsaMw3rz2KfJWWSz7kRAlufFEV/EHTP5+6r6/Z1BCGRna830i+Avqbm435XLOtA7PVJwA=="],
+    "@cropper/element-canvas": ["@cropper/element-canvas@2.0.1", "", { "dependencies": { "@cropper/element": "^2.0.1", "@cropper/utils": "^2.0.1" } }, "sha512-OKxq/O0HL9W2JegOsc2zh1NRpERZcLM5+M8aQ/eXdmMcfi1lzosPftag3Irp6pTsVpwV6B6ypIxKESzJ4ci9Fw=="],
 
-    "@cropper/element-crosshair": ["@cropper/element-crosshair@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-KfPfyrdeFvUC31Ws7ATtcalWWSaMtrC6bMoCipZhqbUOE7wZoL4ecDSL6BUOZxPa74awZUqfzirCDjHvheBfyw=="],
+    "@cropper/element-crosshair": ["@cropper/element-crosshair@2.0.1", "", { "dependencies": { "@cropper/element": "^2.0.1", "@cropper/utils": "^2.0.1" } }, "sha512-bS5msU9cTU/jf1/kDw+QJmEM9/rw8IgOdpolR85iMVUCR8sRcLa0wgom42MBHcpBYB6hvL5YfiOeXZ7lHIYMpw=="],
 
-    "@cropper/element-grid": ["@cropper/element-grid@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-i78SQ0IJTLFveKX6P7svkfMYVdgHrQ8ZmmEw8keFy9n1ZVbK+SK0UHK5FNMRNI/gtVhKJOGEnK/zeyjUdj4Iyw=="],
+    "@cropper/element-grid": ["@cropper/element-grid@2.0.1", "", { "dependencies": { "@cropper/element": "^2.0.1", "@cropper/utils": "^2.0.1" } }, "sha512-ayqCvYQJ+GVT31HhFpttzHabW1T/LsIwLJY5PLTMG0cEZLw/E8ihg8mxctjZbo852D7oEePbz6/2SeuCb1018Q=="],
 
-    "@cropper/element-handle": ["@cropper/element-handle@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-ZJvW+0MkK9E8xYymGdoruaQn2kwjSHFpNSWinjyq6csuVQiCPxlX5ovAEDldmZ9MWePPtWEi3vLKQOo2Yb0T8g=="],
+    "@cropper/element-handle": ["@cropper/element-handle@2.0.1", "", { "dependencies": { "@cropper/element": "^2.0.1", "@cropper/utils": "^2.0.1" } }, "sha512-fdifyyPIaR9S2eQ7qPHuM8fX8uToAfBsi8vQlR9EM+oJkDNil0uO4rWyArLWEtlr0/q7U0OvsufcuJ7ffqfmpg=="],
 
-    "@cropper/element-image": ["@cropper/element-image@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-9BxiTS/aHRmrjopaFQb9mQQXmx4ruhYHGkDZMVz24AXpMFjUY6OpqrWse/WjzD9tfhMFvEdu17b3VAekcAgpeg=="],
+    "@cropper/element-image": ["@cropper/element-image@2.0.1", "", { "dependencies": { "@cropper/element": "^2.0.1", "@cropper/element-canvas": "^2.0.1", "@cropper/utils": "^2.0.1" } }, "sha512-gPj5Sl2T8Cno198Cz3F3TDfcYoALW3yJ3fV6PHXmhMnX8sBkL7J441do7Vwkg0mEd2CogCtTLAf+p7ljdV0kgA=="],
 
-    "@cropper/element-selection": ["@cropper/element-selection@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/element-image": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-ensNnbIfJsJ8bhbJTH/RXtk2URFvTOO4TvfRk461n2FPEC588D7rwBmUJxQg74IiTi4y1JbCI+6j+4LyzYBLCQ=="],
+    "@cropper/element-selection": ["@cropper/element-selection@2.0.1", "", { "dependencies": { "@cropper/element": "^2.0.1", "@cropper/element-canvas": "^2.0.1", "@cropper/element-image": "^2.0.1", "@cropper/utils": "^2.0.1" } }, "sha512-atv+Aeq2N2eWawelIRPGh1kYFdNrpb0QkUPPheGxz1ImfxpLdcHO9gb9T5noQijizUW2G0pNvts4ZaITQ0I71Q=="],
 
-    "@cropper/element-shade": ["@cropper/element-shade@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/element-selection": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-jv/2bbNZnhU4W+T4G0c8ADocLIZvQFTXgCf2RFDNhI5UVxurzWBnDdb8Mx8LnVplnkTqO+xUmHZYve0CwgWo+Q=="],
+    "@cropper/element-shade": ["@cropper/element-shade@2.0.1", "", { "dependencies": { "@cropper/element": "^2.0.1", "@cropper/element-canvas": "^2.0.1", "@cropper/element-selection": "^2.0.1", "@cropper/utils": "^2.0.1" } }, "sha512-YIYgJ690NdFQ6wJLRFh/EySNVxGFKArncQ4FrsJ3yHU+ShgtOKz4FpjFLpqJRJB9swoVbD3WKTimGyzXrwjZrQ=="],
 
-    "@cropper/element-viewer": ["@cropper/element-viewer@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/element-image": "^2.0.0", "@cropper/element-selection": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-zY+3VRN5TvpM8twlphYtXw0tzJL2VgzeK7ufhL1BixVqOdRxwP13TprYIhqwGt9EW/SyJZUiaIu396T89kRX8A=="],
+    "@cropper/element-viewer": ["@cropper/element-viewer@2.0.1", "", { "dependencies": { "@cropper/element": "^2.0.1", "@cropper/element-canvas": "^2.0.1", "@cropper/element-image": "^2.0.1", "@cropper/element-selection": "^2.0.1", "@cropper/utils": "^2.0.1" } }, "sha512-HDj25l08pWi/AO6El/OqfQHBpBC4Lh5NEnQN1SOldsmxEwt27Ubv6ndDsF8LkTK7XPwjjZRpyQPyfig4w8L2JQ=="],
 
-    "@cropper/elements": ["@cropper/elements@2.0.0", "", { "dependencies": { "@cropper/element": "^2.0.0", "@cropper/element-canvas": "^2.0.0", "@cropper/element-crosshair": "^2.0.0", "@cropper/element-grid": "^2.0.0", "@cropper/element-handle": "^2.0.0", "@cropper/element-image": "^2.0.0", "@cropper/element-selection": "^2.0.0", "@cropper/element-shade": "^2.0.0", "@cropper/element-viewer": "^2.0.0" } }, "sha512-PQkPo1nUjxLFUQuHYu+6atfHxpX9B41Xribao6wpvmvmNIFML6LQdNqqWYb6LyM7ujsu71CZdBiMT5oetjJVoQ=="],
+    "@cropper/elements": ["@cropper/elements@2.0.1", "", { "dependencies": { "@cropper/element": "^2.0.1", "@cropper/element-canvas": "^2.0.1", "@cropper/element-crosshair": "^2.0.1", "@cropper/element-grid": "^2.0.1", "@cropper/element-handle": "^2.0.1", "@cropper/element-image": "^2.0.1", "@cropper/element-selection": "^2.0.1", "@cropper/element-shade": "^2.0.1", "@cropper/element-viewer": "^2.0.1" } }, "sha512-paFbBLXTKXNngn1yDi2ZIf+FO1pIEQXyBntmqOjuxqtG73KuEKv633wsJPFpj958bgcfSakgBbF80j+3nHbPug=="],
 
-    "@cropper/utils": ["@cropper/utils@2.0.0", "", {}, "sha512-cprLYr+7kK3faGgoOsTW9gIn5sefDr2KwOmgyjzIXk+8PLpW8FgFKEg5FoWfRD5zMAmkCBuX6rGKDK3VdUEGrg=="],
+    "@cropper/utils": ["@cropper/utils@2.0.1", "", {}, "sha512-A9RnAFmgNF5aZk5q2VZnFnHtXWu1kPyEN0LVsX8wJ2LBRu2nyETKwz+ZXVsVWliktToCaYojHKrS+6/HODyEZA=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.25.5", "", { "os": "aix", "cpu": "ppc64" }, "sha512-9o3TMmpmftaCMepOdA5k/yDw8SfInyzWWTjYTFCX3kPSDJMROQTb8jg+h9Cnwnmm1vOzvxN7gIfB5V2ewpjtGA=="],
 
@@ -404,7 +404,7 @@
 
     "convert-source-map": ["convert-source-map@2.0.0", "", {}, "sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg=="],
 
-    "cropperjs": ["cropperjs@2.0.0", "", { "dependencies": { "@cropper/elements": "^2.0.0", "@cropper/utils": "^2.0.0" } }, "sha512-TO2j0Qre01kPHbow4FuTrbdEB4jTmGRySxW49jyEIqlJZuEBfrvCTT0vC3eRB2WBXudDfKi1Onako6DKWKxeAQ=="],
+    "cropperjs": ["cropperjs@2.0.1", "", { "dependencies": { "@cropper/elements": "^2.0.1", "@cropper/utils": "^2.0.1" } }, "sha512-hiJwk2SCPZqxMA7aR3byzLpYUqOrQo+ihMk8k/WRm/xe/LX8wNzAIzMwEB/NEGJYA6sbewxW9TUlrRUYi/2Ipg=="],
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 

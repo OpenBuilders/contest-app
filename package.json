@@ -15,7 +15,7 @@
 		"@telegram-apps/sdk-solid": "^3.0.30",
 		"@types/pell": "^1.0.4",
 		"animate.css": "^4.1.1",
-		"cropperjs": "^2.0.0",
+		"cropperjs": "^2.0.1",
 		"dayjs": "^1.11.13",
 		"dompurify": "^3.2.6",
 		"gsap": "^3.13.0",
