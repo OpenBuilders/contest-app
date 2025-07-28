@@ -1,4 +1,7 @@
+import { AiOutlineTrophy } from "solid-icons/ai";
+import type { Component } from "solid-js";
 import { LottiePlayerFileCache } from "../components/LottiePlayer";
+import { symbolizeSVGComponent } from "../components/SVG";
 import { TGS } from "./animations";
 import { inflateWorker } from "./inflate";
 
@@ -32,6 +35,19 @@ const preloadAnimations = async () => {
 	);
 };
 
+const predefineSVGSymbols = async () => {
+	const list: { id: string; component: Component }[] = [
+		{
+			id: "AiOutlineTrophy",
+			component: AiOutlineTrophy,
+		},
+	];
+
+	for (const item of list) {
+		await symbolizeSVGComponent(item.id, item.component);
+	}
+};
+
 export const preloadPipeline = async () => {
-	return Promise.all([preloadAnimations()]);
+	return Promise.all([preloadAnimations(), predefineSVGSymbols()]);
 };

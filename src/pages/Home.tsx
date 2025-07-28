@@ -3,7 +3,6 @@ import { type Contest, setStore, store } from "../utils/store";
 import "./Home.scss";
 
 import dayjs from "dayjs";
-import { AiOutlineTrophy } from "solid-icons/ai";
 import { FaSolidPlus } from "solid-icons/fa";
 import {
 	type Component,
@@ -19,6 +18,7 @@ import {
 } from "solid-js";
 import ImageLoader from "../components/ImageLoader";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
+import { SVGSymbol } from "../components/SVG";
 import Tabbar from "../components/Tabbar";
 import ThemePreview from "../components/ThemePreview";
 import { useTranslation } from "../contexts/TranslationContext";
@@ -158,7 +158,7 @@ const PageHome: Component = () => {
 									<Switch
 										fallback={
 											<div class="empty">
-												<AiOutlineTrophy />
+												<SVGSymbol id="AiOutlineTrophy" />
 											</div>
 										}
 									>
