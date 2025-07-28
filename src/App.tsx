@@ -44,6 +44,7 @@ import PageError from "./pages/Error";
 import PageHome from "./pages/Home.tsx";
 import PageProfile from "./pages/Profile.tsx";
 import PageSplash from "./pages/Splash.tsx";
+import { Color } from "./utils/colors.ts";
 import { setIsRTL } from "./utils/i18n.ts";
 import { modals, setModals } from "./utils/modal.ts";
 import { initializeSettings, settings } from "./utils/settings.ts";
@@ -161,11 +162,14 @@ const App = () => {
 			const handleTheme = (isDark: boolean) => {
 				document.body.setAttribute("data-theme", isDark ? "dark" : "light");
 
-				setThemeColor(
-					getComputedStyle(document.body)
-						.getPropertyValue("--bg-color")
-						.trim() as any,
-				);
+				setTimeout(() => {
+					const page = document.querySelector(".page");
+					if (!page) return;
+
+					const color = new Color(getComputedStyle(page).backgroundColor);
+
+					setThemeColor(color.toHex() as any);
+				});
 			};
 
 			handleTheme(miniApp.isDark());
@@ -275,6 +279,17 @@ const App = () => {
 									() => location.pathname,
 									() => {
 										invokeHapticFeedbackImpact("soft");
+
+										setTimeout(() => {
+											const page = document.querySelector(".page");
+											if (!page) return;
+
+											const color = new Color(
+												getComputedStyle(page).backgroundColor,
+											);
+
+											setThemeColor(color.toHex() as any);
+										});
 									},
 								),
 							);

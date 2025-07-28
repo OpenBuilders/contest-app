@@ -34,9 +34,30 @@ const dict = {
 		},
 		home: {
 			contests: {
+				title: "My Contests",
 				empty: {
-					title: "You’re not part of any contests yet.",
-					create: "Let's create one!",
+					all: {
+						title: "You’re not part of any contests yet.",
+					},
+					joined: {
+						title: "You haven’t joined any contests yet.",
+						button: "Let's join one!",
+					},
+					created: {
+						title: "You haven’t created any contests yet.",
+						button: "Let's create one!",
+					},
+				},
+				tabs: {
+					all: {
+						title: "All",
+					},
+					joined: {
+						title: "Joined",
+					},
+					created: {
+						title: "Created",
+					},
 				},
 			},
 		},

@@ -81,6 +81,7 @@ svg {
       var(--tg-viewport-safe-area-inset-top) +
          var(--tg-viewport-content-safe-area-inset-top)
    );
+   background-color: var(--bg-color);
 }
 
 @keyframes shimmer {

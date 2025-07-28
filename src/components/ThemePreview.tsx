@@ -19,7 +19,10 @@ const ThemePreview: Component<ThemePreviewProps> = (props) => {
 
 	onMount(() => {
 		if (!container) return;
-		setSize(container.clientWidth ?? 96);
+
+		if (!size()) {
+			setSize(container.clientWidth ?? 96);
+		}
 	});
 
 	return (

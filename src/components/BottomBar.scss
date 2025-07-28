@@ -3,6 +3,8 @@
    grid-template-columns: repeat(3, 1fr);
    width: 100%;
    gap: 1rem;
+   border-top: 1px solid rgba(var(--text-color-rgb), 0.0625);
+   background-color: var(--bg-primary);
    padding: 0.5rem 1rem
       calc(
          var(--tg-viewport-safe-area-inset-bottom) +

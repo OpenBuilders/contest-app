@@ -3,12 +3,12 @@
    --black: #000000;
    --white-rgb: 255, 255, 255;
    --black-rgb: 0, 0, 0;
-   --bg-color: var(--white);
-   --bg-color-rgb: var(--white-rgb);
    --text-color: var(--black);
    --text-color-rgb: var(--black-rgb);
-   --secondary-color: #efeef4;
-   --secondary-color-rgb: 239, 238, 244;
+   --secondary-color: #efeff4;
+   --secondary-color-rgb: 239, 239, 244;
+   --bg-color: var(--secondary-color);
+   --bg-color-rgb: var(--secondary-color-rgb);
 
    --modal-bg: var(--bg-color);
 
@@ -20,27 +20,34 @@
 
    --section-bg-color: #ffffff;
 
-   --shimmer-bg: #e0e0e0;
-   --shimmer-highlight: #f5f5f5;
+   --shimmer-bg: #d5d5d5;
+   --shimmer-highlight: #e5e5e5;
+
+   --bg-primary: var(--bg-color);
+   --bg-secondary: var(--section-bg-color);
 
    --motion-multiplier: 1;
 }
 
 body[data-theme="dark"] {
-   --bg-color: var(--black);
-   --bg-color-rgb: var(--black-rgb);
    --text-color: var(--white);
    --text-color-rgb: var(--white-rgb);
 
    --secondary-color: #000000;
    --secondary-color-rgb: 0, 0, 0;
 
+   --bg-color: var(--secondary-color);
+   --bg-color-rgb: var(--secondary-color-rgb);
+
    --section-bg-color: #1c1c1d;
 
    --modal-bg: var(--bg-color);
 
-   --shimmer-bg: #2e2e2e;
-   --shimmer-highlight: #3c3c3c;
+   --shimmer-bg: #2a2a2a;
+   --shimmer-highlight: #1a1a1a;
+
+   --bg-primary: var(--section-bg-color);
+   --bg-secondary: var(--bg-color);
 
    .container-section-list-switch {
       > button {

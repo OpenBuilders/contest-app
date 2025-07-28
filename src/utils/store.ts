@@ -9,19 +9,25 @@ type User = {
 	language?: string;
 };
 
-type Contest = {
+export type Contest = {
 	id?: number;
-	owner_id: number;
+	slug: string;
+	slug_moderator?: string;
+	owner_id?: number;
 	moderators?: number[];
 	title: string;
 	description: string;
-	price: number;
-	public: boolean;
-	anonymous: boolean;
-	category?: number;
-	date_start: number;
+	fee: number;
+	prize?: string;
+	public: number;
+	anonymous: number;
+	category?: string;
+	image?: string;
+	theme?: {
+		backdrop?: number;
+		symbol?: string;
+	};
 	date_end: number;
-	date_results?: number;
 };
 
 export type Store = {

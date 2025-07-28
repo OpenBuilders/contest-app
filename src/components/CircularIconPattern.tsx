@@ -53,7 +53,11 @@ const observer = new IntersectionObserver(async (entries) => {
 
 			const prefix = target.id;
 			const props = properties[prefix];
-			delete properties[prefix];
+
+			setTimeout(() => {
+				delete properties[prefix];
+			}, 1e3);
+
 			const dpi = window.devicePixelRatio || 1;
 
 			target.width = props.size * dpi;
