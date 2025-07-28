@@ -43,7 +43,7 @@ const PageHome: Component = () => {
 
 	const { t } = useTranslation();
 
-	const fetchContents = async () => {
+	const fetchContests = async () => {
 		const request = await requestAPI("/contests/my");
 
 		if (request) {
@@ -59,12 +59,40 @@ const PageHome: Component = () => {
 
 	onMount(async () => {
 		if (!store.contests?.my) {
-			await fetchContents();
+			await fetchContests();
 		}
 	});
 
 	const SectionContestsLoading = () => {
-		return <div id="container-home-contests-loading">Loading</div>;
+		return (
+			<div id="container-home-contests-loading">
+				<ul>
+					<For each={Array.from(new Array(3))}>
+						{() => <li class="shimmer"></li>}
+					</For>
+				</ul>
+
+				<section>
+					<For each={Array.from(new Array(20))}>
+						{() => (
+							<div>
+								<div class="shimmer"></div>
+
+								<div>
+									<span class="shimmer"></span>
+									<span class="shimmer"></span>
+								</div>
+
+								<div>
+									<span class="shimmer"></span>
+									<span class="shimmer"></span>
+								</div>
+							</div>
+						)}
+					</For>
+				</section>
+			</div>
+		);
 	};
 
 	const SectionContestsEmpty: Component<{
@@ -257,7 +285,7 @@ const PageHome: Component = () => {
 			() => signals.fetchMyContests,
 			async () => {
 				setStore("contests", "my", undefined);
-				await fetchContents();
+				await fetchContests();
 			},
 			{
 				defer: true,
