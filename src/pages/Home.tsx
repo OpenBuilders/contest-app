@@ -25,6 +25,7 @@ import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
 import { setModals } from "../utils/modal";
+import { setSettings, settings } from "../utils/settings";
 import { signals } from "../utils/signals";
 import { getSymbolSVGString } from "../utils/symbols";
 import { ContestThemeBackdrops } from "../utils/themes";
@@ -92,7 +93,13 @@ const PageHome: Component = () => {
 	};
 
 	const SectionContests = () => {
-		const [tabbar, setTabbar] = createSignal("all");
+		const [tabbar, setTabbar] = createSignal(settings.tabs.home.myContests);
+
+		createEffect(
+			on(tabbar, () => {
+				setSettings("tabs", "home", "myContests", tabbar());
+			}),
+		);
 
 		const contestsJoined = createMemo(() =>
 			store.contests.my!.filter(() => false),

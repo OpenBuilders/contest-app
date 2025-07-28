@@ -17,6 +17,11 @@ export type Settings = {
 	haptic: {
 		enabled: boolean;
 	};
+	tabs: {
+		home: {
+			myContests: "all" | "joined" | "created";
+		};
+	};
 };
 
 export const [settings, setSettingsStore] = createStore<Settings>({
@@ -26,6 +31,11 @@ export const [settings, setSettingsStore] = createStore<Settings>({
 	},
 	haptic: {
 		enabled: true,
+	},
+	tabs: {
+		home: {
+			myContests: "all",
+		},
 	},
 });
 
