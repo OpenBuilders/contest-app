@@ -28,6 +28,7 @@ export type Contest = {
 		symbol?: string;
 	};
 	date_end: number;
+	role?: "owner" | "moderator" | "participant";
 };
 
 export type Store = {

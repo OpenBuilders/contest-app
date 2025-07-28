@@ -51,7 +51,7 @@ import { canvasToBlob } from "../utils/general";
 import { isRTL } from "../utils/i18n";
 import { hideKeyboardOnEnter } from "../utils/input";
 import { setModals } from "../utils/modal";
-import { clamp } from "../utils/number";
+import { clamp, formatNumbersInString } from "../utils/number";
 import { toggleSignal } from "../utils/signals";
 import { store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
@@ -470,6 +470,9 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 									value={form.prize}
 									setValue={(value) => setForm("prize", value)}
 									maxLength={store.limits!.form.create.prize.maxLength}
+									onBlur={() => {
+										setForm("prize", formatNumbersInString(form.prize));
+									}}
 								/>
 							),
 						},

@@ -13,6 +13,11 @@ const dict = {
 			contests: "Contests",
 			profile: "Profile",
 		},
+		roles: {
+			owner: "Owner",
+			creator: "Creator",
+			participant: "Participant",
+		},
 		ok: "Ok",
 		continue: "Continue",
 	},

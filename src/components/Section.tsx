@@ -269,6 +269,7 @@ type SectionListInputProps = {
 		| "url";
 	value?: string;
 	setValue: (value: string) => void;
+	onBlur?: () => void;
 	pattern?: "string";
 	minLength?: number;
 	maxLength?: number;
@@ -351,6 +352,7 @@ export const SectionListInput: Component<SectionListInputProps> = (props) => {
 				}}
 				onKeyUp={hideKeyboardOnEnter}
 				placeholder={props.placeholder}
+				onBlur={props.onBlur}
 				min={props.min}
 				max={props.max}
 				minLength={props.minLength}

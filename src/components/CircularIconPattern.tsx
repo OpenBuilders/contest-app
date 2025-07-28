@@ -37,7 +37,9 @@ worker.addEventListener(
 			case "cache": {
 				const { prefix, symbol } = data;
 				bitmaps[prefix] = symbol;
-				document.querySelector(`#${prefix}`)?.classList.add("loaded");
+				for (const item of document.querySelectorAll(`#${prefix}`)) {
+					item.classList.add("loaded");
+				}
 				break;
 			}
 		}
@@ -53,10 +55,6 @@ const observer = new IntersectionObserver(async (entries) => {
 
 			const prefix = target.id;
 			const props = properties[prefix];
-
-			setTimeout(() => {
-				delete properties[prefix];
-			}, 1e3);
 
 			const dpi = window.devicePixelRatio || 1;
 

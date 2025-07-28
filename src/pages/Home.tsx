@@ -25,6 +25,7 @@ import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
 import { setModals } from "../utils/modal";
+import { formatNumbersInString } from "../utils/number";
 import { setSettings, settings } from "../utils/settings";
 import { signals } from "../utils/signals";
 import { getSymbolSVGString } from "../utils/symbols";
@@ -106,7 +107,7 @@ const PageHome: Component = () => {
 		);
 
 		const contestsCreated = createMemo(() =>
-			store.contests.my!.filter(() => false),
+			store.contests.my!.filter((contest) => contest.role === "owner"),
 		);
 
 		const ListContests: Component<{ contests: Contest[] }> = (props) => {
@@ -160,9 +161,17 @@ const PageHome: Component = () => {
 									<div>
 										<h2>{contest.title}</h2>
 
-										<span class="text-secondary">
-											{dayjs.unix(contest.date_end).format("MMM D")}
-										</span>
+										<span>{formatNumbersInString(contest.prize ?? "")}</span>
+									</div>
+
+									<div>
+										<span>{dayjs.unix(contest.date_end).format("MMM D")}</span>
+
+										<Show when={contest.role}>
+											<span class={contest.role}>
+												{t(`general.roles.${contest.role}` as any)}
+											</span>
+										</Show>
 									</div>
 								</A>
 							);
