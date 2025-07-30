@@ -242,6 +242,7 @@
             font-weight: 500;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
          }
 
          > span {
@@ -249,6 +250,7 @@
             opacity: 0.625;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
          }
       }
 
@@ -266,12 +268,14 @@
             opacity: 0.625;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
          }
 
          > span:last-child {
             font-size: 0.6875rem;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
             color: var(--accent);
             font-weight: 500;
             text-transform: uppercase;

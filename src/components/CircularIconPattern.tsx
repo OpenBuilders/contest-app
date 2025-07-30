@@ -18,7 +18,7 @@ export type CircularIconPatternLayer = {
 type CircularIconPatternProps = {
 	backdrop: ContestThemeBackdrop;
 	symbol: ContestThemeSymbol;
-	size: number;
+	size: number | { width: number; height: number };
 	layers: CircularIconPatternLayer[];
 	context?: string;
 };
@@ -58,8 +58,10 @@ const observer = new IntersectionObserver(async (entries) => {
 
 			const dpi = window.devicePixelRatio || 1;
 
-			target.width = props.size * dpi;
-			target.height = props.size * dpi;
+			target.width =
+				(typeof props.size === "number" ? props.size : props.size.width) * dpi;
+			target.height =
+				(typeof props.size === "number" ? props.size : props.size.height) * dpi;
 
 			if (prefix in bitmaps) {
 				do {
@@ -78,8 +80,14 @@ const observer = new IntersectionObserver(async (entries) => {
 
 					image.addEventListener("load", () => {
 						createImageBitmap(image, {
-							resizeHeight: props.size * dpi,
-							resizeWidth: props.size * dpi,
+							resizeHeight:
+								(typeof props.size === "number"
+									? props.size
+									: props.size.height) * dpi,
+							resizeWidth:
+								(typeof props.size === "number"
+									? props.size
+									: props.size.width) * dpi,
 						}).then((bitmap) => {
 							worker.postMessage(
 								{
@@ -113,8 +121,14 @@ const observer = new IntersectionObserver(async (entries) => {
 
 						image.addEventListener("load", () => {
 							createImageBitmap(image, {
-								resizeHeight: props.size * dpi,
-								resizeWidth: props.size * dpi,
+								resizeHeight:
+									(typeof props.size === "number"
+										? props.size
+										: props.size.height) * dpi,
+								resizeWidth:
+									(typeof props.size === "number"
+										? props.size
+										: props.size.width) * dpi,
 							}).then((bitmap) => {
 								worker.postMessage(
 									{
@@ -147,7 +161,7 @@ const observer = new IntersectionObserver(async (entries) => {
 const CircularIconPattern: Component<CircularIconPatternProps> = (props) => {
 	let canvas: HTMLCanvasElement | undefined;
 
-	const prefix = `${props.context ?? "default"}-${props.symbol.id}-${props.backdrop.colors.pattern.replace("#", "")}-${props.size}`;
+	const prefix = `${props.context ?? "default"}-${props.symbol.id}-${props.backdrop.colors.pattern.replace("#", "")}-${typeof props.size === "number" ? props.size : `${props.size.width}-${props.size.height}`}`;
 
 	properties[prefix] = props;
 

@@ -143,6 +143,33 @@ const dict = {
 				},
 			},
 		},
+		contest: {
+			header: {
+				entry: {
+					title: "Entry Fee",
+					free: "Free",
+				},
+				prize: {
+					title: "Prize Pool",
+					unknown: "Unknown",
+				},
+				deadline: {
+					title: "Deadline",
+				},
+			},
+			description: {
+				title: "Description",
+				empty: "No description provided",
+			},
+			footer: {
+				participate: {
+					text: "Participate",
+				},
+				ended: {
+					text: "This contest has ended.",
+				},
+			},
+		},
 	},
 	components: {
 		editor: {

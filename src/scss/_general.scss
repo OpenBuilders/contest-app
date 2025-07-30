@@ -105,11 +105,11 @@ svg {
 }
 
 .text-secondary {
-   opacity: 0.75;
+   color: rgba(var(--text-color-rgb), 0.75);
 }
 
 .text-hint {
-   opacity: 0.5;
+   color: rgba(var(--text-color-rgb), 0.5);
 }
 
 input,

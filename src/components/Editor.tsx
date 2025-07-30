@@ -14,6 +14,7 @@ import { createStore } from "solid-js/store";
 import tippy, { type Instance } from "tippy.js";
 import { useTranslation } from "../contexts/TranslationContext";
 import { isValidURL } from "../utils/input";
+import { store } from "../utils/store";
 
 type EditorProps = {
 	value: string;
@@ -21,8 +22,6 @@ type EditorProps = {
 	placeholder?: string;
 	maxLength?: number;
 };
-
-const ALLOWED_TAGS = ["b", "i", "u", "a", "strike", "br"];
 
 const Editor: Component<EditorProps> = (props) => {
 	const { t } = useTranslation();
@@ -81,24 +80,27 @@ const Editor: Component<EditorProps> = (props) => {
 	});
 
 	const sanitizeText = (text: string) => {
-		return DOMPurify.sanitize(text, {
-			ALLOWED_TAGS: ALLOWED_TAGS,
-			ALLOWED_ATTR: ["href"],
-			ALLOW_ARIA_ATTR: false,
-			ALLOW_DATA_ATTR: false,
-			KEEP_CONTENT: true,
-		})
+		return DOMPurify.sanitize(
+			text
+				.replace(/<strong>/g, "<b>")
+				.replace(/<\/strong>/g, "</b>")
+				.replace(/<em>/g, "<i>")
+				.replace(/<\/em>/g, "</i>")
+				.replace(/<s>/g, "<strike>")
+				.replace(/<\/s>/g, "</strike>"),
+			{
+				ALLOWED_TAGS: store.limits!.form.create.description.allowedTags,
+				ALLOWED_ATTR: store.limits!.form.create.description.allowedAttrs,
+				ALLOW_ARIA_ATTR: false,
+				ALLOW_DATA_ATTR: false,
+				KEEP_CONTENT: true,
+			},
+		)
 			.replace(/(?:<div>(?:\s|&nbsp;|\u00A0|<br\s*\/?>)*<\/div>)+/gi, "\n")
 			.replace(
 				/^(?:\s|&nbsp;|\u00A0|<br\s*\/?>|\n|\r)+|(?:\s|&nbsp;|\u00A0|<br\s*\/?>|\n|\r)+$/gi,
 				"",
 			)
-			.replace(/<strong>/g, "<b>")
-			.replace(/<\/strong>/g, "</b>")
-			.replace(/<em>/g, "<i>")
-			.replace(/<\/em>/g, "</i>")
-			.replace(/<s>/g, "<strike>")
-			.replace(/<\/s>/g, "</strike>")
 			.trim();
 	};
 
