@@ -11,6 +11,16 @@
          ) -
          2.25rem
    );
+   max-height: calc(
+      100vh - calc(
+            var(--tg-viewport-safe-area-inset-bottom) +
+               var(--tg-viewport-content-safe-area-inset-bottom)
+         ) - calc(
+            var(--tg-viewport-safe-area-inset-top) +
+               var(--tg-viewport-content-safe-area-inset-top)
+         ) -
+         2.25rem
+   );
 }
 
 .modal-create-public,

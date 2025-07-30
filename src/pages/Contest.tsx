@@ -5,6 +5,7 @@ import {
 	type Component,
 	createMemo,
 	Match,
+	onCleanup,
 	onMount,
 	Show,
 	Switch,
@@ -23,7 +24,11 @@ import { Color } from "../utils/colors";
 import { formatNumbersInString } from "../utils/number";
 import { type Contest, store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
-import { invokeHapticFeedbackImpact, setHeaderColor } from "../utils/telegram";
+import {
+	invokeHapticFeedbackImpact,
+	postEvent,
+	setHeaderColor,
+} from "../utils/telegram";
 import {
 	ContestThemeBackdrops,
 	type ContestThemeSymbol,
@@ -102,7 +107,24 @@ const PageContest: Component = () => {
 				width: header.clientWidth,
 			});
 		});
+
+		for (const link of document.querySelectorAll(".content a")) {
+			(link as HTMLElement).addEventListener("click", onClickLink);
+		}
 	});
+
+	onCleanup(() => {
+		for (const link of document.querySelectorAll(".content a")) {
+			(link as HTMLElement).removeEventListener("click", onClickLink);
+		}
+	});
+
+	const onClickLink = (e: MouseEvent) => {
+		e.preventDefault();
+		postEvent("web_app_open_link", {
+			url: (e.currentTarget as HTMLAnchorElement).href,
+		});
+	};
 
 	const fetchContest = async () => {
 		const request = await requestAPI(`/contest/${params.slug}`);
@@ -123,7 +145,42 @@ const PageContest: Component = () => {
 	return (
 		<>
 			<div id="container-page-contest" class="page">
-				<Show when={contest.contest} fallback={<div>Loading</div>}>
+				<Show
+					when={contest.contest}
+					fallback={
+						<div id="container-contest-shimmer">
+							<header class="shimmer"></header>
+
+							<div>
+								<ul>
+									<li>
+										<span class="shimmer"></span>
+										<div class="shimmer"></div>
+									</li>
+
+									<li>
+										<span class="shimmer"></span>
+										<div class="shimmer"></div>
+									</li>
+
+									<li>
+										<span class="shimmer"></span>
+										<div class="shimmer"></div>
+									</li>
+								</ul>
+
+								<div>
+									<span class="shimmer"></span>
+									<div class="shimmer"></div>
+								</div>
+							</div>
+
+							<footer>
+								<span class="shimmer"></span>
+							</footer>
+						</div>
+					}
+				>
 					<div
 						id="container-contest"
 						classList={{
@@ -278,7 +335,7 @@ const PageContest: Component = () => {
 
 								<Match when={Date.now() / 1000 >= contest.contest?.date_end!}>
 									<p class="text-hint">
-										{t("pages.contest.footer.ended.text")}
+										{t("pages.contest.footer.closed.text")}
 									</p>
 								</Match>
 							</Switch>

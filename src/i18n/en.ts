@@ -165,6 +165,9 @@ const dict = {
 				participate: {
 					text: "Participate",
 				},
+				closed: {
+					text: "Submissions are closed.",
+				},
 				ended: {
 					text: "This contest has ended.",
 				},
