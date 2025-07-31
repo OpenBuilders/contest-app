@@ -19,8 +19,9 @@ export type Contest = {
 	description: string;
 	fee: number;
 	prize?: string;
-	public: number;
-	anonymous: number;
+	public: boolean;
+	anonymous: boolean;
+	verified?: boolean;
 	category?: string;
 	image?: string;
 	theme?: {

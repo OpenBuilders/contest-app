@@ -90,6 +90,7 @@
          }
 
          > h1 {
+            display: inline-flex;
             font-size: 1.25rem;
             font-weight: 600;
             overflow: hidden;
@@ -98,6 +99,8 @@
             position: absolute;
             top: auto;
             bottom: 1rem;
+            gap: 0.25rem;
+            align-items: center;
          }
       }
 

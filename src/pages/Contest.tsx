@@ -269,7 +269,12 @@ const PageContest: Component = () => {
 								/>
 							</Show>
 
-							<h1>{contest.contest?.title}</h1>
+							<h1>
+								{contest.contest?.title}
+								<Show when={contest.contest?.verified}>
+									<SVGSymbol id="VsVerifiedFilled" />
+								</Show>
+							</h1>
 						</header>
 
 						<div>

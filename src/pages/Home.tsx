@@ -187,7 +187,12 @@ const PageHome: Component = () => {
 									</Switch>
 
 									<div>
-										<h2>{contest.title}</h2>
+										<h2>
+											{contest.title}{" "}
+											<Show when={contest.verified}>
+												<SVGSymbol id="VsVerifiedFilled" />
+											</Show>
+										</h2>
 
 										<span>{formatNumbersInString(contest.prize ?? "")}</span>
 									</div>

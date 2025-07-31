@@ -243,6 +243,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            display: inline-flex;
+            gap: 0.25rem;
+            align-items: center;
+
+            > svg {
+               color: var(--accent);
+            }
          }
 
          > span {

@@ -1,4 +1,5 @@
 import { AiOutlineTrophy } from "solid-icons/ai";
+import { VsVerifiedFilled } from "solid-icons/vs";
 import type { Component } from "solid-js";
 import { LottiePlayerFileCache } from "../components/LottiePlayer";
 import { symbolizeSVGComponent } from "../components/SVG";
@@ -40,6 +41,10 @@ const predefineSVGSymbols = async () => {
 		{
 			id: "AiOutlineTrophy",
 			component: AiOutlineTrophy,
+		},
+		{
+			id: "VsVerifiedFilled",
+			component: VsVerifiedFilled,
 		},
 	];
 
