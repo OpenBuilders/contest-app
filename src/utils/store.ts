@@ -29,7 +29,16 @@ export type Contest = {
 		symbol?: string;
 	};
 	date_end: number;
+};
+
+export type ContestMetadata = {
 	role?: "owner" | "moderator" | "participant";
+	bookmarked?: boolean;
+};
+
+export type AnnotatedContest = {
+	contest: Contest;
+	metadata: ContestMetadata;
 };
 
 export type Store = {
@@ -37,7 +46,7 @@ export type Store = {
 	categories?: { [key: string]: string };
 	limits?: { [key: string]: any };
 	contests: {
-		my?: Contest[];
+		my?: AnnotatedContest[];
 	};
 	user?: User;
 	version?: string;

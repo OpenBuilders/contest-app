@@ -156,12 +156,18 @@ const dict = {
 				deadline: {
 					title: "Deadline",
 				},
+				share: {
+					text: "🏆 Let's join {name}!",
+				},
 			},
 			description: {
 				title: "Description",
 				empty: "No description provided",
 			},
 			footer: {
+				manage: {
+					text: "Manage Contest",
+				},
 				participate: {
 					text: "Participate",
 				},

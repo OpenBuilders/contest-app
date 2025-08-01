@@ -1,9 +1,21 @@
 import {
+	backButton,
+	bindMiniAppCssVars,
+	bindThemeParamsCssVars,
+	bindViewportCssVars,
 	type ImpactHapticFeedbackStyle,
+	init,
+	mainButton,
+	miniApp,
 	type NotificationHapticFeedbackType,
 	postEvent as postEventUnsafe,
 	retrieveLaunchParams,
+	secondaryButton,
+	settingsButton,
+	themeParams,
+	viewport,
 } from "@telegram-apps/sdk-solid";
+import { Color } from "./colors";
 import { settings } from "./settings";
 
 const retrieveLaunchParamsSafe = () => {
@@ -85,5 +97,114 @@ export const isVersionAtLeast = (version: string) => {
 export const postEvent = (...args: Parameters<typeof postEventUnsafe<any>>) => {
 	try {
 		postEventUnsafe(...args);
-	} catch (e) {}
+	} catch (_) {}
+};
+
+export const initializeTMA = async () => {
+	init();
+
+	postEvent("web_app_ready");
+	postEvent("iframe_ready");
+	postEvent("web_app_expand");
+
+	if (!mainButton.isMounted()) {
+		mainButton.mount();
+		mainButton.setParams({
+			isVisible: false,
+		});
+	}
+
+	if (!secondaryButton.isMounted()) {
+		secondaryButton.mount();
+		secondaryButton.setParams({
+			isVisible: false,
+		});
+	}
+
+	if (settingsButton.isSupported() && !settingsButton.isMounted()) {
+		settingsButton.mount();
+		settingsButton.hide();
+	}
+
+	if (backButton.isSupported() && !backButton.isMounted()) {
+		backButton.mount();
+		backButton.hide();
+	}
+
+	if (
+		viewport.mount.isAvailable() &&
+		!(viewport.isMounted() || viewport.isMounting())
+	) {
+		await viewport.mount();
+		bindViewportCssVars();
+	}
+
+	if (themeParams.mountSync.isAvailable() && !themeParams.isMounted()) {
+		themeParams.mountSync();
+		bindThemeParamsCssVars();
+	}
+
+	if (miniApp.mountSync.isAvailable() && !miniApp.isMounted()) {
+		miniApp.mountSync();
+		bindMiniAppCssVars();
+
+		const handleTheme = (isDark: boolean) => {
+			document.body.setAttribute("data-theme", isDark ? "dark" : "light");
+
+			setTimeout(() => {
+				const page = document.querySelector(".page");
+				if (!page) return;
+
+				const color = new Color(getComputedStyle(page).backgroundColor);
+
+				setThemeColor(color.toHex() as any);
+			});
+		};
+
+		handleTheme(miniApp.isDark());
+		miniApp.isDark.sub(handleTheme);
+	}
+
+	setTimeout(() => {
+		const persistVariables = [
+			"tg-viewport-height",
+			"tg-viewport-safe-area-inset-top",
+			"tg-viewport-content-safe-area-inset-top",
+			"tg-viewport-safe-area-inset-bottom",
+			"tg-viewport-content-safe-area-inset-bottom",
+		];
+
+		for (const name of persistVariables) {
+			(document.querySelector(":root") as HTMLElement).style.setProperty(
+				`--p${name}`,
+				(document.querySelector(":root") as HTMLElement).style.getPropertyValue(
+					`--${name}`,
+				),
+			);
+		}
+	});
+
+	if (isVersionAtLeast("6.2")) {
+		postEvent("web_app_setup_closing_behavior", {
+			need_confirmation: false,
+		});
+	}
+
+	if (isVersionAtLeast("7.7")) {
+		postEvent("web_app_setup_swipe_behavior", {
+			allow_vertical_swipe: false,
+		});
+	}
+
+	if (isVersionAtLeast("8.0")) {
+		postEvent("web_app_toggle_orientation_lock", {
+			locked: true,
+		});
+
+		if (["ios", "android"].includes(lp?.tgWebAppPlatform.toLowerCase() ?? "")) {
+			postEvent("web_app_request_fullscreen");
+		}
+	}
+
+	invokeHapticFeedbackImpact("heavy");
 };

@@ -1,5 +1,5 @@
 import { A, useNavigate } from "@solidjs/router";
-import { type Contest, setStore, store } from "../utils/store";
+import { type AnnotatedContest, setStore, store } from "../utils/store";
 import "./Home.scss";
 
 import dayjs from "dayjs";
@@ -44,7 +44,7 @@ const PageHome: Component = () => {
 	const { t } = useTranslation();
 
 	const fetchContests = async () => {
-		const request = await requestAPI("/contests/my");
+		const request = await requestAPI("/contests/my", {}, "GET");
 
 		if (request) {
 			const { result } = request;
@@ -135,26 +135,28 @@ const PageHome: Component = () => {
 		);
 
 		const contestsCreated = createMemo(() =>
-			store.contests.my!.filter((contest) => contest.role === "owner"),
+			store.contests.my!.filter((contest) => contest.metadata.role === "owner"),
 		);
 
-		const ListContests: Component<{ contests: Contest[] }> = (props) => {
+		const ListContests: Component<{ contests: AnnotatedContest[] }> = (
+			props,
+		) => {
 			return (
 				<div class="container-list-contests">
 					<For each={props.contests}>
 						{(contest) => {
 							const { backdrop, symbol } = {
-								backdrop: contest.theme?.backdrop,
+								backdrop: contest.contest.theme?.backdrop,
 								symbol: {
-									id: contest.theme?.symbol,
-									component: contest.theme?.symbol
-										? getSymbolSVGString(contest.theme?.symbol)
+									id: contest.contest.theme?.symbol,
+									component: contest.contest.theme?.symbol
+										? getSymbolSVGString(contest.contest.theme?.symbol)
 										: "",
 								},
 							};
 
 							return (
-								<A href={`/contest/${contest.slug}`}>
+								<A href={`/contest/${contest.contest.slug}`}>
 									<Switch
 										fallback={
 											<div class="empty">
@@ -162,9 +164,9 @@ const PageHome: Component = () => {
 											</div>
 										}
 									>
-										<Match when={contest.image}>
+										<Match when={contest.contest.image}>
 											<ImageLoader
-												src={`${import.meta.env.VITE_BACKEND_BASE_URL}/images/${contest.image}`}
+												src={`${import.meta.env.VITE_BACKEND_BASE_URL}/images/${contest.contest.image}`}
 											/>
 										</Match>
 
@@ -188,21 +190,25 @@ const PageHome: Component = () => {
 
 									<div>
 										<h2>
-											{contest.title}{" "}
-											<Show when={contest.verified}>
+											{contest.contest.title}
+											<Show when={contest.contest.verified}>
 												<SVGSymbol id="VsVerifiedFilled" />
 											</Show>
 										</h2>
 
-										<span>{formatNumbersInString(contest.prize ?? "")}</span>
+										<span>
+											{formatNumbersInString(contest.contest.prize ?? "")}
+										</span>
 									</div>
 
 									<div>
-										<span>{dayjs.unix(contest.date_end).format("MMM D")}</span>
+										<span>
+											{dayjs.unix(contest.contest.date_end).format("MMM D")}
+										</span>
 
-										<Show when={contest.role}>
-											<span class={contest.role}>
-												{t(`general.roles.${contest.role}` as any)}
+										<Show when={contest.metadata.role}>
+											<span class={contest.metadata.role}>
+												{t(`general.roles.${contest.metadata.role}` as any)}
 											</span>
 										</Show>
 									</div>

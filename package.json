@@ -13,6 +13,8 @@
 		"@solid-primitives/i18n": "^2.2.1",
 		"@solidjs/router": "^0.15.3",
 		"@telegram-apps/sdk-solid": "^3.0.30",
+		"@tonconnect/sdk": "^3.2.0",
+		"@tonconnect/ui": "^2.2.0",
 		"@types/pell": "^1.0.4",
 		"animate.css": "^4.1.1",
 		"cropperjs": "^2.0.1",

@@ -24,7 +24,7 @@ export const requestAPI = async (
 
 		const request = await fetch(import.meta.env.VITE_BACKEND_BASE_URL + path, {
 			method: method,
-			body: FD,
+			body: method === "POST" ? FD : undefined,
 			headers: headers,
 		});
 
