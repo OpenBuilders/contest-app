@@ -1,5 +1,16 @@
 import type { Component } from "solid-js";
 
+export const AvatarColors = [
+	{ from: "#FF885E", to: "#FF516A" },
+	{ from: "#FFCD6A", to: "#FFA85C" },
+	{ from: "#82B1FF", to: "#665FFF" },
+	{ from: "#A0DE7E", to: "#54CB68" },
+	{ from: "#53EDD6", to: "#28C9B7" },
+	{ from: "#72D5FD", to: "#2A9EF1" },
+	{ from: "#E0A2F3", to: "#D669ED" },
+	{ from: "#A7ADB9", to: "#878B96" },
+];
+
 export type ContestThemeBackdrop = {
 	id: number;
 	name: string;

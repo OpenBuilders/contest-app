@@ -5,6 +5,8 @@ import { LottiePlayerFileCache } from "../components/LottiePlayer";
 import { symbolizeSVGComponent } from "../components/SVG";
 import { TGS } from "./animations";
 import { inflateWorker } from "./inflate";
+import { symbolizeSVG } from "./svg";
+import { AnimalSymbolsModule } from "./symbols";
 
 const preloadAnimations = async () => {
 	const list: (keyof typeof TGS)[] = ["duckEgg"];
@@ -50,6 +52,13 @@ const predefineSVGSymbols = async () => {
 
 	for (const item of list) {
 		await symbolizeSVGComponent(item.id, item.component);
+	}
+
+	for (const key in AnimalSymbolsModule) {
+		symbolizeSVG(
+			`alias-${key.replace("../assets/icons/animals/", "").replace(".svg", "")}`,
+			AnimalSymbolsModule[key] as string,
+		);
 	}
 };
 

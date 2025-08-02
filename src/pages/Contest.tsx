@@ -25,6 +25,7 @@ import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
 import { Color } from "../utils/colors";
+import { setModals } from "../utils/modal";
 import { formatNumbersInString } from "../utils/number";
 import { type Contest, type ContestMetadata, store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
@@ -149,14 +150,6 @@ const PageContest: Component = () => {
 		navigate("/", {
 			replace: true,
 		});
-	};
-
-	const onClickManage = () => {
-		console.log("Manage");
-	};
-
-	const onClickParticipate = () => {
-		console.log("Participate");
 	};
 
 	const ContestLoading = () => {
@@ -387,10 +380,22 @@ const PageContest: Component = () => {
 		};
 
 		const ContestFooter = () => {
+			const onClickManage = () => {
+				console.log("Manage");
+			};
+
+			const onClickParticipate = () => {
+				batch(() => {
+					setModals("participate", "open", true);
+					setModals("participate", "contest", contest.contest);
+					setModals("participate", "metadata", contest.metadata);
+				});
+			};
+
 			return (
 				<footer>
 					<Switch>
-						<Match when={contest.metadata?.role === "owner"}>
+						<Match when={contest.metadata?.role === "owner" && false}>
 							<CustomMainButton
 								text={t("pages.contest.footer.manage.text")}
 								onClick={onClickManage}

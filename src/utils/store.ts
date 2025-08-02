@@ -5,7 +5,7 @@ type User = {
 	first_name: string;
 	last_name?: string;
 	profile_photo?: string;
-	anonymous_profile: [number, string, string];
+	anonymous_profile: [number, string[], string[]];
 	language?: string;
 };
 

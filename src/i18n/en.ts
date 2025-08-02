@@ -206,6 +206,13 @@ const dict = {
 					"Participant identities are hidden from the public and replaced with fun aliases. Moderators and the contest owner can still see who joined.",
 			},
 		},
+		participate: {
+			alias: {
+				title: "You're participating as:",
+				hint_anonymous: "Contest organizers can see your real profile.",
+				hint_normal: "Everyone can see your real profile.",
+			},
+		},
 	},
 };
 
