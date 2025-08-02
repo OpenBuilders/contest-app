@@ -1,0 +1,34 @@
+.avatar,
+.avatar-alias {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 1em;
+   height: 1em;
+   border-radius: 50%;
+   overflow: hidden;
+   display: flex;
+   background-image: linear-gradient(
+      180deg,
+      var(--color-from) 0%,
+      var(--color-to) 100%
+   );
+   color: white;
+
+   > span {
+      flex-grow: 1;
+      font-size: 0.5em;
+      text-align: center;
+      font-weight: 500;
+   }
+
+   > div {
+      width: 100%;
+      height: 100%;
+      flex-grow: 1;
+   }
+
+   > svg {
+      font-size: 0.5em;
+   }
+}
