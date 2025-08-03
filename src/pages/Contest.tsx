@@ -386,9 +386,9 @@ const PageContest: Component = () => {
 
 			const onClickParticipate = () => {
 				batch(() => {
-					setModals("participate", "open", true);
 					setModals("participate", "contest", contest.contest);
 					setModals("participate", "metadata", contest.metadata);
+					setModals("participate", "open", true);
 				});
 			};
 

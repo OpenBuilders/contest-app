@@ -1,5 +1,5 @@
 import "./Participate.scss";
-import { type Component, onMount, Show } from "solid-js";
+import { batch, type Component, onMount, Show } from "solid-js";
 import { Avatar, AvatarAlias } from "../components/Avatar";
 import Modal from "../components/Modal";
 import { Section } from "../components/Section";
@@ -21,7 +21,11 @@ const ModalParticipate: Component = () => {
 	});
 
 	const onClose = () => {
-		setModals("participate", "open", false);
+		batch(() => {
+			setModals("participate", "open", false);
+			setModals("participate", "contest", undefined);
+			setModals("participate", "metadata", undefined);
+		});
 	};
 
 	return (
@@ -46,6 +50,7 @@ const ModalParticipate: Component = () => {
 						fallback={
 							<Avatar
 								src={lp?.tgWebAppData?.user?.photo_url}
+								peerId={lp?.tgWebAppData?.user?.id}
 								fullname={[
 									lp?.tgWebAppData?.user?.first_name,
 									lp?.tgWebAppData?.user?.last_name,

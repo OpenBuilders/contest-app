@@ -46,6 +46,52 @@ worker.addEventListener(
 	},
 );
 
+const processSVGString = async (
+	svgData: string,
+	props: CircularIconPatternProps,
+	offscreen: OffscreenCanvas,
+	dpi: number,
+	prefix: string,
+) => {
+	const image = new Image();
+
+	image.addEventListener("load", async () => {
+		const [width, height] = [
+			(typeof props.size === "number" ? props.size : props.size.height) * dpi,
+			(typeof props.size === "number" ? props.size : props.size.width) * dpi,
+		];
+
+		const canvas = document.createElement("canvas");
+		canvas.width = width;
+		canvas.height = height;
+
+		const ctx = canvas.getContext("2d");
+
+		if (ctx) {
+			ctx.drawImage(image, 0, 0, width, height);
+			const imageData = await createImageBitmap(canvas);
+
+			worker.postMessage(
+				{
+					type: "init",
+					canvas: offscreen,
+					symbol: imageData,
+					prefix,
+					layers: props.layers,
+					dpi,
+				} satisfies CircularIconPatternWorkerMessage,
+				[offscreen, imageData],
+			);
+		}
+
+		canvas.remove();
+	});
+
+	image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+		svgData.replace(/fill="[^"]*"/g, `fill="${props.backdrop.colors.pattern}"`),
+	)}`;
+};
+
 const observer = new IntersectionObserver(async (entries) => {
 	for (const entry of entries) {
 		const target = entry.target as HTMLCanvasElement;
@@ -76,39 +122,13 @@ const observer = new IntersectionObserver(async (entries) => {
 				const offscreen = target.transferControlToOffscreen();
 
 				if (typeof props.symbol.component === "string") {
-					const image = new Image();
-
-					image.addEventListener("load", () => {
-						createImageBitmap(image, {
-							resizeHeight:
-								(typeof props.size === "number"
-									? props.size
-									: props.size.height) * dpi,
-							resizeWidth:
-								(typeof props.size === "number"
-									? props.size
-									: props.size.width) * dpi,
-						}).then((bitmap) => {
-							worker.postMessage(
-								{
-									type: "init",
-									canvas: offscreen,
-									symbol: bitmap,
-									prefix,
-									layers: props.layers,
-									dpi,
-								} satisfies CircularIconPatternWorkerMessage,
-								[offscreen],
-							);
-						});
-					});
-
-					image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
-						props.symbol.component.replace(
-							/fill="[^"]*"/g,
-							`fill="${props.backdrop.colors.pattern}"`,
-						),
-					)}`;
+					await processSVGString(
+						props.symbol.component,
+						props,
+						offscreen,
+						dpi,
+						prefix,
+					);
 				} else {
 					const container = document.createElement("div");
 					render(
@@ -116,40 +136,14 @@ const observer = new IntersectionObserver(async (entries) => {
 						container,
 					);
 
-					setTimeout(() => {
-						const image = new Image();
-
-						image.addEventListener("load", () => {
-							createImageBitmap(image, {
-								resizeHeight:
-									(typeof props.size === "number"
-										? props.size
-										: props.size.height) * dpi,
-								resizeWidth:
-									(typeof props.size === "number"
-										? props.size
-										: props.size.width) * dpi,
-							}).then((bitmap) => {
-								worker.postMessage(
-									{
-										type: "init",
-										canvas: offscreen,
-										symbol: bitmap,
-										prefix,
-										layers: props.layers,
-										dpi,
-									} satisfies CircularIconPatternWorkerMessage,
-									[offscreen],
-								);
-							});
-						});
-
-						image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
-							container.innerHTML.replace(
-								/fill="[^"]*"/g,
-								`fill="${props.backdrop.colors.pattern}"`,
-							),
-						)}`;
+					setTimeout(async () => {
+						await processSVGString(
+							container.innerHTML,
+							props,
+							offscreen,
+							dpi,
+							prefix,
+						);
 						container.remove();
 					});
 				}
