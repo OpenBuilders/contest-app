@@ -32,3 +32,12 @@ export const getNameInitials = (name: string) => {
 		? parts[0]
 		: `${parts[0]}${parts[parts.length - 1]}`;
 };
+
+export const isValidUrl = (str: string) => {
+	try {
+		new URL(str);
+		return true;
+	} catch {
+		return false;
+	}
+};

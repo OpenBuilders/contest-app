@@ -29,6 +29,7 @@
       align-items: center;
       gap: 1rem;
       padding: 0 1rem;
+      overflow: hidden;
 
       .container-participant-identity {
          > div {
@@ -46,6 +47,49 @@
             > span {
                font-weight: 500;
                font-size: 1rem;
+            }
+         }
+      }
+
+      > section:nth-child(2) {
+         > div {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            gap: 1rem;
+            flex-shrink: 0;
+            flex-direction: row;
+
+            > input {
+               flex-grow: 1;
+               font-size: 1.0625rem;
+            }
+         }
+      }
+
+      > section:nth-child(3) {
+         flex-grow: 1;
+         flex-shrink: unset;
+
+         > div {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            flex-grow: 1;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow: hidden;
+
+            > div {
+               > div#editor {
+                  border-radius: 0.6875rem;
+                  padding: 0.75rem;
+               }
+
+               #editor-placeholder {
+                  top: 0.75rem;
+               }
             }
          }
       }

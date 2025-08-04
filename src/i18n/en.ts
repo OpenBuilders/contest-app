@@ -212,6 +212,17 @@ const dict = {
 				hint_anonymous: "Contest organizers can see your real profile.",
 				hint_normal: "Everyone can see your real profile.",
 			},
+			form: {
+				title: "submission",
+				link: {
+					placeholder: "Link",
+				},
+				description: {
+					placeholder: "Description",
+					hint: "You can provide an optional description for your submission.",
+				},
+				button: "Submit",
+			},
 		},
 	},
 };

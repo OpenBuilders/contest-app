@@ -263,7 +263,7 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 		<>
 			<div id="container-create-section-basic">
 				<div>
-					<header>
+					<Section>
 						<button type="button" onClick={onClickImage}>
 							<Show when={form.image} fallback={<TbPhotoPlus />}>
 								{form.image}
@@ -280,18 +280,16 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 							onKeyDown={hideKeyboardOnEnter}
 							maxLength={store.limits!.form.create.title.maxLength}
 						/>
-					</header>
+					</Section>
 
-					<section>
+					<Section description={t("pages.create.basic.description.hint")}>
 						<Editor
 							value={form.description}
 							setValue={(data) => setForm("description", data)}
 							placeholder={t("pages.create.basic.description.placeholder")}
 							maxLength={store.limits!.form.create.description.maxLength}
 						/>
-
-						<p class="text-hint">{t("pages.create.basic.description.hint")}</p>
-					</section>
+					</Section>
 				</div>
 
 				<CustomMainButton

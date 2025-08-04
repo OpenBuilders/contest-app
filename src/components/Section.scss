@@ -4,18 +4,21 @@
    flex-shrink: 0;
    width: 100%;
    gap: 0.625rem;
+   overflow: hidden;
 
    > span {
       text-transform: uppercase;
       opacity: 0.625;
       font-size: 0.75rem;
       padding-inline-start: 1rem;
+      flex-shrink: 0;
    }
 
    > p {
       font-size: 0.75rem;
       padding-inline-start: 1rem;
       color: rgba(var(--text-color-rgb), 0.425);
+      flex-shrink: 0;
    }
 
    > div {
