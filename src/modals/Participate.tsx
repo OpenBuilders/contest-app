@@ -1,5 +1,12 @@
 import "./Participate.scss";
-import { batch, type Component, createMemo, onMount, Show } from "solid-js";
+import {
+	batch,
+	type Component,
+	createMemo,
+	createSignal,
+	onMount,
+	Show,
+} from "solid-js";
 import { createStore } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../components/Avatar";
 import CustomMainButton from "../components/CustomMainButton";
@@ -7,8 +14,10 @@ import Editor from "../components/Editor";
 import Modal from "../components/Modal";
 import { Section } from "../components/Section";
 import { useTranslation } from "../contexts/TranslationContext";
+import { requestAPI } from "../utils/api";
 import { hideKeyboardOnEnter, isValidURL } from "../utils/input";
 import { modals, setModals } from "../utils/modal";
+import { toggleSignal } from "../utils/signals";
 import { store } from "../utils/store";
 import { invokeHapticFeedbackImpact, lp } from "../utils/telegram";
 
@@ -24,6 +33,7 @@ const ModalParticipate: Component = () => {
 		link: "",
 		description: "",
 	});
+	const [processing, setProcessing] = createSignal(false);
 
 	onMount(() => {
 		if (!(modals.participate.contest && modals.participate.metadata)) {
@@ -63,7 +73,38 @@ const ModalParticipate: Component = () => {
 		);
 	});
 
-	const onClickButton = () => {};
+	const onClickButton = async () => {
+		if (processing()) return;
+		setProcessing(true);
+
+		// TODO: process payment here and then continue
+
+		const request = await requestAPI(
+			`/contest/${modals.participate.contest!.slug}/submit`,
+			{
+				link: form.link,
+				description: form.description,
+			},
+			"POST",
+		);
+
+		if (request) {
+			const { status } = request;
+
+			if (status === "success") {
+				batch(() => {
+					setModals("participate", "contest", undefined);
+					setModals("participate", "metadata", undefined);
+					setModals("participate", "open", false);
+					toggleSignal("fetchContest");
+				});
+
+				return;
+			}
+		}
+
+		setProcessing(false);
+	};
 
 	return (
 		<Modal
@@ -156,7 +197,8 @@ const ModalParticipate: Component = () => {
 				<CustomMainButton
 					onClick={onClickButton}
 					text={t("modals.participate.form.button")}
-					disabled={buttonDisabled()}
+					disabled={buttonDisabled() || processing()}
+					loading={processing()}
 				/>
 			</div>
 		</Modal>

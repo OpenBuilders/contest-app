@@ -6,9 +6,11 @@ import { FiShare } from "solid-icons/fi";
 import {
 	batch,
 	type Component,
+	createEffect,
 	createMemo,
 	createSignal,
 	Match,
+	on,
 	onCleanup,
 	onMount,
 	Show,
@@ -27,6 +29,7 @@ import { requestAPI } from "../utils/api";
 import { Color } from "../utils/colors";
 import { setModals } from "../utils/modal";
 import { formatNumbersInString } from "../utils/number";
+import { signals } from "../utils/signals";
 import { type Contest, type ContestMetadata, store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
@@ -83,6 +86,19 @@ const PageContest: Component = () => {
 			symbol,
 		};
 	});
+
+	createEffect(
+		on(
+			() => signals.fetchContest,
+			async () => {
+				setContest({});
+				await fetchContest();
+			},
+			{
+				defer: true,
+			},
+		),
+	);
 
 	onMount(async () => {
 		invokeHapticFeedbackImpact("light");
@@ -147,6 +163,12 @@ const PageContest: Component = () => {
 	};
 
 	const onBackButton = () => {
+		batch(() => {
+			setModals("participate", "contest", undefined);
+			setModals("participate", "metadata", undefined);
+			setModals("participate", "open", false);
+		});
+
 		navigate("/", {
 			replace: true,
 		});
@@ -203,7 +225,7 @@ const PageContest: Component = () => {
 				invokeHapticFeedbackImpact("light");
 
 				const request = await requestAPI(
-					`/contest/${contest.contest?.id}/bookmark`,
+					`/contest/${contest.contest?.slug}/bookmark`,
 				);
 
 				if (request) {

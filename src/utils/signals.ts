@@ -2,6 +2,7 @@ import { createStore } from "solid-js/store";
 
 const [signals, setSignals] = createStore({
 	fetchMyContests: false,
+	fetchContest: false,
 });
 
 const toggleSignal = (signal: keyof typeof signals) => {
