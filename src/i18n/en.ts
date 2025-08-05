@@ -174,6 +174,12 @@ const dict = {
 					statistics: "Statistics",
 					delete: "Delete Contest",
 				},
+				delete: {
+					title: "Delete Contest",
+					confirm: "Delete",
+					prompt: "Are you sure you want to delete this contest?",
+					hint: "Deleted contests cannot be recovered.",
+				},
 			},
 			footer: {
 				manage: {

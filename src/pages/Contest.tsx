@@ -1,5 +1,6 @@
 import "./Contest.scss";
 import { useNavigate, useParams } from "@solidjs/router";
+import { off, on } from "@telegram-apps/sdk-solid";
 import dayjs from "dayjs";
 import { AiFillDelete } from "solid-icons/ai";
 import {
@@ -18,8 +19,8 @@ import {
 	createMemo,
 	createSignal,
 	Match,
-	on,
 	onCleanup,
+	on as onEffect,
 	onMount,
 	Show,
 	Switch,
@@ -39,7 +40,7 @@ import { requestAPI } from "../utils/api";
 import { Color } from "../utils/colors";
 import { setModals } from "../utils/modal";
 import { formatNumbersInString } from "../utils/number";
-import { signals } from "../utils/signals";
+import { signals, toggleSignal } from "../utils/signals";
 import { type Contest, type ContestMetadata, store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
@@ -59,7 +60,9 @@ const PageContest: Component = () => {
 	const navigate = useNavigate();
 	const params = useParams();
 
-	const [state, setState] = createSignal<"normal" | "manage">("normal");
+	const [state, setState] = createSignal<"normal" | "manage">(
+		(params.state as any) ?? "normal",
+	);
 
 	const [contest, setContest] = createStore<{
 		contest?: Partial<Contest>;
@@ -100,7 +103,7 @@ const PageContest: Component = () => {
 	});
 
 	createEffect(
-		on(
+		onEffect(
 			() => signals.fetchContest,
 			async () => {
 				setContest({});
@@ -414,10 +417,71 @@ const PageContest: Component = () => {
 		};
 
 		const ContestManage = () => {
+			const [processing, setProcessing] = createSignal(false);
+
+			const onPopUpClosed = async (data: any) => {
+				off("popup_closed", onPopUpClosed);
+				if (!data.button_id || data.button_id === "cancel" || processing())
+					return;
+
+				const request = await requestAPI(`/contest/${params.slug}/delete`);
+
+				if (request) {
+					const { status } = request;
+					if (status === "success") {
+						batch(() => {
+							setProcessing(false);
+						});
+
+						invokeHapticFeedbackImpact("heavy");
+
+						setTimeout(() => {
+							toggleSignal("fetchMyContests");
+						});
+
+						navigate("/", {
+							replace: true,
+						});
+						return;
+					}
+				}
+
+				setProcessing(false);
+			};
+
+			const onClickDelete = () => {
+				invokeHapticFeedbackImpact("rigid");
+
+				try {
+					postEvent("web_app_open_popup", {
+						title: t("pages.contest.manage.delete.title"),
+						message: t("pages.contest.manage.delete.prompt"),
+						buttons: [
+							{
+								id: params.slug,
+								type: "destructive",
+								text: t("pages.contest.manage.delete.confirm"),
+							},
+							{
+								id: "cancel",
+								type: "cancel",
+							},
+						],
+					});
+
+					on("popup_closed", onPopUpClosed);
+				} catch (_) {
+					try {
+						onPopUpClosed({ button_id: params.slug });
+					} catch (_) {}
+				}
+			};
+
 			return (
 				<div id="container-contest-manage">
 					<SectionList
 						title={t("pages.contest.footer.manage.text")}
+						description={t("pages.contest.manage.delete.hint")}
 						items={[
 							{
 								prepend: () => (
@@ -426,6 +490,11 @@ const PageContest: Component = () => {
 								label: t("pages.contest.manage.list.submissions"),
 								placeholder: () => "0",
 								clickable: true,
+								onClick: () => {
+									navigate(`/contest/${params.slug}/manage/submissions`, {
+										replace: true,
+									});
+								},
 							},
 							{
 								prepend: () => (
@@ -434,6 +503,11 @@ const PageContest: Component = () => {
 								label: t("pages.contest.manage.list.moderators"),
 								placeholder: () => "0",
 								clickable: true,
+								onClick: () => {
+									navigate(`/contest/${params.slug}/manage/moderators`, {
+										replace: true,
+									});
+								},
 							},
 							{
 								prepend: () => (
@@ -441,6 +515,11 @@ const PageContest: Component = () => {
 								),
 								label: t("pages.contest.manage.list.results"),
 								clickable: true,
+								onClick: () => {
+									navigate(`/contest/${params.slug}/manage/results`, {
+										replace: true,
+									});
+								},
 							},
 							{
 								prepend: () => (
@@ -449,6 +528,11 @@ const PageContest: Component = () => {
 
 								label: t("pages.contest.manage.list.options"),
 								clickable: true,
+								onClick: () => {
+									navigate(`/contest/${params.slug}/manage/options`, {
+										replace: true,
+									});
+								},
 							},
 							{
 								prepend: () => (
@@ -465,6 +549,7 @@ const PageContest: Component = () => {
 
 								label: t("pages.contest.manage.list.delete"),
 								clickable: true,
+								onClick: onClickDelete,
 							},
 						]}
 					/>
