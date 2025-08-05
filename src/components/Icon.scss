@@ -1,0 +1,22 @@
+.icon {
+   width: 1em;
+   height: 1em;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+
+   > svg {
+      font-size: var(--icon-font-size, 1em);
+      color: var(--icon-color, var(--text-color));
+   }
+
+   &.background {
+      border-radius: 0.375rem;
+      background: var(--icon-background, transparent);
+
+      > svg {
+         color: var(--icon-color, white);
+         font-size: var(--icon-font-size, 0.625em);
+      }
+   }
+}
