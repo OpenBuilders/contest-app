@@ -1,8 +1,16 @@
 import "./Contest.scss";
 import { useNavigate, useParams } from "@solidjs/router";
 import dayjs from "dayjs";
-import { FaRegularBookmark, FaSolidBookmark } from "solid-icons/fa";
+import { AiFillDelete } from "solid-icons/ai";
+import {
+	FaRegularBookmark,
+	FaSolidBookmark,
+	FaSolidListUl,
+	FaSolidUserShield,
+} from "solid-icons/fa";
 import { FiShare } from "solid-icons/fi";
+import { IoSettingsSharp, IoStatsChart } from "solid-icons/io";
+import { TbAwardFilled } from "solid-icons/tb";
 import {
 	batch,
 	type Component,
@@ -19,10 +27,12 @@ import {
 import { createStore } from "solid-js/store";
 import Award from "../components/Award";
 import BackButton from "../components/BackButton";
+import Badge from "../components/Badge";
 import CircularIconPattern from "../components/CircularIconPattern";
 import CustomMainButton from "../components/CustomMainButton";
+import Icon from "../components/Icon";
 import ImageLoader from "../components/ImageLoader";
-import { Section } from "../components/Section";
+import { Section, SectionList } from "../components/Section";
 import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
@@ -48,6 +58,8 @@ const PageContest: Component = () => {
 
 	const navigate = useNavigate();
 	const params = useParams();
+
+	const [state, setState] = createSignal<"normal" | "manage">("normal");
 
 	const [contest, setContest] = createStore<{
 		contest?: Partial<Contest>;
@@ -342,7 +354,7 @@ const PageContest: Component = () => {
 			);
 		};
 
-		const ContestBody = () => {
+		const ContestInfo = () => {
 			const ContestMetadata = () => {
 				return (
 					<ul>
@@ -385,7 +397,7 @@ const PageContest: Component = () => {
 			};
 
 			return (
-				<div>
+				<div id="container-contest-info">
 					<ContestMetadata />
 
 					<Section title={t("pages.contest.description.title")}>
@@ -401,9 +413,68 @@ const PageContest: Component = () => {
 			);
 		};
 
+		const ContestManage = () => {
+			return (
+				<div id="container-contest-manage">
+					<SectionList
+						title={t("pages.contest.footer.manage.text")}
+						items={[
+							{
+								prepend: () => (
+									<Icon component={FaSolidListUl} background="#3478f6" />
+								),
+								label: t("pages.contest.manage.list.submissions"),
+								placeholder: () => "0",
+								clickable: true,
+							},
+							{
+								prepend: () => (
+									<Icon component={FaSolidUserShield} background="#ea445a" />
+								),
+								label: t("pages.contest.manage.list.moderators"),
+								placeholder: () => "0",
+								clickable: true,
+							},
+							{
+								prepend: () => (
+									<Icon component={TbAwardFilled} background="#f19a37" />
+								),
+								label: t("pages.contest.manage.list.results"),
+								clickable: true,
+							},
+							{
+								prepend: () => (
+									<Icon component={IoSettingsSharp} background="#8e8e93" />
+								),
+
+								label: t("pages.contest.manage.list.options"),
+								clickable: true,
+							},
+							{
+								prepend: () => (
+									<Icon component={IoStatsChart} background="#a357d7" />
+								),
+
+								label: t("pages.contest.manage.list.statistics"),
+								placeholder: () => <Badge label={t("general.soon")} />,
+							},
+							{
+								prepend: () => (
+									<Icon component={AiFillDelete} background="#eb4e3d" />
+								),
+
+								label: t("pages.contest.manage.list.delete"),
+								clickable: true,
+							},
+						]}
+					/>
+				</div>
+			);
+		};
+
 		const ContestFooter = () => {
 			const onClickManage = () => {
-				console.log("Manage");
+				setState(state() === "normal" ? "manage" : "normal");
 			};
 
 			const onClickParticipate = () => {
@@ -417,9 +488,21 @@ const PageContest: Component = () => {
 			return (
 				<footer>
 					<Switch>
-						<Match when={contest.metadata?.role === "owner" && false}>
+						<Match
+							when={contest.metadata?.role === "owner" && state() === "normal"}
+						>
 							<CustomMainButton
 								text={t("pages.contest.footer.manage.text")}
+								onClick={onClickManage}
+								backgroundColor="var(--theme-bg-edge)"
+							/>
+						</Match>
+
+						<Match
+							when={contest.metadata?.role === "owner" && state() === "manage"}
+						>
+							<CustomMainButton
+								text={t("pages.contest.footer.view.text")}
 								onClick={onClickManage}
 								backgroundColor="var(--theme-bg-edge)"
 							/>
@@ -466,7 +549,15 @@ const PageContest: Component = () => {
 			>
 				<ContestHeader />
 
-				<ContestBody />
+				<Switch>
+					<Match when={state() === "normal"}>
+						<ContestInfo />
+					</Match>
+
+					<Match when={state() === "manage"}>
+						<ContestManage />
+					</Match>
+				</Switch>
 
 				<ContestFooter />
 			</div>

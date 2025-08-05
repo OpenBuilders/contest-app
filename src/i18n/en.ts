@@ -20,6 +20,7 @@ const dict = {
 		},
 		ok: "Ok",
 		continue: "Continue",
+		soon: "Soon",
 	},
 	pages: {
 		error: {
@@ -164,9 +165,22 @@ const dict = {
 				title: "Description",
 				empty: "No description provided",
 			},
+			manage: {
+				list: {
+					submissions: "Submissions",
+					moderators: "Moderators",
+					results: "Results",
+					options: "Options",
+					statistics: "Statistics",
+					delete: "Delete Contest",
+				},
+			},
 			footer: {
 				manage: {
 					text: "Manage Contest",
+				},
+				view: {
+					text: "View Contest",
 				},
 				participate: {
 					text: "Participate",

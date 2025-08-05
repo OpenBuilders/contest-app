@@ -50,7 +50,7 @@ export const Section: ParentComponent<SectionProps> = (props) => {
 type SectionListItem = {
 	prepend?: Component;
 	label: string;
-	placeholder: Component;
+	placeholder?: Component;
 	clickable?: boolean;
 	onClick?: (e: MouseEvent) => void;
 	onClickLabel?: (e: MouseEvent) => void;
