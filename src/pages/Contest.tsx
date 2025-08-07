@@ -357,48 +357,48 @@ const PageContest: Component = () => {
 			);
 		};
 
+		const ContestMetadata = () => {
+			return (
+				<ul id="container-contest-metadata">
+					<li>
+						<span>{t("pages.contest.header.entry.title")}</span>
+						<div>
+							<Show
+								when={(contest.contest?.fee ?? 0) > 0}
+								fallback={<span>{t("pages.contest.header.entry.free")}</span>}
+							>
+								<span>{contest.contest!.fee?.toLocaleString()}</span>
+								<span>TON</span>
+							</Show>
+						</div>
+					</li>
+
+					<li>
+						<span>{t("pages.contest.header.prize.title")}</span>
+						<Award
+							text={formatNumbersInString(
+								contest.contest?.prize ||
+									t("pages.contest.header.prize.unknown"),
+							)}
+						/>
+					</li>
+
+					<li>
+						<span>{t("pages.contest.header.deadline.title")}</span>
+						<div>
+							<span>
+								{dayjs.unix(contest.contest!.date_end!).format("MMM D")}
+							</span>
+							<span>
+								{dayjs.unix(contest.contest!.date_end!).format("YYYY")}
+							</span>
+						</div>
+					</li>
+				</ul>
+			);
+		};
+
 		const ContestInfo = () => {
-			const ContestMetadata = () => {
-				return (
-					<ul>
-						<li>
-							<span>{t("pages.contest.header.entry.title")}</span>
-							<div>
-								<Show
-									when={(contest.contest?.fee ?? 0) > 0}
-									fallback={<span>{t("pages.contest.header.entry.free")}</span>}
-								>
-									<span>{contest.contest!.fee?.toLocaleString()}</span>
-									<span>TON</span>
-								</Show>
-							</div>
-						</li>
-
-						<li>
-							<span>{t("pages.contest.header.prize.title")}</span>
-							<Award
-								text={formatNumbersInString(
-									contest.contest?.prize ||
-										t("pages.contest.header.prize.unknown"),
-								)}
-							/>
-						</li>
-
-						<li>
-							<span>{t("pages.contest.header.deadline.title")}</span>
-							<div>
-								<span>
-									{dayjs.unix(contest.contest!.date_end!).format("MMM D")}
-								</span>
-								<span>
-									{dayjs.unix(contest.contest!.date_end!).format("YYYY")}
-								</span>
-							</div>
-						</li>
-					</ul>
-				);
-			};
-
 			return (
 				<div id="container-contest-info">
 					<ContestMetadata />
@@ -479,6 +479,8 @@ const PageContest: Component = () => {
 
 			return (
 				<div id="container-contest-manage">
+					<ContestMetadata />
+
 					<SectionList
 						title={t("pages.contest.footer.manage.text")}
 						description={t("pages.contest.manage.delete.hint")}
@@ -559,6 +561,7 @@ const PageContest: Component = () => {
 
 		const ContestFooter = () => {
 			const onClickManage = () => {
+				invokeHapticFeedbackImpact("light");
 				setState(state() === "normal" ? "manage" : "normal");
 			};
 
