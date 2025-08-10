@@ -1,0 +1,30 @@
+.contest-thumbnail {
+   overflow: hidden;
+
+   > div {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+
+      &.empty {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         position: relative;
+         color: white;
+         text-align: center;
+         font-size: 1.75rem;
+         overflow: hidden;
+         z-index: 0;
+
+         &::before {
+            content: "";
+            background-color: var(--accent);
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.875;
+         }
+      }
+   }
+}

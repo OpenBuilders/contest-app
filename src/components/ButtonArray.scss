@@ -1,0 +1,9 @@
+ul.button-array {
+   display: flex;
+   align-items: center;
+   gap: 0.25rem;
+
+   > li {
+      padding: 0.25rem;
+   }
+}
