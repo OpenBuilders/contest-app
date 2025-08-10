@@ -3,11 +3,13 @@ import { setStore, store } from "../utils/store";
 import "./Splash.scss";
 
 import { postEvent, retrieveRawInitData } from "@telegram-apps/sdk-solid";
-import { type Component, onMount } from "solid-js";
+import { batch, type Component, onMount } from "solid-js";
 import { requestAPI } from "../utils/api";
 import { urlParseQueryString } from "../utils/auth";
 import { lottixWorkers } from "../utils/lottix";
+import { setModals } from "../utils/modal";
 import { preloadPipeline } from "../utils/preload";
+import { lp } from "../utils/telegram";
 
 const PageSplash: Component = () => {
 	const navigate = useNavigate();
@@ -51,11 +53,28 @@ const PageSplash: Component = () => {
 
 		Promise.all(promises).then((result) => {
 			if (result.filter(Boolean).length === promises.length) {
+				if (lp?.tgWebAppStartParam) {
+					if (lp.tgWebAppStartParam.startsWith("moderator-join-")) {
+						batch(() => {
+							setModals(
+								"moderatorJoin",
+								"slug_moderator",
+								lp!.tgWebAppStartParam?.replace("moderator-join-", ""),
+							);
+
+							setModals("moderatorJoin", "open", true);
+						});
+					}
+				}
+
 				if (params.slug) {
 					if (params.slug.startsWith("contest-")) {
-						navigate(`/contest/${params.slug.replace("contest-", "")}`, {
-							replace: true,
-						});
+						navigate(
+							`/contest/${params.slug.replace("contest-", "").replace(/-/g, "/")}`,
+							{
+								replace: true,
+							},
+						);
 					} else {
 						navigate(`/${params.slug}`, { replace: true });
 					}

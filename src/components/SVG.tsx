@@ -4,6 +4,8 @@ import { symbolizeSVG } from "../utils/svg";
 
 type SVGSymbolProps = {
 	id: string;
+	onClick?: (e: MouseEvent) => void;
+	class?: string;
 };
 
 export const SVGSymbol: Component<SVGSymbolProps> = (props) => {
@@ -15,6 +17,8 @@ export const SVGSymbol: Component<SVGSymbolProps> = (props) => {
 			height="1em"
 			width="1em"
 			xmlns="http://www.w3.org/2000/svg"
+			onClick={props.onClick}
+			class={props.class}
 		>
 			<use href={`#${props.id}`}></use>
 		</svg>

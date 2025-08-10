@@ -1,2 +1,114 @@
 #container-page-contest-manage-moderators {
+   overflow: hidden;
+
+   > div:first-child {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+
+      > header {
+         display: flex;
+         align-items: center;
+         padding: 1rem 1rem 0;
+         gap: 1rem;
+
+         > h1 {
+            flex-grow: 1;
+            font-size: 1.25rem;
+            font-weight: 600;
+         }
+
+         > ul {
+            color: var(--accent);
+         }
+      }
+   }
+}
+
+#container-contest-moderators-empty {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 1.125rem;
+   flex-grow: 1;
+   height: 100%;
+   text-align: center;
+
+   .lottie-animation {
+      width: 8rem;
+   }
+
+   > span {
+      font-size: 1rem;
+   }
+
+   > button {
+      color: var(--accent);
+      cursor: pointer;
+      margin-top: 0.25rem;
+      font-size: 1.0625rem;
+   }
+}
+
+#container-contest-moderators,
+#container-contest-moderators-loading {
+   padding: 1rem;
+   overflow: hidden;
+   display: flex;
+   flex-direction: column;
+   padding-bottom: calc(
+      var(--tg-viewport-safe-area-inset-bottom) +
+         var(--tg-viewport-content-safe-area-inset-bottom)
+   );
+
+   > section {
+      overflow: hidden;
+      flex-shrink: unset;
+
+      > div {
+         overflow: hidden;
+         overflow-y: auto;
+
+         > div {
+            overflow: hidden;
+            flex-shrink: 0;
+
+            > div {
+               padding-inline-end: 1rem;
+
+               &:has(.prepend)::after {
+                  inset-inline-start: 4rem;
+               }
+
+               > div.prepend {
+                  > div.avatar {
+                     font-size: 2rem;
+                  }
+               }
+
+               > span {
+                  font-size: 0.9375rem;
+                  font-weight: 500;
+               }
+
+               div.placeholder > svg {
+                  font-size: 1.125rem;
+                  color: var(--tg-theme-destructive-text-color);
+               }
+            }
+         }
+      }
+   }
+}
+
+#container-contest-moderators-loading {
+   flex-grow: 1;
+
+   > div {
+      width: 100%;
+      flex-grow: 1;
+      border-radius: 0.75rem;
+   }
 }

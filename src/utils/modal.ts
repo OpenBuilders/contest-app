@@ -4,6 +4,7 @@ import ModalContestCreate from "../modals/Create";
 import ModalContestCreateAnonymous from "../modals/CreateAnonymous";
 import ModalContestCreateCategory from "../modals/CreateCategory";
 import ModalContestCreatePublic from "../modals/CreatePublic";
+import ModalModeratorJoin from "../modals/ModeratorJoin";
 import ModalParticipate from "../modals/Participate";
 import ModalSettings from "../modals/Settings";
 import type { Contest, ContestMetadata } from "./store";
@@ -19,10 +20,13 @@ type ModalsStore = {
 	createPublic: ModalState;
 	createAnonymous: ModalState;
 	createCategory: ModalState;
-	participate: {
+	participate: ModalState & {
 		contest?: Contest;
 		metadata?: ContestMetadata;
-	} & ModalState;
+	};
+	moderatorJoin: ModalState & {
+		slug_moderator?: string;
+	};
 };
 
 export const [modals, setModals] = createStore<ModalsStore>({
@@ -49,5 +53,9 @@ export const [modals, setModals] = createStore<ModalsStore>({
 	participate: {
 		open: false,
 		component: ModalParticipate,
+	},
+	moderatorJoin: {
+		open: false,
+		component: ModalModeratorJoin,
 	},
 });

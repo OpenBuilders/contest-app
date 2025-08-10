@@ -49,7 +49,7 @@ export const Section: ParentComponent<SectionProps> = (props) => {
 
 type SectionListItem = {
 	prepend?: Component;
-	label: string;
+	label: string | Component;
 	placeholder?: Component;
 	clickable?: boolean;
 	onClick?: (e: MouseEvent) => void;
@@ -82,7 +82,13 @@ export const SectionList: Component<SectionListProps> = (props) => {
 								</div>
 							</Show>
 
-							<span onClick={item.onClickLabel}>{item.label}</span>
+							<span onClick={item.onClickLabel}>
+								{typeof item.label === "string" ? (
+									item.label
+								) : (
+									<Dynamic component={item.label} />
+								)}
+							</span>
 
 							<div class="placeholder">
 								<Dynamic component={item.placeholder} />

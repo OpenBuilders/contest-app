@@ -113,20 +113,7 @@
                   var(--tg-viewport-content-safe-area-inset-top)
             );
             inset-inline-end: 1rem;
-
-            > li {
-               font-size: 1.25rem;
-               display: flex;
-               align-items: center;
-               justify-content: center;
-               width: 2.25rem;
-               height: 2.25rem;
-               cursor: pointer;
-
-               &.share {
-                  font-size: 1.3125rem;
-               }
-            }
+            padding-top: 1rem;
          }
       }
 

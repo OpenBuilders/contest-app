@@ -15,7 +15,7 @@ const dict = {
 		},
 		roles: {
 			owner: "Owner",
-			creator: "Creator",
+			moderator: "Moderator",
 			participant: "Participant",
 		},
 		ok: "Ok",
@@ -180,6 +180,28 @@ const dict = {
 					prompt: "Are you sure you want to delete this contest?",
 					hint: "Deleted contests cannot be recovered.",
 				},
+				moderators: {
+					title: "Moderators",
+					empty: {
+						text: "Moderators can view and vote on submissions.",
+						button: "Let's invite moderators!",
+					},
+					invite: {
+						text: "👮‍♂️ Join the moderation team of {title}",
+						revoke: {
+							title: "Revoke Link",
+							prompt:
+								"Are you sure you want to revoke the current invite link?",
+							button: "Revoke",
+						},
+						remove: {
+							title: "Remove Moderator",
+							prompt:
+								"Are you sure you want to remove this moderator from the contest?",
+							button: "Remove",
+						},
+					},
+				},
 			},
 			footer: {
 				manage: {
@@ -224,6 +246,12 @@ const dict = {
 				title: "What Is Anonymous Mode?",
 				description:
 					"Participant identities are hidden from the public and replaced with fun aliases. Moderators and the contest owner can still see who joined.",
+			},
+		},
+		moderators: {
+			join: {
+				prompt: "Do you want to join the moderator team for this contest?",
+				button: "Join Moderators",
 			},
 		},
 		participate: {

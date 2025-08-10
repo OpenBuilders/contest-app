@@ -144,3 +144,21 @@ select {
       outline: none;
    }
 }
+
+.clickable {
+   cursor: pointer;
+   touch-action: none;
+
+   &:not(.disabled) {
+      &:focus,
+      &:active {
+         opacity: 0.75;
+      }
+   }
+
+   &.disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.475;
+   }
+}

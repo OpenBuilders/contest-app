@@ -1,6 +1,5 @@
 import "./Contest.scss";
 import { useNavigate, useParams } from "@solidjs/router";
-import { off, on } from "@telegram-apps/sdk-solid";
 import dayjs from "dayjs";
 import { AiFillDelete } from "solid-icons/ai";
 import {
@@ -29,6 +28,7 @@ import { createStore } from "solid-js/store";
 import Award from "../components/Award";
 import BackButton from "../components/BackButton";
 import Badge from "../components/Badge";
+import ButtonArray from "../components/ButtonArray";
 import CircularIconPattern from "../components/CircularIconPattern";
 import CustomMainButton from "../components/CustomMainButton";
 import Icon from "../components/Icon";
@@ -40,6 +40,7 @@ import { requestAPI } from "../utils/api";
 import { Color } from "../utils/colors";
 import { setModals } from "../utils/modal";
 import { formatNumbersInString } from "../utils/number";
+import { popupManager } from "../utils/popup";
 import { signals, toggleSignal } from "../utils/signals";
 import { type Contest, type ContestMetadata, store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
@@ -332,20 +333,29 @@ const PageContest: Component = () => {
 						/>
 					</Show>
 
-					<ul>
-						<li class="bookmark" onClick={onClickBookmark}>
-							<Show
-								when={contest.metadata?.bookmarked}
-								fallback={<FaRegularBookmark />}
-							>
-								<FaSolidBookmark />
-							</Show>
-						</li>
-
-						<li class="share" onClick={onClickShare}>
-							<FiShare />
-						</li>
-					</ul>
+					<ButtonArray
+						items={[
+							{
+								component: () => (
+									<Show
+										when={contest.metadata?.bookmarked}
+										fallback={<FaRegularBookmark />}
+									>
+										<FaSolidBookmark />
+									</Show>
+								),
+								fontSize: "1.1875rem",
+								class: "clickable",
+								onClick: onClickBookmark,
+							},
+							{
+								component: FiShare,
+								fontSize: "1.25rem",
+								class: "clickable",
+								onClick: onClickShare,
+							},
+						]}
+					/>
 
 					<h1>
 						{contest.contest?.title}
@@ -419,19 +429,36 @@ const PageContest: Component = () => {
 		const ContestManage = () => {
 			const [processing, setProcessing] = createSignal(false);
 
-			const onPopUpClosed = async (data: any) => {
-				off("popup_closed", onPopUpClosed);
-				if (!data.button_id || data.button_id === "cancel" || processing())
-					return;
+			const onClickDelete = async () => {
+				if (processing()) return;
+
+				invokeHapticFeedbackImpact("rigid");
+
+				const data = await popupManager.openPopup({
+					title: t("pages.contest.manage.delete.title"),
+					message: t("pages.contest.manage.delete.prompt"),
+					buttons: [
+						{
+							id: params.slug,
+							type: "destructive",
+							text: t("pages.contest.manage.delete.confirm"),
+						},
+						{
+							id: "cancel",
+							type: "cancel",
+						},
+					],
+				});
+
+				if (!data.button_id || data.button_id === "cancel") return;
+				setProcessing(true);
 
 				const request = await requestAPI(`/contest/${params.slug}/delete`);
 
 				if (request) {
 					const { status } = request;
 					if (status === "success") {
-						batch(() => {
-							setProcessing(false);
-						});
+						setProcessing(false);
 
 						invokeHapticFeedbackImpact("heavy");
 
@@ -447,34 +474,6 @@ const PageContest: Component = () => {
 				}
 
 				setProcessing(false);
-			};
-
-			const onClickDelete = () => {
-				invokeHapticFeedbackImpact("rigid");
-
-				try {
-					postEvent("web_app_open_popup", {
-						title: t("pages.contest.manage.delete.title"),
-						message: t("pages.contest.manage.delete.prompt"),
-						buttons: [
-							{
-								id: params.slug,
-								type: "destructive",
-								text: t("pages.contest.manage.delete.confirm"),
-							},
-							{
-								id: "cancel",
-								type: "cancel",
-							},
-						],
-					});
-
-					on("popup_closed", onPopUpClosed);
-				} catch (_) {
-					try {
-						onPopUpClosed({ button_id: params.slug });
-					} catch (_) {}
-				}
 			};
 
 			return (
@@ -503,7 +502,7 @@ const PageContest: Component = () => {
 									<Icon component={FaSolidUserShield} background="#ea445a" />
 								),
 								label: t("pages.contest.manage.list.moderators"),
-								placeholder: () => "0",
+								placeholder: () => contest.metadata?.moderators_count,
 								clickable: true,
 								onClick: () => {
 									navigate(`/contest/${params.slug}/manage/moderators`, {

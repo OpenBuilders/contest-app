@@ -1,3 +1,4 @@
+import OutlineDuckCommentate from "../assets/outlines/duck-commentate-outline.svg?raw";
 import OutlineDuckConfetti from "../assets/outlines/duck-confetti-outline.svg?raw";
 import OutlineDuckCraft from "../assets/outlines/duck-craft-outline.svg?raw";
 import OutlineDuckCry from "../assets/outlines/duck-cry-outline.svg?raw";
@@ -44,5 +45,9 @@ export const TGS = {
 	duckCry: {
 		url: "/assets/tgs/duck-cry.tgs",
 		outline: OutlineDuckCry,
+	},
+	duckCommentate: {
+		url: "/assets/tgs/duck-commentate.tgs",
+		outline: OutlineDuckCommentate,
 	},
 };

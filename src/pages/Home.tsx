@@ -10,17 +10,15 @@ import {
 	createMemo,
 	createSignal,
 	For,
-	Match,
 	on,
 	onMount,
 	Show,
-	Switch,
 } from "solid-js";
-import ImageLoader from "../components/ImageLoader";
+import ButtonArray from "../components/ButtonArray";
+import ContestThumbnail from "../components/ContestThumbnail";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import { SVGSymbol } from "../components/SVG";
 import Tabbar from "../components/Tabbar";
-import ThemePreview from "../components/ThemePreview";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
@@ -29,7 +27,10 @@ import { formatNumbersInString } from "../utils/number";
 import { setSettings, settings } from "../utils/settings";
 import { signals } from "../utils/signals";
 import { getSymbolSVGString } from "../utils/symbols";
-import { ContestThemeBackdrops } from "../utils/themes";
+import {
+	ContestThemeBackdrops,
+	type ContestThemeSymbol,
+} from "../utils/themes";
 
 const PageHome: Component = () => {
 	const navigate = useNavigate();
@@ -157,36 +158,13 @@ const PageHome: Component = () => {
 
 							return (
 								<A href={`/contest/${contest.contest.slug}`}>
-									<Switch
-										fallback={
-											<div class="empty">
-												<SVGSymbol id="AiOutlineTrophy" />
-											</div>
+									<ContestThumbnail
+										image={contest.contest.image}
+										backdrop={
+											ContestThemeBackdrops.find((i) => i.id === backdrop)!
 										}
-									>
-										<Match when={contest.contest.image}>
-											<ImageLoader
-												src={`${import.meta.env.VITE_BACKEND_BASE_URL}/images/${contest.contest.image}`}
-											/>
-										</Match>
-
-										<Match when={backdrop && symbol}>
-											<ThemePreview
-												backdrop={
-													ContestThemeBackdrops.find((i) => i.id === backdrop)!
-												}
-												symbol={symbol as any}
-												layers={[
-													{
-														count: 1,
-														alpha: 1,
-														distance: 0,
-														size: 24,
-													},
-												]}
-											/>
-										</Match>
-									</Switch>
+										symbol={symbol as ContestThemeSymbol}
+									/>
 
 									<div>
 										<h2>
@@ -310,7 +288,16 @@ const PageHome: Component = () => {
 				<header>
 					<h1>{t("pages.home.contests.title")}</h1>
 
-					<FaSolidPlus onClick={onClickButtonCreate} />
+					<ButtonArray
+						items={[
+							{
+								component: FaSolidPlus,
+								fontSize: "1.1875rem",
+								class: "clickable",
+								onClick: onClickButtonCreate,
+							},
+						]}
+					/>
 				</header>
 
 				<Show when={store.contests?.my} fallback={<SectionContestsLoading />}>

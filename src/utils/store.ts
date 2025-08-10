@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store";
 
-type User = {
+export type User = {
 	user_id: number;
 	first_name: string;
 	last_name?: string;
@@ -34,6 +34,7 @@ export type Contest = {
 export type ContestMetadata = {
 	role?: "owner" | "moderator" | "participant";
 	bookmarked?: boolean;
+	moderators_count?: number;
 };
 
 export type AnnotatedContest = {

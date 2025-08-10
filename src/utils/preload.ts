@@ -1,4 +1,5 @@
 import { AiOutlineTrophy } from "solid-icons/ai";
+import { CgRemove } from "solid-icons/cg";
 import { VsVerifiedFilled } from "solid-icons/vs";
 import type { Component } from "solid-js";
 import { LottiePlayerFileCache } from "../components/LottiePlayer";
@@ -47,6 +48,10 @@ const predefineSVGSymbols = async () => {
 		{
 			id: "VsVerifiedFilled",
 			component: VsVerifiedFilled,
+		},
+		{
+			id: "CgRemove",
+			component: CgRemove,
 		},
 	];
 
