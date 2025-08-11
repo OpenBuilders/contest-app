@@ -35,11 +35,37 @@ export type ContestMetadata = {
 	role?: "owner" | "moderator" | "participant";
 	bookmarked?: boolean;
 	moderators_count?: number;
+	submissions_count?: number;
 };
 
 export type AnnotatedContest = {
 	contest: Contest;
 	metadata: ContestMetadata;
+};
+
+export type Submission = {
+	id: number;
+	anonymous_profile: User["anonymous_profile"];
+	user_id?: User["user_id"];
+	first_name?: User["first_name"];
+	last_name?: User["last_name"];
+	profile_photo?: User["profile_photo"];
+	submission: {
+		link: string;
+		description?: string;
+	};
+	likes: number;
+	dislikes: number;
+};
+
+export type SubmissionMetadata = {
+	liked_by_viewer: boolean;
+	disliked_by_viewer: boolean;
+};
+
+export type AnnotatedSubmission = {
+	submission: Submission;
+	metadata: SubmissionMetadata;
 };
 
 export type Store = {

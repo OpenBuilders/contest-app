@@ -1,5 +1,12 @@
-import { AiOutlineTrophy } from "solid-icons/ai";
+import {
+	AiFillDislike,
+	AiFillLike,
+	AiOutlineDislike,
+	AiOutlineLike,
+	AiOutlineTrophy,
+} from "solid-icons/ai";
 import { CgRemove } from "solid-icons/cg";
+import { FaSolidChevronRight } from "solid-icons/fa";
 import { VsVerifiedFilled } from "solid-icons/vs";
 import type { Component } from "solid-js";
 import { LottiePlayerFileCache } from "../components/LottiePlayer";
@@ -52,6 +59,26 @@ const predefineSVGSymbols = async () => {
 		{
 			id: "CgRemove",
 			component: CgRemove,
+		},
+		{
+			id: "FaSolidChevronRight",
+			component: FaSolidChevronRight,
+		},
+		{
+			id: "AiOutlineLike",
+			component: AiOutlineLike,
+		},
+		{
+			id: "AiOutlineDislike",
+			component: AiOutlineDislike,
+		},
+		{
+			id: "AiFillDislike",
+			component: AiFillDislike,
+		},
+		{
+			id: "AiFillLike",
+			component: AiFillLike,
 		},
 	];
 

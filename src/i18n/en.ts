@@ -202,6 +202,12 @@ const dict = {
 						},
 					},
 				},
+				submissions: {
+					title: "Submissions",
+					empty: {
+						text: "No submissions yet. Spread the word!",
+					},
+				},
 			},
 			footer: {
 				manage: {

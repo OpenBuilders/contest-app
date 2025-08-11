@@ -10,11 +10,11 @@ import {
 } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import "./Section.scss";
-import { FaSolidChevronRight } from "solid-icons/fa";
 import { HiSolidChevronUpDown } from "solid-icons/hi";
 import { hideKeyboardOnEnter } from "../utils/input";
 import { invokeHapticFeedbackSelectionChanged } from "../utils/telegram";
 import Modal from "./Modal";
+import { SVGSymbol } from "./SVG";
 import type { WheelPickerItem } from "./WheelPicker";
 import WheelPicker from "./WheelPicker";
 
@@ -233,7 +233,7 @@ export const SectionListPicker: Component<SectionListPickerProps> = (props) => {
 			<span onClick={() => setModal(true)}>
 				<span>{props.items.find((i) => i.value === props.value)?.label}</span>
 
-				<FaSolidChevronRight />
+				<SVGSymbol id="FaSolidChevronRight" />
 			</span>
 
 			<Show when={modal()}>

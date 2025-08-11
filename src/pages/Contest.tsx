@@ -489,7 +489,7 @@ const PageContest: Component = () => {
 									<Icon component={FaSolidListUl} background="#3478f6" />
 								),
 								label: t("pages.contest.manage.list.submissions"),
-								placeholder: () => "0",
+								placeholder: () => contest.metadata?.submissions_count,
 								clickable: true,
 								onClick: () => {
 									navigate(`/contest/${params.slug}/manage/submissions`, {
