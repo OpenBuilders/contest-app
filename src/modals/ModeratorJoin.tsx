@@ -1,13 +1,13 @@
 import "./ModeratorJoin.scss";
 import { useNavigate } from "@solidjs/router";
 import {
-	batch,
 	type Component,
 	createMemo,
 	createSignal,
 	onMount,
 	Show,
 } from "solid-js";
+import { produce } from "solid-js/store";
 import ContestThumbnail from "../components/ContestThumbnail";
 import CustomMainButton from "../components/CustomMainButton";
 import Modal from "../components/Modal";
@@ -76,10 +76,13 @@ const ModalModeratorJoin: Component = () => {
 	};
 
 	const onClose = () => {
-		batch(() => {
-			setModals("moderatorJoin", "slug_moderator", undefined);
-			setModals("moderatorJoin", "open", false);
-		});
+		setModals(
+			"moderatorJoin",
+			produce((data) => {
+				data.slug_moderator = undefined;
+				data.open = false;
+			}),
+		);
 	};
 
 	const onClickJoin = async () => {

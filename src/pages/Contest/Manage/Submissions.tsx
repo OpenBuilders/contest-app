@@ -1,17 +1,19 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import "./Submissions.scss";
+import { trackDeep } from "@solid-primitives/deep";
 import { TbSortAscending, TbSortDescending } from "solid-icons/tb";
 import {
 	type Component,
-	createMemo,
+	createEffect,
 	createSignal,
 	For,
 	Match,
+	onCleanup,
 	onMount,
 	Show,
 	Switch,
 } from "solid-js";
-import { createStore } from "solid-js/store";
+import { createStore, produce } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../../../components/Avatar";
 import BackButton from "../../../components/BackButton";
 import ButtonArray from "../../../components/ButtonArray";
@@ -20,13 +22,22 @@ import { SVGSymbol } from "../../../components/SVG";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { TGS } from "../../../utils/animations";
 import { requestAPI } from "../../../utils/api";
+import { setModals } from "../../../utils/modal";
 import { type AnnotatedSubmission, store } from "../../../utils/store";
 import { invokeHapticFeedbackImpact } from "../../../utils/telegram";
+
+export const [data, setData] = createStore<{
+	submissions?: AnnotatedSubmission[];
+}>({});
 
 const PageContestManageSubmissions: Component = () => {
 	const navigate = useNavigate();
 	const params = useParams();
 	const { t } = useTranslation();
+
+	setData({
+		submissions: undefined,
+	});
 
 	if (!store.token) {
 		navigate(`/splash/contest-${params.slug}-manage-submissions`, {
@@ -37,18 +48,20 @@ const PageContestManageSubmissions: Component = () => {
 
 	const [sort, setSort] = createSignal<"date" | "score">("date");
 
-	const [data, setData] = createStore<{
-		submissions?: AnnotatedSubmission[];
-	}>({});
+	createEffect(() => {
+		trackDeep(data);
 
-	const submissions = createMemo(() => {
-		if (sort() === "score") {
-			return data.submissions?.sort(
-				(a, b) => a.submission.likes - b.submission.likes,
-			);
-		}
-
-		return data.submissions;
+		setData(
+			produce((data) => {
+				if (sort() === "score") {
+					data.submissions?.sort(
+						(a, b) => b.submission.likes - a.submission.likes,
+					);
+				} else {
+					data.submissions?.sort((a, b) => b.submission.id - a.submission.id);
+				}
+			}),
+		);
 	});
 
 	const onClickSort = () => {
@@ -86,6 +99,12 @@ const PageContestManageSubmissions: Component = () => {
 		if (!data.submissions) {
 			await fetchData();
 		}
+	});
+
+	onCleanup(() => {
+		setData({
+			submissions: undefined,
+		});
 	});
 
 	const SectionSubmissionsLoading = () => {
@@ -131,9 +150,20 @@ const PageContestManageSubmissions: Component = () => {
 	};
 
 	const SectionSubmissions = () => {
+		const onClickSubmission = (submission: AnnotatedSubmission) => {
+			setModals(
+				"submission",
+				produce((data) => {
+					data.slug = params.slug;
+					data.submission = submission;
+					data.open = true;
+				}),
+			);
+		};
+
 		return (
 			<div id="container-contest-submissions">
-				<For each={submissions()}>
+				<For each={data.submissions}>
 					{(submission) => {
 						const fullname = submission.submission.user_id
 							? [
@@ -150,7 +180,7 @@ const PageContestManageSubmissions: Component = () => {
 									.join(" ");
 
 						return (
-							<div>
+							<div onClick={() => onClickSubmission(submission)}>
 								<Show
 									when={submission.submission.user_id}
 									fallback={
@@ -172,9 +202,10 @@ const PageContestManageSubmissions: Component = () => {
 
 									<ul>
 										<li
-											class={
-												submission.metadata.liked_by_viewer ? "fill" : "empty"
-											}
+											classList={{
+												fill: submission.metadata.liked_by_viewer,
+												empty: !submission.metadata.liked_by_viewer,
+											}}
 										>
 											<SVGSymbol
 												id={
@@ -187,11 +218,10 @@ const PageContestManageSubmissions: Component = () => {
 										</li>
 
 										<li
-											class={
-												submission.metadata.disliked_by_viewer
-													? "fill"
-													: "empty"
-											}
+											classList={{
+												fill: submission.metadata.disliked_by_viewer,
+												empty: !submission.metadata.disliked_by_viewer,
+											}}
 										>
 											<SVGSymbol
 												id={
@@ -221,7 +251,7 @@ const PageContestManageSubmissions: Component = () => {
 					<header>
 						<h1>{t("pages.contest.manage.submissions.title")}</h1>
 
-						<Show when={(submissions()?.length ?? 0) > 0}>
+						<Show when={(data.submissions?.length ?? 0) > 0}>
 							<ButtonArray
 								items={[
 									{

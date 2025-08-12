@@ -7,7 +7,7 @@ import {
 	onMount,
 	Show,
 } from "solid-js";
-import { createStore } from "solid-js/store";
+import { createStore, produce } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../components/Avatar";
 import CustomMainButton from "../components/CustomMainButton";
 import Editor from "../components/Editor";
@@ -45,11 +45,14 @@ const ModalParticipate: Component = () => {
 	});
 
 	const onClose = () => {
-		batch(() => {
-			setModals("participate", "open", false);
-			setModals("participate", "contest", undefined);
-			setModals("participate", "metadata", undefined);
-		});
+		setModals(
+			"participate",
+			produce((data) => {
+				data.contest = undefined;
+				data.metadata = undefined;
+				data.open = false;
+			}),
+		);
 	};
 
 	const buttonDisabled = createMemo(() => {
@@ -93,9 +96,15 @@ const ModalParticipate: Component = () => {
 
 			if (status === "success") {
 				batch(() => {
-					setModals("participate", "contest", undefined);
-					setModals("participate", "metadata", undefined);
-					setModals("participate", "open", false);
+					setModals(
+						"participate",
+						produce((data) => {
+							data.contest = undefined;
+							data.metadata = undefined;
+							data.open = false;
+						}),
+					);
+
 					toggleSignal("fetchContest");
 				});
 

@@ -213,6 +213,9 @@ const dict = {
 				manage: {
 					text: "Manage Contest",
 				},
+				submissions: {
+					text: "View Submissions",
+				},
 				view: {
 					text: "View Contest",
 				},
@@ -277,6 +280,13 @@ const dict = {
 				},
 				button: "Submit",
 			},
+		},
+		submission: {
+			description: {
+				title: "Description",
+				empty: "No description provided",
+			},
+			button: "View Submission",
 		},
 	},
 };

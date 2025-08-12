@@ -24,7 +24,7 @@ import {
 	Show,
 	Switch,
 } from "solid-js";
-import { createStore } from "solid-js/store";
+import { createStore, produce } from "solid-js/store";
 import Award from "../components/Award";
 import BackButton from "../components/BackButton";
 import Badge from "../components/Badge";
@@ -178,12 +178,21 @@ const PageContest: Component = () => {
 		}
 	};
 
+	createEffect(() => {
+		if (contest.metadata?.role && contest.metadata?.role !== "owner") {
+			setState("normal");
+		}
+	});
+
 	const onBackButton = () => {
-		batch(() => {
-			setModals("participate", "contest", undefined);
-			setModals("participate", "metadata", undefined);
-			setModals("participate", "open", false);
-		});
+		setModals(
+			"participate",
+			produce((data) => {
+				data.contest = undefined;
+				data.metadata = undefined;
+				data.open = false;
+			}),
+		);
 
 		navigate("/", {
 			replace: true,
@@ -565,10 +574,20 @@ const PageContest: Component = () => {
 			};
 
 			const onClickParticipate = () => {
-				batch(() => {
-					setModals("participate", "contest", contest.contest);
-					setModals("participate", "metadata", contest.metadata);
-					setModals("participate", "open", true);
+				setModals(
+					"participate",
+					produce((data) => {
+						data.contest = contest.contest as any;
+						data.metadata = contest.metadata;
+						data.open = true;
+					}),
+				);
+			};
+
+			const onClickSubmissions = () => {
+				invokeHapticFeedbackImpact("light");
+				navigate(`/contest/${params.slug}/manage/submissions`, {
+					replace: true,
 				});
 			};
 
@@ -591,6 +610,14 @@ const PageContest: Component = () => {
 							<CustomMainButton
 								text={t("pages.contest.footer.view.text")}
 								onClick={onClickManage}
+								backgroundColor="var(--theme-bg-edge)"
+							/>
+						</Match>
+
+						<Match when={contest.metadata?.role === "moderator"}>
+							<CustomMainButton
+								text={t("pages.contest.footer.submissions.text")}
+								onClick={onClickSubmissions}
 								backgroundColor="var(--theme-bg-edge)"
 							/>
 						</Match>

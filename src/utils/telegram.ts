@@ -94,6 +94,34 @@ export const isVersionAtLeast = (version: string) => {
 	return true;
 };
 
+export const parseTelegramLink = (url: string): string | null => {
+	try {
+		// Handle tg:// links separately
+		if (url.startsWith("tg://")) {
+			const tgUrl = new URL(url.replace(/^tg:/, "https:"));
+			return tgUrl.pathname + tgUrl.search + tgUrl.hash;
+		}
+
+		const parsed = new URL(url);
+		const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
+
+		const telegramDomains = [
+			"t.me",
+			"telegram.me",
+			"telegram.dog",
+			"telegram.org",
+		];
+
+		if (telegramDomains.includes(host)) {
+			return parsed.pathname + parsed.search + parsed.hash;
+		}
+
+		return null;
+	} catch {
+		return null; // Invalid URL
+	}
+};
+
 export const postEvent = (...args: Parameters<typeof postEventUnsafe<any>>) => {
 	try {
 		postEventUnsafe(...args);

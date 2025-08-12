@@ -3,7 +3,8 @@ import { setStore, store } from "../utils/store";
 import "./Splash.scss";
 
 import { postEvent, retrieveRawInitData } from "@telegram-apps/sdk-solid";
-import { batch, type Component, onMount } from "solid-js";
+import { type Component, onMount } from "solid-js";
+import { produce } from "solid-js/store";
 import { requestAPI } from "../utils/api";
 import { urlParseQueryString } from "../utils/auth";
 import { lottixWorkers } from "../utils/lottix";
@@ -55,15 +56,16 @@ const PageSplash: Component = () => {
 			if (result.filter(Boolean).length === promises.length) {
 				if (lp?.tgWebAppStartParam) {
 					if (lp.tgWebAppStartParam.startsWith("moderator-join-")) {
-						batch(() => {
-							setModals(
-								"moderatorJoin",
-								"slug_moderator",
-								lp!.tgWebAppStartParam?.replace("moderator-join-", ""),
-							);
-
-							setModals("moderatorJoin", "open", true);
-						});
+						setModals(
+							"moderatorJoin",
+							produce((data) => {
+								data.slug_moderator = lp!.tgWebAppStartParam?.replace(
+									"moderator-join-",
+									"",
+								);
+								data.open = true;
+							}),
+						);
 					}
 				}
 

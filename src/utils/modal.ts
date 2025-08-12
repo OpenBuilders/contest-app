@@ -7,7 +7,8 @@ import ModalContestCreatePublic from "../modals/CreatePublic";
 import ModalModeratorJoin from "../modals/ModeratorJoin";
 import ModalParticipate from "../modals/Participate";
 import ModalSettings from "../modals/Settings";
-import type { Contest, ContestMetadata } from "./store";
+import ModalSubmission from "../modals/Submission";
+import type { AnnotatedSubmission, Contest, ContestMetadata } from "./store";
 
 type ModalState = {
 	open: boolean;
@@ -26,6 +27,10 @@ type ModalsStore = {
 	};
 	moderatorJoin: ModalState & {
 		slug_moderator?: string;
+	};
+	submission: ModalState & {
+		slug?: string;
+		submission?: AnnotatedSubmission;
 	};
 };
 
@@ -57,5 +62,9 @@ export const [modals, setModals] = createStore<ModalsStore>({
 	moderatorJoin: {
 		open: false,
 		component: ModalModeratorJoin,
+	},
+	submission: {
+		open: false,
+		component: ModalSubmission,
 	},
 });
