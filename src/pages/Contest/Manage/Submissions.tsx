@@ -99,6 +99,23 @@ const PageContestManageSubmissions: Component = () => {
 		if (!data.submissions) {
 			await fetchData();
 		}
+
+		if (data.submissions && params.id) {
+			const submission = data.submissions.find(
+				(item) => item.submission.id === Number.parseInt(params.id),
+			);
+
+			if (submission) {
+				setModals(
+					"submission",
+					produce((data) => {
+						data.submission = submission;
+						data.slug = params.slug;
+						data.open = true;
+					}),
+				);
+			}
+		}
 	});
 
 	onCleanup(() => {

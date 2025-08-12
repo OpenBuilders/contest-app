@@ -77,6 +77,11 @@ const PageSplash: Component = () => {
 								replace: true,
 							},
 						);
+					} else if (params.slug.startsWith("submission-")) {
+						const chunks = params.slug.split("-");
+						navigate(`/contest/${chunks[1]}/manage/submissions/${chunks[2]}`, {
+							replace: true,
+						});
 					} else {
 						navigate(`/${params.slug}`, { replace: true });
 					}

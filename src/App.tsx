@@ -155,7 +155,7 @@ const App = () => {
 						<Route path="/contest/:slug/:state?" component={PageContest} />
 
 						<Route
-							path="/contest/:slug/manage/submissions"
+							path="/contest/:slug/manage/submissions/:id?"
 							component={PageContestManageSubmissions}
 						/>
 						<Route

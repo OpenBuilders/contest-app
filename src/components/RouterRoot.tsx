@@ -52,6 +52,13 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 					replace: true,
 				});
 				return;
+			} else if (
+				lp.tgWebAppStartParam.match(/^submission-[a-f0-9]{32}-\d+$/i)
+			) {
+				navigate(`/splash/${lp.tgWebAppStartParam}`, {
+					replace: true,
+				});
+				return;
 			}
 		}
 	});
