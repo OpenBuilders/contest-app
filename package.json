@@ -27,7 +27,7 @@
 		"plausible-tracker": "^0.3.9",
 		"snarkdown": "^2.0.0",
 		"solid-icons": "^1.1.0",
-		"solid-js": "^1.9.8",
+		"solid-js": "^1.9.9",
 		"swiper": "^11.2.10",
 		"tippy.js": "^6.3.7",
 		"uuid": "^11.1.0"
@@ -43,7 +43,7 @@
 		"solid-devtools": "^0.34.3",
 		"tailwindcss": "^4.1.11",
 		"typescript": "~5.9.2",
-		"vite": "^7.1.1",
+		"vite": "^7.1.2",
 		"vite-plugin-purgecss": "^0.2.13",
 		"vite-plugin-solid": "^2.11.8",
 		"vite-plugin-solid-svg": "^0.8.1"
