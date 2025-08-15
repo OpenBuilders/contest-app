@@ -38,6 +38,22 @@ export type ContestMetadata = {
 	submissions_count?: number;
 };
 
+export type Placement = {
+	id?: number;
+	name: string;
+	prize?: string;
+	submissions:
+		| number[]
+		| Pick<
+				Submission,
+				| "anonymous_profile"
+				| "first_name"
+				| "last_name"
+				| "profile_photo"
+				| "user_id"
+		  >[];
+};
+
 export type AnnotatedContest = {
 	contest: Contest;
 	metadata: ContestMetadata;

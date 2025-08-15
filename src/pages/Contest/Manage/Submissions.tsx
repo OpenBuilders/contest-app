@@ -30,6 +30,25 @@ export const [data, setData] = createStore<{
 	submissions?: AnnotatedSubmission[];
 }>({});
 
+export const SectionSubmissionsEmpty = () => {
+	const { t } = useTranslation();
+
+	return (
+		<div id="container-contest-submissions-empty">
+			<LottiePlayerMotion
+				src={TGS.duckCraft.url}
+				outline={TGS.duckCraft.outline}
+				autoplay
+				playOnClick
+			/>
+
+			<span class="text-secondary">
+				{t("pages.contest.manage.submissions.empty.text")}
+			</span>
+		</div>
+	);
+};
+
 const PageContestManageSubmissions: Component = () => {
 	const navigate = useNavigate();
 	const params = useParams();
@@ -55,7 +74,10 @@ const PageContestManageSubmissions: Component = () => {
 			produce((data) => {
 				if (sort() === "score") {
 					data.submissions?.sort(
-						(a, b) => b.submission.likes - a.submission.likes,
+						(a, b) =>
+							b.submission.likes -
+							b.submission.dislikes -
+							(a.submission.likes - a.submission.dislikes),
 					);
 				} else {
 					data.submissions?.sort((a, b) => b.submission.id - a.submission.id);
@@ -145,23 +167,6 @@ const PageContestManageSubmissions: Component = () => {
 						</div>
 					)}
 				</For>
-			</div>
-		);
-	};
-
-	const SectionSubmissionsEmpty = () => {
-		return (
-			<div id="container-contest-submissions-empty">
-				<LottiePlayerMotion
-					src={TGS.duckCraft.url}
-					outline={TGS.duckCraft.outline}
-					autoplay
-					playOnClick
-				/>
-
-				<span class="text-secondary">
-					{t("pages.contest.manage.submissions.empty.text")}
-				</span>
 			</div>
 		);
 	};

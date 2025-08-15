@@ -78,7 +78,7 @@ const PageContest: Component = () => {
 	}>();
 
 	if (!store.token) {
-		navigate(`/splash/contest-${params.slug}`, {
+		navigate(`/splash/contest-${params.slug}-${state()}`, {
 			replace: true,
 		});
 		return;
@@ -116,13 +116,7 @@ const PageContest: Component = () => {
 		),
 	);
 
-	onMount(async () => {
-		invokeHapticFeedbackImpact("light");
-
-		if (!contest.contest) {
-			await fetchContest();
-		}
-
+	const handleTheme = () => {
 		if (contest.contest?.theme?.backdrop) {
 			setHeaderColor(
 				ContestThemeBackdrops.find(
@@ -138,6 +132,16 @@ const PageContest: Component = () => {
 
 			setHeaderColor(color.toHex() as any);
 		}
+	};
+
+	onMount(async () => {
+		invokeHapticFeedbackImpact("light");
+
+		if (!contest.contest) {
+			await fetchContest();
+		}
+
+		handleTheme();
 
 		setTimeout(() => {
 			if (!header) return;
@@ -571,6 +575,16 @@ const PageContest: Component = () => {
 			const onClickManage = () => {
 				invokeHapticFeedbackImpact("light");
 				setState(state() === "normal" ? "manage" : "normal");
+				navigate(
+					state() === "normal"
+						? `/contest/${params.slug}/normal`
+						: `/contest/${params.slug}/manage`,
+					{
+						replace: true,
+						resolve: false,
+					},
+				);
+				setTimeout(handleTheme);
 			};
 
 			const onClickParticipate = () => {

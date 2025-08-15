@@ -83,6 +83,8 @@
                }
 
                > div.prepend {
+                  flex-shrink: 0;
+
                   > div.avatar {
                      font-size: 2rem;
                   }
@@ -91,9 +93,13 @@
                > span {
                   font-size: 0.9375rem;
                   font-weight: 500;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
                }
 
                div.placeholder > svg {
+                  flex-shrink: 0;
                   font-size: 1.125rem;
                   color: var(--tg-theme-destructive-text-color);
                }

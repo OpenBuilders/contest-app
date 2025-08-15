@@ -31,6 +31,13 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 		onEffect(
 			() => location.pathname,
 			() => {
+				if (
+					location.pathname.match(
+						/^\/contest\/[0-9a-fA-F]{32}((\/)?(manage|normal)?)?$/,
+					)
+				)
+					return;
+
 				invokeHapticFeedbackImpact("soft");
 
 				setTimeout(() => {

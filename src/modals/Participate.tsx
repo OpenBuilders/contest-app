@@ -19,7 +19,11 @@ import { hideKeyboardOnEnter, isValidURL } from "../utils/input";
 import { modals, setModals } from "../utils/modal";
 import { toggleSignal } from "../utils/signals";
 import { store } from "../utils/store";
-import { invokeHapticFeedbackImpact, lp } from "../utils/telegram";
+import {
+	invokeHapticFeedbackImpact,
+	invokeHapticFeedbackNotification,
+	lp,
+} from "../utils/telegram";
 
 type ParticipateFormStore = {
 	link: string;
@@ -80,6 +84,8 @@ const ModalParticipate: Component = () => {
 		if (processing()) return;
 		setProcessing(true);
 
+		invokeHapticFeedbackImpact("soft");
+
 		// TODO: process payment here and then continue
 
 		const request = await requestAPI(
@@ -95,6 +101,8 @@ const ModalParticipate: Component = () => {
 			const { status } = request;
 
 			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
+
 				batch(() => {
 					setModals(
 						"participate",

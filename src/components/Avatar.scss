@@ -45,3 +45,17 @@
       var(--color-to) 100%
    );
 }
+
+.avatar-stack {
+   display: flex;
+   align-items: center;
+
+   > div.avatar,
+   > div.avatar-alias {
+      border: 0.0625em solid var(--bg-color);
+
+      &:not(:first-child) {
+         margin-inline-start: -0.4375em;
+      }
+   }
+}

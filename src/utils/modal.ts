@@ -6,9 +6,16 @@ import ModalContestCreateCategory from "../modals/CreateCategory";
 import ModalContestCreatePublic from "../modals/CreatePublic";
 import ModalModeratorJoin from "../modals/ModeratorJoin";
 import ModalParticipate from "../modals/Participate";
+import ModalPlacement from "../modals/Placement";
 import ModalSettings from "../modals/Settings";
 import ModalSubmission from "../modals/Submission";
-import type { AnnotatedSubmission, Contest, ContestMetadata } from "./store";
+import ModalSubmissionsPicker from "../modals/SubmissionsPicker";
+import type {
+	AnnotatedSubmission,
+	Contest,
+	ContestMetadata,
+	Placement,
+} from "./store";
 
 type ModalState = {
 	open: boolean;
@@ -31,6 +38,15 @@ type ModalsStore = {
 	submission: ModalState & {
 		slug?: string;
 		submission?: AnnotatedSubmission;
+	};
+	placement: ModalState & {
+		slug?: string;
+		placement?: Placement;
+		submissions?: AnnotatedSubmission[];
+	};
+	submissionsPicker: ModalState & {
+		picked?: number[];
+		submissions?: AnnotatedSubmission[];
 	};
 };
 
@@ -66,5 +82,13 @@ export const [modals, setModals] = createStore<ModalsStore>({
 	submission: {
 		open: false,
 		component: ModalSubmission,
+	},
+	placement: {
+		open: false,
+		component: ModalPlacement,
+	},
+	submissionsPicker: {
+		open: false,
+		component: ModalSubmissionsPicker,
 	},
 });

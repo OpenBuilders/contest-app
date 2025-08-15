@@ -20,8 +20,11 @@
 
    --section-bg-color: #ffffff;
 
-   --shimmer-bg: #d5d5d5;
+   --shimmer-bg: #d0d0d2;
    --shimmer-highlight: #e5e5e5;
+
+   --shimmer-section-bg: #d5d5d5;
+   --shimmer-section-highlight: #e5e5e5;
 
    --bg-primary: var(--bg-color);
    --bg-secondary: var(--section-bg-color);
@@ -45,6 +48,9 @@ body[data-theme="dark"] {
 
    --shimmer-bg: #2a2a2a;
    --shimmer-highlight: #1a1a1a;
+
+   --shimmer-section-bg: #343435;
+   --shimmer-section-highlight: #252526;
 
    --bg-primary: var(--section-bg-color);
    --bg-secondary: var(--bg-color);

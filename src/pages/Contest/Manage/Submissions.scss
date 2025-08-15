@@ -80,6 +80,7 @@
          width: 2.5rem;
          height: 2.5rem;
          font-size: 2.5rem;
+         flex-shrink: 0;
       }
 
       > div:nth-child(2) {
@@ -87,10 +88,15 @@
          display: flex;
          flex-direction: column;
          gap: 0.25rem;
+         overflow: hidden;
+         text-overflow: ellipsis;
 
          > span {
             font-size: 0.9375rem;
             font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
          }
 
          > ul {
@@ -121,6 +127,7 @@
       }
 
       > svg {
+         flex-shrink: 0;
          color: rgba(var(--text-color-rgb), 0.25);
       }
    }

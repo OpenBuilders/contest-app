@@ -1,5 +1,6 @@
 import "./Avatar.scss";
-import { type Component, Show } from "solid-js";
+import { type Component, For, Show } from "solid-js";
+import { Dynamic } from "solid-js/web";
 import { getNameInitials } from "../utils/general";
 import ImageLoader from "./ImageLoader";
 import { SVGSymbol } from "./SVG";
@@ -14,9 +15,16 @@ export const AvatarColors = [
 	{ slug: "pink", from: "#E0A2F3", to: "#D669ED" },
 ];
 
+export const AvatarColorArchived = {
+	slug: "archived",
+	from: "#B8C2CC",
+	to: "#9EAAB5",
+};
+
 type AvatarProps = {
 	src?: string;
-	fullname: string;
+	fullname?: string;
+	rawText?: string;
 	peerId?: number;
 };
 
@@ -24,9 +32,13 @@ export const Avatar: Component<AvatarProps> = (props) => {
 	const getIndex = (s: string, len: number) =>
 		Array.from(s).reduce((h, c) => (h * 31 + c.codePointAt(0)!) >>> 0, 0) % len;
 
-	const color = props.peerId
+	let color = props.peerId
 		? AvatarColors[Math.abs(+props.peerId) % AvatarColors.length]
-		: AvatarColors[getIndex(props.fullname, AvatarColors.length)];
+		: AvatarColors[getIndex(props.fullname ?? "", AvatarColors.length)];
+
+	if (props.peerId === -1) {
+		color = AvatarColorArchived;
+	}
 
 	return (
 		<div
@@ -38,7 +50,9 @@ export const Avatar: Component<AvatarProps> = (props) => {
 		>
 			<Show
 				when={props.src}
-				fallback={<span>{getNameInitials(props.fullname)}</span>}
+				fallback={
+					<span>{props.rawText ?? getNameInitials(props.fullname ?? "")}</span>
+				}
 			>
 				<ImageLoader src={props.src!} />
 			</Show>
@@ -63,6 +77,30 @@ export const AvatarAlias: Component<AvatarAliasProps> = (props) => {
 			}}
 		>
 			<SVGSymbol id={`alias-${props.symbol}`} />
+		</div>
+	);
+};
+
+type AvatarStackProps = {
+	avatars: Array<Component<AvatarProps> | Component<AvatarAliasProps>>;
+	limit?: number;
+};
+
+const AVATAR_STACK_LIMIT = 3;
+
+export const AvatarStack: Component<AvatarStackProps> = (props) => {
+	return (
+		<div class="avatar-stack">
+			<For each={props.avatars.slice(0, props.limit ?? AVATAR_STACK_LIMIT)}>
+				{(item) => <Dynamic component={item as Component} />}
+			</For>
+
+			<Show when={props.avatars.length > (props.limit ?? AVATAR_STACK_LIMIT)}>
+				<Avatar
+					rawText={`+${props.avatars.length - (props.limit ?? AVATAR_STACK_LIMIT)}`}
+					peerId={-1}
+				/>
+			</Show>
 		</div>
 	);
 };
