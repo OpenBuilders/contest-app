@@ -214,6 +214,9 @@ const dict = {
 						text: "No placements yet.",
 						button: "Let's create one!",
 					},
+					announce: {
+						button: "Announce Results",
+					},
 				},
 			},
 			footer: {

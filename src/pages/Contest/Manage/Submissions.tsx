@@ -148,7 +148,10 @@ const PageContestManageSubmissions: Component = () => {
 
 	const SectionSubmissionsLoading = () => {
 		return (
-			<div id="container-contest-submissions-loading">
+			<div
+				id="container-contest-submissions-loading"
+				class="shimmer-section-bg"
+			>
 				<For each={Array.from(new Array(8))}>
 					{() => (
 						<div>
@@ -184,7 +187,7 @@ const PageContestManageSubmissions: Component = () => {
 		};
 
 		return (
-			<div id="container-contest-submissions">
+			<div id="container-contest-submissions" class="shimmer-section-bg">
 				<For each={data.submissions}>
 					{(submission) => {
 						const fullname = submission.submission.user_id

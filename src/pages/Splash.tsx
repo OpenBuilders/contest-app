@@ -17,8 +17,6 @@ const PageSplash: Component = () => {
 	const params = useParams();
 
 	if (store.token) {
-		// TODO: handle this
-		console.log("User has token on splash page!");
 		return;
 	}
 

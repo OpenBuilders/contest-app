@@ -33,6 +33,11 @@
             }
          }
       }
+
+      > footer {
+         display: flex;
+         padding: 0 1rem;
+      }
    }
 }
 
@@ -64,6 +69,8 @@
 
 #container-contest-results,
 #container-contest-results-loading {
+   overflow: hidden;
+
    > div {
       display: flex;
       flex-direction: column;
@@ -71,6 +78,7 @@
       gap: 0.5rem;
       overflow: hidden;
       overflow-y: auto;
+      height: 100%;
 
       > div {
          > div {

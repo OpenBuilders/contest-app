@@ -212,7 +212,7 @@ const PageContestManageModerators: Component = () => {
 
 	const SectionModerators = () => {
 		return (
-			<div id="container-contest-moderators">
+			<div id="container-contest-moderators" class="shimmer-section-bg">
 				<SectionList
 					description={t("pages.contest.manage.moderators.empty.text")}
 					items={data.moderators!.map((moderator) => {

@@ -4,6 +4,8 @@ import { FaSolidPlus } from "solid-icons/fa";
 import {
 	type Component,
 	createEffect,
+	createMemo,
+	createSignal,
 	For,
 	Match,
 	on,
@@ -17,6 +19,7 @@ import Sortable from "solid-sortablejs";
 import { Avatar, AvatarStack } from "../../../components/Avatar";
 import BackButton from "../../../components/BackButton";
 import ButtonArray from "../../../components/ButtonArray";
+import CustomMainButton from "../../../components/CustomMainButton";
 import LottiePlayerMotion from "../../../components/LottiePlayerMotion";
 import { SVGSymbol } from "../../../components/SVG";
 import { useTranslation } from "../../../contexts/TranslationContext";
@@ -56,6 +59,8 @@ const PageContestManageResults: Component = () => {
 		});
 		return;
 	}
+
+	const [processing, setProcessing] = createSignal(false);
 
 	const onBackButton = () => {
 		navigate(`/contest/${params.slug}/manage`, {
@@ -109,6 +114,17 @@ const PageContestManageResults: Component = () => {
 				store.open = true;
 			}),
 		);
+	};
+
+	const buttonDisabled = createMemo(() => {
+		return true;
+	});
+
+	const onClickButtonAnnounce = () => {
+		if (processing()) return;
+		setProcessing(true);
+
+		invokeHapticFeedbackImpact("soft");
 	};
 
 	const SectionResultsLoading = () => {
@@ -251,7 +267,7 @@ const PageContestManageResults: Component = () => {
 		);
 
 		return (
-			<div id="container-contest-results">
+			<div id="container-contest-results" class="shimmer-section-bg">
 				<Sortable
 					idField="id"
 					items={data.placements ?? []}
@@ -307,6 +323,17 @@ const PageContestManageResults: Component = () => {
 							<SectionResults />
 						</Match>
 					</Switch>
+
+					<Show when={(data.placements?.length ?? 0) > 0}>
+						<footer>
+							<CustomMainButton
+								text={t("pages.contest.manage.results.announce.button")}
+								onClick={onClickButtonAnnounce}
+								disabled={buttonDisabled() || processing()}
+								loading={processing()}
+							/>
+						</footer>
+					</Show>
 				</div>
 			</div>
 
