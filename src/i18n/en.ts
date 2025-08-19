@@ -218,6 +218,16 @@ const dict = {
 						button: "Announce Results",
 					},
 				},
+				options: {
+					title: "Options",
+					button: "Update Options",
+					form: {
+						name: {
+							label: "Contest Name",
+							placeholder: "My Contest",
+						},
+					},
+				},
 			},
 			footer: {
 				manage: {

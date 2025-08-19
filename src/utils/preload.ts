@@ -10,6 +10,7 @@ import { CgMenu, CgRemove } from "solid-icons/cg";
 import { FaSolidChevronRight } from "solid-icons/fa";
 import { VsVerifiedFilled } from "solid-icons/vs";
 import type { Component } from "solid-js";
+import { CustomIconTON } from "../components/CustomIcons";
 import { LottiePlayerFileCache } from "../components/LottiePlayer";
 import { symbolizeSVGComponent } from "../components/SVG";
 import { TGS } from "./animations";
@@ -92,6 +93,10 @@ const predefineSVGSymbols = async () => {
 		{
 			id: "CgMenu",
 			component: CgMenu,
+		},
+		{
+			id: "TON",
+			component: CustomIconTON,
 		},
 	];
 

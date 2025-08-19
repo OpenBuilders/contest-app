@@ -70,6 +70,7 @@
 #container-contest-results,
 #container-contest-results-loading {
    overflow: hidden;
+   flex-grow: 1;
 
    > div {
       display: flex;

@@ -220,6 +220,10 @@ const Editor: Component<EditorProps> = (props) => {
 			subtree: true,
 		});
 
+		if (props.value.length > 0) {
+			pellEditor.innerHTML = sanitizeText(props.value);
+		}
+
 		onCleanup(() => {
 			pellEditor.removeEventListener("paste", onPaste);
 			pellEditor.removeEventListener("blur", onBlur);
