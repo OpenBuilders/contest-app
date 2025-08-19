@@ -35,12 +35,14 @@ import {
 } from "../../../utils/store";
 import {
 	invokeHapticFeedbackImpact,
+	invokeHapticFeedbackNotification,
 	invokeHapticFeedbackSelectionChanged,
 } from "../../../utils/telegram";
 
 export const [data, setData] = createStore<{
 	placements?: Placement[];
 	submissions?: AnnotatedSubmission[];
+	announced?: boolean;
 }>({});
 
 const PageContestManageResults: Component = () => {
@@ -51,6 +53,7 @@ const PageContestManageResults: Component = () => {
 	setData({
 		placements: undefined,
 		submissions: undefined,
+		announced: undefined,
 	});
 
 	if (!store.token) {
@@ -80,6 +83,7 @@ const PageContestManageResults: Component = () => {
 		setData({
 			placements: undefined,
 			submissions: undefined,
+			announced: undefined,
 		});
 	});
 
@@ -97,6 +101,7 @@ const PageContestManageResults: Component = () => {
 				setData({
 					placements: result.placements,
 					submissions: result.submissions,
+					announced: result.announced,
 				});
 			}
 		}
@@ -117,14 +122,34 @@ const PageContestManageResults: Component = () => {
 	};
 
 	const buttonDisabled = createMemo(() => {
-		return true;
+		return (data.placements?.length ?? -1) === 0;
 	});
 
-	const onClickButtonAnnounce = () => {
+	const onClickButtonAnnounce = async () => {
 		if (processing()) return;
 		setProcessing(true);
 
 		invokeHapticFeedbackImpact("soft");
+
+		const request = await requestAPI(
+			`/contest/${params.slug}/results/announce`,
+			{},
+			"POST",
+		);
+
+		if (request) {
+			const { status } = request;
+
+			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
+
+				navigate(`/contest/${params.slug}/normal`, {
+					replace: true,
+				});
+			}
+		}
+
+		setProcessing(false);
 	};
 
 	const SectionResultsLoading = () => {
@@ -255,6 +280,7 @@ const PageContestManageResults: Component = () => {
 								reconcile({
 									placements: result.placements,
 									submissions: result.submissions,
+									announced: result.announced,
 								}),
 							);
 						}
@@ -324,7 +350,11 @@ const PageContestManageResults: Component = () => {
 						</Match>
 					</Switch>
 
-					<Show when={(data.placements?.length ?? 0) > 0}>
+					<Show
+						when={
+							(data.placements?.length ?? 0) > 0 && data.announced === false
+						}
+					>
 						<footer>
 							<CustomMainButton
 								text={t("pages.contest.manage.results.announce.button")}

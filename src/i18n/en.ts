@@ -41,6 +41,7 @@ const dict = {
 		home: {
 			contests: {
 				title: "My Contests",
+				ended: "Ended",
 				empty: {
 					all: {
 						title: "You’re not part of any contests yet.",

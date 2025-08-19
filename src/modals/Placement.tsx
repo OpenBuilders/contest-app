@@ -178,6 +178,7 @@ const ModalPlacement: Component = () => {
 					reconcile({
 						placements: result.placements,
 						submissions: result.submissions,
+						announced: result.announced,
 					}),
 				);
 
@@ -224,10 +225,13 @@ const ModalPlacement: Component = () => {
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
 
-				setData({
-					placements: result.placements,
-					submissions: result.submissions,
-				});
+				setData(
+					reconcile({
+						placements: result.placements,
+						submissions: result.submissions,
+						announced: result.announced,
+					}),
+				);
 
 				onClose();
 			}

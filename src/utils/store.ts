@@ -22,6 +22,7 @@ export type Contest = {
 	public: boolean;
 	anonymous: boolean;
 	verified?: boolean;
+	announced?: boolean;
 	category?: string;
 	image?: string;
 	theme?: {

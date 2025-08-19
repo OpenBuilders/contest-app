@@ -442,6 +442,14 @@ const PageContest: Component = () => {
 			);
 		};
 
+		const ContestResults = () => {
+			return (
+				<div id="container-contest-result">
+					X Amount was distributed Results
+				</div>
+			);
+		};
+
 		const ContestManage = () => {
 			const [processing, setProcessing] = createSignal(false);
 
@@ -537,6 +545,7 @@ const PageContest: Component = () => {
 										replace: true,
 									});
 								},
+								placeholder: () => <SVGSymbol id="FaSolidChevronRight" />,
 							},
 							{
 								prepend: () => (
@@ -550,6 +559,7 @@ const PageContest: Component = () => {
 										replace: true,
 									});
 								},
+								placeholder: () => <SVGSymbol id="FaSolidChevronRight" />,
 							},
 							{
 								prepend: () => (
@@ -682,7 +692,11 @@ const PageContest: Component = () => {
 
 				<Switch>
 					<Match when={state() === "normal"}>
-						<ContestInfo />
+						<Switch fallback={<ContestInfo />}>
+							<Match when={contest.contest?.announced}>
+								<ContestResults />
+							</Match>
+						</Switch>
 					</Match>
 
 					<Match when={state() === "manage"}>

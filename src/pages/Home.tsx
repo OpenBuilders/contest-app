@@ -175,7 +175,15 @@ const PageHome: Component = () => {
 										</h2>
 
 										<span>
-											{formatNumbersInString(contest.contest.prize ?? "")}
+											{[
+												formatNumbersInString(contest.contest.prize ?? ""),
+												(contest.contest.announced
+													? t("pages.home.contests.ended")
+													: ""
+												).toUpperCase(),
+											]
+												.filter(Boolean)
+												.join(" | ")}
 										</span>
 									</div>
 
