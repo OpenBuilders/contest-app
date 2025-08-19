@@ -87,8 +87,8 @@ const ModalModeratorJoin: Component = () => {
 
 	const onClickJoin = async () => {
 		if (processing()) return;
-		invokeHapticFeedbackImpact("light");
 		setProcessing(true);
+		invokeHapticFeedbackImpact("soft");
 
 		const request = await requestAPI(
 			`/contest/${modals.moderatorJoin.slug_moderator}/moderators/join`,

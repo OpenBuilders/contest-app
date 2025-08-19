@@ -57,6 +57,7 @@ import { store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
 	invokeHapticFeedbackImpact,
+	invokeHapticFeedbackNotification,
 	invokeHapticFeedbackSelectionChanged,
 } from "../utils/telegram";
 import { ContestThemeBackdrops, ContestThemes } from "../utils/themes";
@@ -349,6 +350,8 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 		if (processing()) return;
 		setProcessing(true);
 
+		invokeHapticFeedbackImpact("soft");
+
 		const request = await requestAPI(
 			"/contest/create",
 			{
@@ -370,6 +373,8 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 
 		if (request) {
 			const { result } = request;
+
+			invokeHapticFeedbackNotification("success");
 
 			batch(() => {
 				setForm("slug", result.slug);

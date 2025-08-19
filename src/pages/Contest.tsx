@@ -46,6 +46,7 @@ import { type Contest, type ContestMetadata, store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
 	invokeHapticFeedbackImpact,
+	invokeHapticFeedbackNotification,
 	isVersionAtLeast,
 	postEvent,
 	setHeaderColor,
@@ -251,7 +252,7 @@ const PageContest: Component = () => {
 					setContest("metadata", "bookmarked", !contest.metadata?.bookmarked);
 				});
 
-				invokeHapticFeedbackImpact("light");
+				invokeHapticFeedbackImpact("soft");
 
 				const request = await requestAPI(
 					`/contest/${contest.contest?.slug}/bookmark`,
@@ -259,6 +260,8 @@ const PageContest: Component = () => {
 
 				if (request) {
 					const { result } = request;
+
+					invokeHapticFeedbackNotification("success");
 
 					batch(() => {
 						setContest("metadata", "bookmarked", result.bookmarked);

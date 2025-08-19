@@ -13,6 +13,7 @@ import { requestAPI } from "../utils/api";
 import { modals, setModals } from "../utils/modal";
 import {
 	invokeHapticFeedbackImpact,
+	invokeHapticFeedbackNotification,
 	parseTelegramLink,
 	postEvent,
 } from "../utils/telegram";
@@ -77,9 +78,8 @@ const ModalSubmission: Component = () => {
 
 	const onClickAction = async (type: "like" | "dislike") => {
 		if (processing()) return;
-
 		setProcessing(type);
-		invokeHapticFeedbackImpact("light");
+		invokeHapticFeedbackImpact("soft");
 
 		const request = await requestAPI(
 			`/contest/${modals.submission.slug}/submissions/${modals.submission.submission?.submission.id}/vote`,
@@ -93,7 +93,7 @@ const ModalSubmission: Component = () => {
 			const { result, status } = request;
 
 			if (status === "success") {
-				invokeHapticFeedbackImpact("soft");
+				invokeHapticFeedbackNotification("success");
 
 				setData(
 					"submissions",

@@ -23,7 +23,10 @@ import { requestAPI } from "../../../utils/api";
 import { cloneObject, compareObjects } from "../../../utils/general";
 import { clamp, formatNumbersInString } from "../../../utils/number";
 import { store } from "../../../utils/store";
-import { invokeHapticFeedbackImpact } from "../../../utils/telegram";
+import {
+	invokeHapticFeedbackImpact,
+	invokeHapticFeedbackNotification,
+} from "../../../utils/telegram";
 
 const PageContestManageOptions: Component = () => {
 	const navigate = useNavigate();
@@ -134,6 +137,8 @@ const PageContestManageOptions: Component = () => {
 		if (processing()) return;
 		setProcessing(true);
 
+		invokeHapticFeedbackImpact("soft");
+
 		const request = await requestAPI(
 			`/contest/${params.slug}/options/update`,
 			{
@@ -149,6 +154,7 @@ const PageContestManageOptions: Component = () => {
 			const { status } = request;
 
 			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
 				setFormData(form);
 			}
 		}
