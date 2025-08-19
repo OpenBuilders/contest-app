@@ -27,6 +27,7 @@ import { TGS } from "../../../utils/animations";
 import { requestAPI } from "../../../utils/api";
 import { setModals } from "../../../utils/modal";
 import { formatNumbersInString } from "../../../utils/number";
+import { popupManager } from "../../../utils/popup";
 import { signals, toggleSignal } from "../../../utils/signals";
 import {
 	type AnnotatedSubmission,
@@ -127,9 +128,26 @@ const PageContestManageResults: Component = () => {
 
 	const onClickButtonAnnounce = async () => {
 		if (processing()) return;
-		setProcessing(true);
-
 		invokeHapticFeedbackImpact("soft");
+
+		const popup = await popupManager.openPopup({
+			title: t("modals.placement.announce.button"),
+			message: t("modals.placement.announce.prompt"),
+			buttons: [
+				{
+					id: "announce",
+					type: "destructive",
+					text: t("modals.placement.announce.button"),
+				},
+				{
+					id: "cancel",
+					type: "cancel",
+				},
+			],
+		});
+
+		if (!popup.button_id || popup.button_id === "cancel") return;
+		setProcessing(true);
 
 		const request = await requestAPI(
 			`/contest/${params.slug}/results/announce`,
