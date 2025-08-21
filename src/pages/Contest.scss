@@ -169,6 +169,54 @@
          }
       }
 
+      > div#container-contest-results {
+         display: flex;
+         flex-direction: column;
+         padding: 1rem 1rem 0;
+         width: 100%;
+         flex-grow: 1;
+         gap: 1rem;
+         overflow: hidden;
+
+         > div {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow: hidden;
+            overflow-y: auto;
+
+            > section {
+               > div {
+                  > div {
+                     > div {
+                        padding-inline-end: 1rem;
+
+                        &:has(.prepend)::after {
+                           inset-inline-start: 4rem;
+                        }
+
+                        > div.prepend {
+                           > div.avatar,
+                           > div.avatar-alias {
+                              font-size: 2rem;
+                           }
+                        }
+
+                        > span {
+                           font-size: 0.9375rem;
+                           font-weight: 500;
+                        }
+
+                        > div.placeholder {
+                           font-size: 0.9375rem;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+
       > div#container-contest-manage {
          display: flex;
          flex-direction: column;

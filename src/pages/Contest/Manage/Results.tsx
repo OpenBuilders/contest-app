@@ -172,7 +172,10 @@ const PageContestManageResults: Component = () => {
 
 	const SectionResultsLoading = () => {
 		return (
-			<div id="container-contest-results-loading" class="shimmer-section-bg">
+			<div
+				id="container-contest-manage-results-loading"
+				class="shimmer-section-bg"
+			>
 				<div>
 					<For each={Array.from(new Array(8))}>
 						{() => (
@@ -203,7 +206,7 @@ const PageContestManageResults: Component = () => {
 
 	const SectionResultsEmpty = () => {
 		return (
-			<div id="container-contest-results-empty">
+			<div id="container-contest-manage-results-empty">
 				<LottiePlayerMotion
 					src={TGS.duckTrophy.url}
 					outline={TGS.duckTrophy.outline}
@@ -311,7 +314,7 @@ const PageContestManageResults: Component = () => {
 		);
 
 		return (
-			<div id="container-contest-results" class="shimmer-section-bg">
+			<div id="container-contest-manage-results" class="shimmer-section-bg">
 				<Sortable
 					idField="id"
 					items={data.placements ?? []}

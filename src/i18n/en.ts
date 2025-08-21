@@ -161,6 +161,14 @@ const dict = {
 				share: {
 					text: "🏆 Let's join {name}!",
 				},
+				status: {
+					label: "Status",
+					closed: "Closed",
+				},
+				results: {
+					label: "Results",
+					winners: "Winners",
+				},
 			},
 			description: {
 				title: "Description",
@@ -229,6 +237,9 @@ const dict = {
 						},
 					},
 				},
+			},
+			results: {
+				empty: "No Winners",
 			},
 			footer: {
 				manage: {

@@ -17,6 +17,7 @@ import {
 	createEffect,
 	createMemo,
 	createSignal,
+	For,
 	Match,
 	onCleanup,
 	on as onEffect,
@@ -25,6 +26,7 @@ import {
 	Switch,
 } from "solid-js";
 import { createStore, produce } from "solid-js/store";
+import { Avatar, AvatarAlias } from "../components/Avatar";
 import Award from "../components/Award";
 import BackButton from "../components/BackButton";
 import Badge from "../components/Badge";
@@ -42,7 +44,12 @@ import { setModals } from "../utils/modal";
 import { formatNumbersInString } from "../utils/number";
 import { popupManager } from "../utils/popup";
 import { signals, toggleSignal } from "../utils/signals";
-import { type Contest, type ContestMetadata, store } from "../utils/store";
+import {
+	type Contest,
+	type ContestMetadata,
+	type Result,
+	store,
+} from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
 	invokeHapticFeedbackImpact,
@@ -384,20 +391,56 @@ const PageContest: Component = () => {
 		};
 
 		const ContestMetadata = () => {
+			const winnersCount = createMemo(() => {
+				if (contest.contest?.results) {
+					return contest.contest.results.reduce(
+						(prev, item) => prev + item.submissions.length,
+						0,
+					);
+				}
+
+				return 0;
+			});
+
 			return (
 				<ul id="container-contest-metadata">
-					<li>
-						<span>{t("pages.contest.header.entry.title")}</span>
-						<div>
-							<Show
-								when={(contest.contest?.fee ?? 0) > 0}
-								fallback={<span>{t("pages.contest.header.entry.free")}</span>}
-							>
-								<span>{contest.contest!.fee?.toLocaleString()}</span>
-								<span>TON</span>
-							</Show>
-						</div>
-					</li>
+					<Switch
+						fallback={
+							<li>
+								<span>{t("pages.contest.header.entry.title")}</span>
+								<div>
+									<Show
+										when={(contest.contest?.fee ?? 0) > 0}
+										fallback={
+											<span>{t("pages.contest.header.entry.free")}</span>
+										}
+									>
+										<span>{contest.contest!.fee?.toLocaleString()}</span>
+										<span>TON</span>
+									</Show>
+								</div>
+							</li>
+						}
+					>
+						<Match when={contest.contest?.announced}>
+							<li>
+								<span>{t("pages.contest.header.results.label")}</span>
+								<div>
+									<span>{winnersCount()}</span>
+									<span>{t("pages.contest.header.results.winners")}</span>
+								</div>
+							</li>
+						</Match>
+
+						<Match when={Date.now() / 1000 >= contest.contest?.date_end!}>
+							<li>
+								<span>{t("pages.contest.header.status.label")}</span>
+								<div>
+									<span>{t("pages.contest.header.status.closed")}</span>
+								</div>
+							</li>
+						</Match>
+					</Switch>
 
 					<li>
 						<span>{t("pages.contest.header.prize.title")}</span>
@@ -443,9 +486,69 @@ const PageContest: Component = () => {
 		};
 
 		const ContestResults = () => {
+			const ContestResultEntry: Component<{ placement: Result }> = (props) => {
+				return (
+					<SectionList
+						title={props.placement.name}
+						items={
+							props.placement.submissions.length > 0
+								? props.placement.submissions.map((entry) => {
+										const fullname = entry.user_id
+											? [entry.first_name, entry.last_name]
+													.filter(Boolean)
+													.join(" ")
+											: [
+													entry.anonymous_profile[1][1],
+													entry.anonymous_profile[2][1],
+												]
+													.filter(Boolean)
+													.join(" ");
+
+										return {
+											label: fullname,
+											placeholder: () => (
+												<span>
+													{formatNumbersInString(props.placement.prize ?? "")}
+												</span>
+											),
+											prepend: () => (
+												<Show
+													when={entry.user_id}
+													fallback={
+														<AvatarAlias
+															colorIndex={entry.anonymous_profile[0]}
+															symbol={entry.anonymous_profile[2][0]}
+														/>
+													}
+												>
+													<Avatar
+														fullname={fullname}
+														peerId={entry.user_id}
+														src={entry.profile_photo}
+													/>
+												</Show>
+											),
+										};
+									})
+								: [
+										{
+											label: t("pages.contest.results.empty"),
+										},
+									]
+						}
+					/>
+				);
+			};
+
 			return (
-				<div id="container-contest-result">
-					X Amount was distributed Results
+				<div id="container-contest-results">
+					<ContestMetadata />
+
+					<div>
+						<For each={contest.contest?.results}>
+							{(placement) => <ContestResultEntry placement={placement} />}
+						</For>
+					</div>
 				</div>
 			);
 		};
@@ -649,7 +752,12 @@ const PageContest: Component = () => {
 							/>
 						</Match>
 
-						<Match when={Date.now() / 1000 < contest.contest?.date_end!}>
+						<Match
+							when={
+								!contest.contest?.announced &&
+								Date.now() / 1000 < contest.contest?.date_end!
+							}
+						>
 							<CustomMainButton
 								text={t("pages.contest.footer.participate.text")}
 								onClick={onClickParticipate}
@@ -657,7 +765,12 @@ const PageContest: Component = () => {
 							/>
 						</Match>
 
-						<Match when={Date.now() / 1000 >= contest.contest?.date_end!}>
+						<Match
+							when={
+								!contest.contest?.announced &&
+								Date.now() / 1000 >= contest.contest?.date_end!
+							}
+						>
 							<p class="text-hint">{t("pages.contest.footer.closed.text")}</p>
 						</Match>
 					</Switch>

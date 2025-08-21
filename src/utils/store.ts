@@ -29,6 +29,7 @@ export type Contest = {
 		backdrop?: number;
 		symbol?: string;
 	};
+	results?: Result[];
 	date_end: number;
 };
 
@@ -53,6 +54,19 @@ export type Placement = {
 				| "profile_photo"
 				| "user_id"
 		  >[];
+};
+
+export type Result = {
+	name: Placement["name"];
+	prize: Placement["prize"];
+	submissions: Pick<
+		User,
+		| "anonymous_profile"
+		| "first_name"
+		| "last_name"
+		| "profile_photo"
+		| "user_id"
+	>[];
 };
 
 export type AnnotatedContest = {

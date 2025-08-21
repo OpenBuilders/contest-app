@@ -132,7 +132,9 @@ const PageHome: Component = () => {
 		);
 
 		const contestsJoined = createMemo(() =>
-			store.contests.my!.filter(() => false),
+			store.contests.my!.filter(
+				(contest) => contest.metadata.role === "participant",
+			),
 		);
 
 		const contestsCreated = createMemo(() =>
