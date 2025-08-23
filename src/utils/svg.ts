@@ -31,3 +31,25 @@ export const symbolizeSVG = (
 
 	return true;
 };
+
+export const stringifySVGSymbol = (id: string): string | null => {
+	const symbol = document.getElementById(id) as SVGSymbolElement | null;
+	if (!symbol) return null;
+
+	const clone = symbol.cloneNode(true) as SVGSymbolElement;
+
+	const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+	for (let i = 0; i < clone.attributes.length; i++) {
+		const attr = clone.attributes[i];
+		if (attr.name !== "id") {
+			svg.setAttribute(attr.name, attr.value);
+		}
+	}
+
+	while (clone.firstChild) {
+		svg.appendChild(clone.firstChild);
+	}
+
+	return new XMLSerializer().serializeToString(svg);
+};

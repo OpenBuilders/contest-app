@@ -262,6 +262,12 @@ const dict = {
 				},
 			},
 		},
+		profile: {
+			achievements: {
+				title: "Achievements",
+				empty: "No achievements yet.",
+			},
+		},
 	},
 	components: {
 		editor: {

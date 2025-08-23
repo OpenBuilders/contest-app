@@ -99,6 +99,14 @@ export type AnnotatedSubmission = {
 	metadata: SubmissionMetadata;
 };
 
+export type Achievement = {
+	slug: Contest["slug"];
+	title: Contest["title"];
+	image: Contest["image"];
+	theme: Contest["theme"];
+	placement: Pick<Placement, "name" | "prize">;
+};
+
 export type Store = {
 	token?: string;
 	categories?: { [key: string]: string };
@@ -106,10 +114,14 @@ export type Store = {
 	contests: {
 		my?: AnnotatedContest[];
 	};
+	achievements: {
+		my?: Achievement[];
+	};
 	user?: User;
 	version?: string;
 };
 
 export const [store, setStore] = createStore<Store>({
 	contests: {},
+	achievements: {},
 });
