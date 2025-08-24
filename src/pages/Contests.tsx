@@ -81,9 +81,9 @@ const SectionGallerySection: Component<{ item: GallerySection }> = (props) => {
 			<h2>{props.item.title}</h2>
 
 			<swiper-container
-				slides-per-view={"4"}
-				slides-offset-before="12"
-				slides-offset-after="12"
+				slides-per-view={"4.5"}
+				slides-offset-before="16"
+				slides-offset-after="16"
 				space-between="12"
 				grab-cursor={true}
 			>
@@ -101,11 +101,7 @@ const SectionGallerySection: Component<{ item: GallerySection }> = (props) => {
 
 						return (
 							<swiper-slide class="container-slide-section">
-								<div
-									class="clickable"
-									onClick={onClickItem}
-									data-slug={item.slug}
-								>
+								<div onClick={onClickItem} data-slug={item.slug}>
 									<ContestThumbnail
 										image={item.image}
 										backdrop={
@@ -164,6 +160,7 @@ const PageContests: Component = () => {
 							<span class="shimmer"></span>
 
 							<div>
+								<div class="shimmer"></div>
 								<div class="shimmer"></div>
 								<div class="shimmer"></div>
 								<div class="shimmer"></div>
