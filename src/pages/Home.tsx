@@ -32,6 +32,32 @@ import {
 	type ContestThemeSymbol,
 } from "../utils/themes";
 
+export const SectionContestsEmpty: Component<{
+	title: string;
+	iconIndex: keyof typeof TGS;
+	buttonText?: string;
+	onClickButton?: () => void;
+}> = (props) => {
+	return (
+		<div class="container-home-contests-empty">
+			<LottiePlayerMotion
+				src={TGS[props.iconIndex].url}
+				outline={TGS[props.iconIndex].outline}
+				autoplay
+				playOnClick
+			/>
+
+			<span class="text-secondary">{props.title}</span>
+
+			<Show when={props.buttonText}>
+				<button type="button" onClick={props.onClickButton}>
+					{props.buttonText}
+				</button>
+			</Show>
+		</div>
+	);
+};
+
 const PageHome: Component = () => {
 	const navigate = useNavigate();
 
@@ -92,32 +118,6 @@ const PageHome: Component = () => {
 						)}
 					</For>
 				</section>
-			</div>
-		);
-	};
-
-	const SectionContestsEmpty: Component<{
-		title: string;
-		iconIndex: keyof typeof TGS;
-		buttonText?: string;
-		onClickButton?: () => void;
-	}> = (props) => {
-		return (
-			<div class="container-home-contests-empty">
-				<LottiePlayerMotion
-					src={TGS[props.iconIndex].url}
-					outline={TGS[props.iconIndex].outline}
-					autoplay
-					playOnClick
-				/>
-
-				<span class="text-secondary">{props.title}</span>
-
-				<Show when={props.buttonText}>
-					<button type="button" onClick={props.onClickButton}>
-						{props.buttonText}
-					</button>
-				</Show>
 			</div>
 		);
 	};

@@ -107,12 +107,32 @@ export type Achievement = {
 	placement: Pick<Placement, "name" | "prize">;
 };
 
+export type GallerySliderItem = {
+	image: string;
+	url: string;
+};
+
+export type GallerySlider = {
+	type: "slider";
+	items_per_view?: number;
+	items: GallerySliderItem[];
+};
+
+export type GallerySection = {
+	type: "section";
+	title: string;
+	items: Pick<Contest, "slug" | "title" | "image" | "theme">[];
+};
+
+export type GalleryItem = GallerySlider | GallerySection;
+
 export type Store = {
 	token?: string;
 	categories?: { [key: string]: string };
 	limits?: { [key: string]: any };
 	contests: {
 		my?: AnnotatedContest[];
+		gallery?: GalleryItem[];
 	};
 	achievements: {
 		my?: Achievement[];

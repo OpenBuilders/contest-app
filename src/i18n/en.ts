@@ -268,6 +268,9 @@ const dict = {
 				empty: "No achievements yet.",
 			},
 		},
+		contests: {
+			empty: "There is nothing here yet.",
+		},
 	},
 	components: {
 		editor: {
