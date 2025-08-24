@@ -132,6 +132,12 @@ const PageProfile: Component = () => {
 	};
 
 	const SectionAchievements = () => {
+		const onClickAchievementEvent = (e: MouseEvent) => {
+			const slug = (e.currentTarget as HTMLElement).getAttribute("data-slug");
+			if (!slug) return;
+			onClickAchievement(slug);
+		};
+
 		return (
 			<section id="container-section-profile-achievements">
 				<Section title={t("pages.profile.achievements.title")}>
@@ -149,7 +155,8 @@ const PageProfile: Component = () => {
 
 							return (
 								<div
-									onClick={() => onClickAchievement(achievement.slug)}
+									onClick={onClickAchievementEvent}
+									data-slug={achievement.slug}
 									class="clickable"
 								>
 									<ContestThumbnail

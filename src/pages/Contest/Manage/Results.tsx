@@ -240,11 +240,23 @@ const PageContestManageResults: Component = () => {
 
 		const onClickHandle = (e: MouseEvent) => e.stopPropagation();
 
+		const onClickPlacementEvent = (e: MouseEvent) => {
+			const id = (e.currentTarget as HTMLElement).getAttribute(
+				"data-placement-id",
+			);
+			if (!id) return;
+			const placement_id = Number.parseInt(id);
+			const placement = data.placements?.find((i) => i.id === placement_id);
+			if (!placement) return;
+			onClickPlacement(placement);
+		};
+
 		const ItemResult: Component<{ placement: Placement }> = (props) => {
 			return (
 				<div
 					class="placement"
-					onClick={() => onClickPlacement(props.placement)}
+					onClick={onClickPlacementEvent}
+					data-placement-id={props.placement.id}
 				>
 					<div class="handle" onClick={onClickHandle}>
 						<SVGSymbol id="CgMenu" />

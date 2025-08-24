@@ -224,13 +224,17 @@ type SectionListPickerProps = {
 export const SectionListPicker: Component<SectionListPickerProps> = (props) => {
 	const [modal, setModal] = createSignal(false);
 
+	const onClickPlaceholder = () => {
+		setModal(true);
+	};
+
 	return (
 		<div
 			class={["container-section-list-picker", props.class]
 				.filter(Boolean)
 				.join(" ")}
 		>
-			<span onClick={() => setModal(true)}>
+			<span onClick={onClickPlaceholder}>
 				<span>{props.items.find((i) => i.value === props.value)?.label}</span>
 
 				<SVGSymbol id="FaSolidChevronRight" />

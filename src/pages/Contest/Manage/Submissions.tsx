@@ -186,6 +186,19 @@ const PageContestManageSubmissions: Component = () => {
 			);
 		};
 
+		const onClickSubmissionEvent = (e: MouseEvent) => {
+			const id = (e.currentTarget as HTMLElement).getAttribute(
+				"data-submission-id",
+			);
+			if (!id) return;
+			const submission_id = Number.parseInt(id);
+			const submission = data.submissions?.find(
+				(i) => i.submission.id === submission_id,
+			);
+			if (!submission) return;
+			onClickSubmission(submission);
+		};
+
 		return (
 			<div id="container-contest-submissions" class="shimmer-section-bg">
 				<For each={data.submissions}>
@@ -205,7 +218,10 @@ const PageContestManageSubmissions: Component = () => {
 									.join(" ");
 
 						return (
-							<div onClick={() => onClickSubmission(submission)}>
+							<div
+								onClick={onClickSubmissionEvent}
+								data-submission-id={submission.submission.id}
+							>
 								<Show
 									when={submission.submission.user_id}
 									fallback={

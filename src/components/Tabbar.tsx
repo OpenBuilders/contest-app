@@ -71,6 +71,12 @@ const Tabbar: Component<TabbarProps> = (props) => {
 		});
 	});
 
+	const onClickTabbarItem = (e: MouseEvent) => {
+		const slug = (e.currentTarget as HTMLElement).getAttribute("data-slug");
+		if (!slug) return;
+		props.setValue(slug);
+	};
+
 	return (
 		<div class="tabbar" id={id}>
 			<ul>
@@ -80,7 +86,8 @@ const Tabbar: Component<TabbarProps> = (props) => {
 							classList={{
 								active: item.slug === props.value,
 							}}
-							onClick={() => props.setValue(item.slug)}
+							onClick={onClickTabbarItem}
+							data-slug={item.slug}
 						>
 							<span>{item.title}</span>
 						</li>
