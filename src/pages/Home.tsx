@@ -1,4 +1,4 @@
-import { A, useNavigate } from "@solidjs/router";
+import { A } from "@solidjs/router";
 import { type AnnotatedContest, setStore, store } from "../utils/store";
 import "./Home.scss";
 
@@ -23,6 +23,7 @@ import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
 import { setModals } from "../utils/modal";
+import { navigator } from "../utils/navigator";
 import { formatNumbersInString } from "../utils/number";
 import { setSettings, settings } from "../utils/settings";
 import { signals } from "../utils/signals";
@@ -59,11 +60,11 @@ export const SectionContestsEmpty: Component<{
 };
 
 const PageHome: Component = () => {
-	const navigate = useNavigate();
-
 	if (!store.token) {
-		navigate("/splash", {
-			replace: true,
+		navigator.go("/splash", {
+			params: {
+				haptic: false,
+			},
 		});
 		return;
 	}
@@ -144,6 +145,15 @@ const PageHome: Component = () => {
 		const ListContests: Component<{ contests: AnnotatedContest[] }> = (
 			props,
 		) => {
+			const onClickContest = (e: MouseEvent) => {
+				e.preventDefault();
+				const href = (e.currentTarget as HTMLElement).getAttribute("data-href");
+				if (!href) return;
+				navigator.go(href, {
+					backable: true,
+				});
+			};
+
 			return (
 				<div class="container-list-contests">
 					<For each={props.contests}>
@@ -159,7 +169,11 @@ const PageHome: Component = () => {
 							};
 
 							return (
-								<A href={`/contest/${contest.contest.slug}`}>
+								<A
+									data-href={`/contest/${contest.contest.slug}`}
+									href={`/contest/${contest.contest.slug}`}
+									onClick={onClickContest}
+								>
 									<ContestThumbnail
 										image={contest.contest.image}
 										backdrop={
@@ -241,9 +255,7 @@ const PageHome: Component = () => {
 											iconIndex="duckCry"
 											buttonText={t("pages.home.contests.empty.joined.button")}
 											onClickButton={() => {
-												navigate("/contests", {
-													replace: true,
-												});
+												navigator.go("/contests");
 											}}
 										/>
 									}

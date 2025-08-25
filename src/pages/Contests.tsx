@@ -1,10 +1,10 @@
 import "./Contests.scss";
-import { useNavigate } from "@solidjs/router";
 import { type Component, For, Match, onMount, Switch } from "solid-js";
 import ContestThumbnail from "../components/ContestThumbnail";
 import ImageLoader from "../components/ImageLoader";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
+import { navigator } from "../utils/navigator";
 import {
 	type GallerySection,
 	type GallerySlider,
@@ -65,14 +65,15 @@ const SectionGallerySlider: Component<{ item: GallerySlider }> = (props) => {
 };
 
 const SectionGallerySection: Component<{ item: GallerySection }> = (props) => {
-	const navigate = useNavigate();
-
 	const onClickItem = (e: MouseEvent) => {
 		const slug = (e.currentTarget as HTMLElement).getAttribute("data-slug");
 		if (!slug) return;
 
-		navigate(`/contest/${slug}`, {
-			replace: true,
+		navigator.go(`/contest/${slug}`, {
+			backable: true,
+			params: {
+				theme: false,
+			},
 		});
 	};
 
@@ -124,9 +125,11 @@ const SectionGallerySection: Component<{ item: GallerySection }> = (props) => {
 
 const PageContests: Component = () => {
 	if (!store.token) {
-		const navigate = useNavigate();
-		navigate("/splash/contests", {
-			replace: true,
+		navigator.go("/splash", {
+			params: {
+				from: "/contests",
+				haptic: false,
+			},
 		});
 		return;
 	}

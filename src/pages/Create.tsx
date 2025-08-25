@@ -7,7 +7,6 @@ import CropperImage from "@cropper/element-image";
 import CropperSelection from "@cropper/element-selection";
 import CropperShade from "@cropper/element-shade";
 
-import { useNavigate } from "@solidjs/router";
 import { TbPhotoPlus } from "solid-icons/tb";
 import {
 	type Accessor,
@@ -26,7 +25,6 @@ import {
 } from "solid-js";
 import { createStore, type SetStoreFunction } from "solid-js/store";
 import { Portal } from "solid-js/web";
-import BackButton from "../components/BackButton";
 import ClickableText from "../components/ClickableText";
 import CustomMainButton from "../components/CustomMainButton";
 import Editor from "../components/Editor";
@@ -51,6 +49,7 @@ import { canvasToBlob } from "../utils/general";
 import { isRTL } from "../utils/i18n";
 import { hideKeyboardOnEnter } from "../utils/input";
 import { setModals } from "../utils/modal";
+import { navigator } from "../utils/navigator";
 import { clamp, formatNumbersInString } from "../utils/number";
 import { toggleSignal } from "../utils/signals";
 import { store } from "../utils/store";
@@ -755,7 +754,6 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 };
 
 const SectionDone: Component<CreateFormSectionProps> = (props) => {
-	const navigate = useNavigate();
 	const { t } = useTranslation();
 
 	const [form] = props.formStore;
@@ -763,8 +761,10 @@ const SectionDone: Component<CreateFormSectionProps> = (props) => {
 	const onClickButton = () => {
 		setModals("create", "open", false);
 
-		navigate(`/contest/${form.slug}`, {
-			replace: true,
+		navigator.go(`/contest/${form.slug}`, {
+			params: {
+				theme: false,
+			},
 		});
 	};
 
@@ -845,34 +845,3 @@ export const SectionCreateForm = () => {
 		</div>
 	);
 };
-
-const PageCreate: Component = () => {
-	const navigate = useNavigate();
-
-	if (!store.token) {
-		navigate("/splash/create", {
-			replace: true,
-		});
-		return;
-	}
-
-	const onBackButton = () => {
-		navigate("/", {
-			replace: true,
-		});
-	};
-
-	return (
-		<>
-			<div id="container-page-create" class="page">
-				<div>
-					<SectionCreateForm />
-				</div>
-			</div>
-
-			<BackButton onClick={onBackButton} />
-		</>
-	);
-};
-
-export default PageCreate;

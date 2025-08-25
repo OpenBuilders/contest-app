@@ -1,5 +1,4 @@
 import "./Profile.scss";
-import { useNavigate } from "@solidjs/router";
 import { type Component, For, Match, onMount, Show, Switch } from "solid-js";
 import { createStore } from "solid-js/store";
 import { Avatar, AvatarColors } from "../components/Avatar";
@@ -8,6 +7,7 @@ import ContestThumbnail from "../components/ContestThumbnail";
 import { Section } from "../components/Section";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
+import { navigator } from "../utils/navigator";
 import { setStore, store } from "../utils/store";
 import { stringifySVGSymbol } from "../utils/svg";
 import { getSymbolSVGString } from "../utils/symbols";
@@ -19,11 +19,12 @@ import {
 } from "../utils/themes";
 
 const PageProfile: Component = () => {
-	const navigate = useNavigate();
-
 	if (!store.token) {
-		navigate("/splash/profile", {
-			replace: true,
+		navigator.go("/splash", {
+			params: {
+				from: "/profile",
+				haptic: false,
+			},
 		});
 		return;
 	}
@@ -94,8 +95,11 @@ const PageProfile: Component = () => {
 	});
 
 	const onClickAchievement = (slug: string) => {
-		navigate(`/contest/${slug}`, {
-			replace: true,
+		navigator.go(`/contest/${slug}`, {
+			backable: true,
+			params: {
+				theme: false,
+			},
 		});
 	};
 

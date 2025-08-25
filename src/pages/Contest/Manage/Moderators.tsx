@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "@solidjs/router";
+import { useParams } from "@solidjs/router";
 import BackButton from "../../../components/BackButton";
 import "./Moderators.scss";
 import { FaSolidLink, FaSolidPlus } from "solid-icons/fa";
@@ -12,24 +12,28 @@ import { SVGSymbol } from "../../../components/SVG";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { TGS } from "../../../utils/animations";
 import { requestAPI } from "../../../utils/api";
+import { navigator } from "../../../utils/navigator";
 import { popupManager } from "../../../utils/popup";
 import { store, type User } from "../../../utils/store";
 import {
 	invokeHapticFeedbackImpact,
+	invokeHapticFeedbackNotification,
 	isVersionAtLeast,
 	postEvent,
 } from "../../../utils/telegram";
 
 const PageContestManageModerators: Component = () => {
-	const navigate = useNavigate();
 	const params = useParams();
 	const { t, td } = useTranslation();
 
 	const [processing, setProcessing] = createSignal(false);
 
 	if (!store.token) {
-		navigate(`/splash/contest-${params.slug}-manage-moderators`, {
-			replace: true,
+		navigator.go("/splash", {
+			params: {
+				from: `/contest/${params.slug}/manage/moderators`,
+				haptic: false,
+			},
 		});
 		return;
 	}
@@ -44,8 +48,10 @@ const PageContestManageModerators: Component = () => {
 	}>({});
 
 	const onBackButton = () => {
-		navigate(`/contest/${params.slug}/manage`, {
-			replace: true,
+		navigator.go(`/contest/${params.slug}/manage`, {
+			params: {
+				theme: false,
+			},
 		});
 	};
 
@@ -60,6 +66,8 @@ const PageContestManageModerators: Component = () => {
 			const { result, status } = request;
 
 			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
+
 				setData({
 					title: result.title,
 					slug_moderator: result.slug_moderator,
@@ -70,8 +78,6 @@ const PageContestManageModerators: Component = () => {
 	};
 
 	onMount(async () => {
-		invokeHapticFeedbackImpact("light");
-
 		if (!data.slug_moderator) {
 			await fetchData();
 		}

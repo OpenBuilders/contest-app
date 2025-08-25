@@ -53,8 +53,18 @@ const Tabbar: Component<TabbarProps> = (props) => {
 					x: `${activeLISpan.offsetLeft}px`,
 					width: `${activeLISpan.clientWidth ?? 0}px`,
 				});
+			},
+		),
+	);
 
+	createEffect(
+		on(
+			() => props.value,
+			() => {
 				invokeHapticFeedbackSelectionChanged();
+			},
+			{
+				defer: true,
 			},
 		),
 	);

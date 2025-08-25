@@ -1,5 +1,4 @@
-import { useNavigate, useParams } from "@solidjs/router";
-import { setStore, store } from "../utils/store";
+import { setStore } from "../utils/store";
 import "./Splash.scss";
 
 import { postEvent, retrieveRawInitData } from "@telegram-apps/sdk-solid";
@@ -9,17 +8,11 @@ import { requestAPI } from "../utils/api";
 import { urlParseQueryString } from "../utils/auth";
 import { lottixWorkers } from "../utils/lottix";
 import { setModals } from "../utils/modal";
+import { navigator } from "../utils/navigator";
 import { preloadPipeline } from "../utils/preload";
 import { lp } from "../utils/telegram";
 
 const PageSplash: Component = () => {
-	const navigate = useNavigate();
-	const params = useParams();
-
-	if (store.token) {
-		return;
-	}
-
 	const authorizeUser = async () => {
 		const data = retrieveRawInitData();
 		if (!data) return;
@@ -67,24 +60,19 @@ const PageSplash: Component = () => {
 					}
 				}
 
-				if (params.slug) {
-					if (params.slug.startsWith("contest-")) {
-						navigate(
-							`/contest/${params.slug.replace("contest-", "").replace(/-/g, "/")}`,
-							{
-								replace: true,
-							},
-						);
-					} else if (params.slug.startsWith("submission-")) {
-						const chunks = params.slug.split("-");
-						navigate(`/contest/${chunks[1]}/manage/submissions/${chunks[2]}`, {
-							replace: true,
-						});
+				if (navigator.history.length >= 2) {
+					const current = navigator.getCurrentHistory();
+
+					if (
+						typeof current?.options?.params === "object" &&
+						"from" in current.options.params
+					) {
+						navigator.go(current.options.params.from);
 					} else {
-						navigate(`/${params.slug}`, { replace: true });
+						navigator.go("/");
 					}
 				} else {
-					navigate("/", { replace: true });
+					navigator.go("/");
 				}
 			} else {
 				postEvent("web_app_close");

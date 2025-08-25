@@ -1,8 +1,4 @@
-import {
-	type RouteSectionProps,
-	useLocation,
-	useNavigate,
-} from "@solidjs/router";
+import type { RouteSectionProps } from "@solidjs/router";
 import {
 	type Component,
 	createEffect,
@@ -14,6 +10,7 @@ import {
 import { Dynamic } from "solid-js/web";
 import { Color } from "../utils/colors";
 import { modals, setModals } from "../utils/modal";
+import { navigator } from "../utils/navigator";
 import {
 	invokeHapticFeedbackImpact,
 	lp,
@@ -24,30 +21,33 @@ import PlausibleTracker from "./PlausibleTracker";
 import SettingsButton from "./SettingsButton";
 
 const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
-	const navigate = useNavigate();
-	const location = useLocation();
+	navigator.initialize();
+	navigator.history.push({
+		id: 0,
+		path: navigator.location!.pathname,
+	});
 
 	createEffect(
 		onEffect(
-			() => location.pathname,
+			() => navigator.location!.pathname,
 			() => {
-				if (
-					location.pathname.match(
-						/^\/contest\/[0-9a-fA-F]{32}((\/)?(manage|normal)?)?$/,
-					)
-				)
-					return;
+				const current = navigator.getCurrentHistory();
+				if (!current) return;
 
-				invokeHapticFeedbackImpact("soft");
+				if (current.options?.params?.haptic !== false) {
+					invokeHapticFeedbackImpact("soft");
+				}
 
-				setTimeout(() => {
-					const page = document.querySelector(".page");
-					if (!page) return;
+				if (current.options?.params?.theme !== false) {
+					setTimeout(() => {
+						const page = document.querySelector(".page");
+						if (!page) return;
 
-					const color = new Color(getComputedStyle(page).backgroundColor);
+						const color = new Color(getComputedStyle(page).backgroundColor);
 
-					setThemeColor(color.toHex() as any);
-				});
+						setThemeColor(color.toHex() as any);
+					});
+				}
 			},
 		),
 	);
@@ -55,17 +55,21 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 	onMount(() => {
 		if (lp?.tgWebAppStartParam) {
 			if (lp.tgWebAppStartParam.match(/^contest-[a-f0-9]{32}$/i)) {
-				navigate(`/splash/${lp.tgWebAppStartParam}`, {
-					replace: true,
+				navigator.go(`/splash`, {
+					params: {
+						from: `/contest/${lp.tgWebAppStartParam.replace("contest-", "")}`,
+					},
 				});
-				return;
-			} else if (
-				lp.tgWebAppStartParam.match(/^submission-[a-f0-9]{32}-\d+$/i)
-			) {
-				navigate(`/splash/${lp.tgWebAppStartParam}`, {
-					replace: true,
+			}
+
+			if (lp.tgWebAppStartParam.match(/^submission-[a-f0-9]{32}-\d+$/i)) {
+				const chunks = lp.tgWebAppStartParam.split("-");
+
+				navigator.go(`/splash`, {
+					params: {
+						from: `/contest/${chunks[1]}/manage/submissions/${chunks[2]}`,
+					},
 				});
-				return;
 			}
 		}
 	});
@@ -74,7 +78,7 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 		<>
 			{props.children}
 
-			<Show when={bottomBarValidPaths.includes(location.pathname)}>
+			<Show when={bottomBarValidPaths.includes(navigator.location!.pathname)}>
 				<BottomBar />
 			</Show>
 

@@ -233,6 +233,4 @@ export const initializeTMA = async () => {
 			postEvent("web_app_request_fullscreen");
 		}
 	}
-
-	invokeHapticFeedbackImpact("heavy");
 };

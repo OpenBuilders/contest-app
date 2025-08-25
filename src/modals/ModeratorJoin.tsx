@@ -1,5 +1,4 @@
 import "./ModeratorJoin.scss";
-import { useNavigate } from "@solidjs/router";
 import {
 	type Component,
 	createMemo,
@@ -15,6 +14,7 @@ import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
 import { modals, setModals } from "../utils/modal";
+import { navigator } from "../utils/navigator";
 import { toggleSignal } from "../utils/signals";
 import type { Contest } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
@@ -29,7 +29,6 @@ import {
 
 const ModalModeratorJoin: Component = () => {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 
 	const [processing, setProcessing] = createSignal(false);
 	const [data, setData] = createSignal<
@@ -103,8 +102,10 @@ const ModalModeratorJoin: Component = () => {
 				onClose();
 				toggleSignal("fetchMyContests");
 				invokeHapticFeedbackNotification("success");
-				navigate(`/contest/${data()!.contest.slug}`, {
-					replace: true,
+				navigator.go(`/contest/${data()!.contest.slug}`, {
+					params: {
+						theme: false,
+					},
 				});
 			}
 		}

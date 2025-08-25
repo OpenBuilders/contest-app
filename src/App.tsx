@@ -25,7 +25,6 @@ import PageContestManageResults from "./pages/Contest/Manage/Results.tsx";
 import PageContestManageSubmissions from "./pages/Contest/Manage/Submissions.tsx";
 import PageContest from "./pages/Contest.tsx";
 import PageContests from "./pages/Contests.tsx";
-import PageCreate from "./pages/Create.tsx";
 import PageError from "./pages/Error";
 import PageHome from "./pages/Home.tsx";
 import PageProfile from "./pages/Profile.tsx";
@@ -147,10 +146,9 @@ const App = () => {
 						</Show>
 
 						<Route path="/" component={PageHome} />
-						<Route path="/splash/:slug?" component={PageSplash} />
+						<Route path="/splash" component={PageSplash} />
 						<Route path="/profile" component={PageProfile} />
 						<Route path="/contests" component={PageContests} />
-						<Route path="/create" component={PageCreate} />
 
 						<Route path="/contest/:slug/:state?" component={PageContest} />
 

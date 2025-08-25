@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "@solidjs/router";
+import { useParams } from "@solidjs/router";
 import "./Options.scss";
 import {
 	type Component,
@@ -21,6 +21,7 @@ import { SVGSymbol } from "../../../components/SVG";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { requestAPI } from "../../../utils/api";
 import { cloneObject, compareObjects } from "../../../utils/general";
+import { navigator } from "../../../utils/navigator";
 import { clamp, formatNumbersInString } from "../../../utils/number";
 import { store } from "../../../utils/store";
 import {
@@ -29,26 +30,28 @@ import {
 } from "../../../utils/telegram";
 
 const PageContestManageOptions: Component = () => {
-	const navigate = useNavigate();
 	const params = useParams();
 	const { t } = useTranslation();
 
 	if (!store.token) {
-		navigate(`/splash/contest-${params.slug}-manage-options`, {
-			replace: true,
+		navigator.go("/splash", {
+			params: {
+				from: `/contest/${params.slug}/manage/options`,
+				haptic: false,
+			},
 		});
 		return;
 	}
 
 	const onBackButton = () => {
-		navigate(`/contest/${params.slug}/manage`, {
-			replace: true,
+		navigator.go(`/contest/${params.slug}/manage`, {
+			params: {
+				theme: false,
+			},
 		});
 	};
 
 	onMount(async () => {
-		invokeHapticFeedbackImpact("light");
-
 		if (!form.loaded) {
 			await fetchData();
 		}
@@ -115,6 +118,8 @@ const PageContestManageOptions: Component = () => {
 			const { result, status } = request;
 
 			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
+
 				setForm({
 					...result.contest,
 					loaded: true,

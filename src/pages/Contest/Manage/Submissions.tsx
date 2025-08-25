@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "@solidjs/router";
+import { useParams } from "@solidjs/router";
 import "./Submissions.scss";
 import { trackDeep } from "@solid-primitives/deep";
 import { TbSortAscending, TbSortDescending } from "solid-icons/tb";
@@ -23,8 +23,12 @@ import { useTranslation } from "../../../contexts/TranslationContext";
 import { TGS } from "../../../utils/animations";
 import { requestAPI } from "../../../utils/api";
 import { setModals } from "../../../utils/modal";
+import { navigator } from "../../../utils/navigator";
 import { type AnnotatedSubmission, store } from "../../../utils/store";
-import { invokeHapticFeedbackImpact } from "../../../utils/telegram";
+import {
+	invokeHapticFeedbackImpact,
+	invokeHapticFeedbackNotification,
+} from "../../../utils/telegram";
 
 export const [data, setData] = createStore<{
 	submissions?: AnnotatedSubmission[];
@@ -50,7 +54,6 @@ export const SectionSubmissionsEmpty = () => {
 };
 
 const PageContestManageSubmissions: Component = () => {
-	const navigate = useNavigate();
 	const params = useParams();
 	const { t } = useTranslation();
 
@@ -59,8 +62,11 @@ const PageContestManageSubmissions: Component = () => {
 	});
 
 	if (!store.token) {
-		navigate(`/splash/contest-${params.slug}-manage-submissions`, {
-			replace: true,
+		navigator.go("/splash", {
+			params: {
+				from: `/contest/${params.slug}/manage/submissions`,
+				haptic: false,
+			},
 		});
 		return;
 	}
@@ -92,8 +98,10 @@ const PageContestManageSubmissions: Component = () => {
 	};
 
 	const onBackButton = () => {
-		navigate(`/contest/${params.slug}/manage`, {
-			replace: true,
+		navigator.go(`/contest/${params.slug}/manage`, {
+			params: {
+				theme: false,
+			},
 		});
 	};
 
@@ -108,6 +116,8 @@ const PageContestManageSubmissions: Component = () => {
 			const { result, status } = request;
 
 			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
+
 				setData({
 					submissions: result.submissions,
 				});
@@ -116,8 +126,6 @@ const PageContestManageSubmissions: Component = () => {
 	};
 
 	onMount(async () => {
-		invokeHapticFeedbackImpact("light");
-
 		if (!data.submissions) {
 			await fetchData();
 		}

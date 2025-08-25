@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "@solidjs/router";
+import { useParams } from "@solidjs/router";
 import "./Results.scss";
 import { FaSolidPlus } from "solid-icons/fa";
 import {
@@ -26,6 +26,7 @@ import { useTranslation } from "../../../contexts/TranslationContext";
 import { TGS } from "../../../utils/animations";
 import { requestAPI } from "../../../utils/api";
 import { setModals } from "../../../utils/modal";
+import { navigator } from "../../../utils/navigator";
 import { formatNumbersInString } from "../../../utils/number";
 import { popupManager } from "../../../utils/popup";
 import { signals, toggleSignal } from "../../../utils/signals";
@@ -47,7 +48,6 @@ export const [data, setData] = createStore<{
 }>({});
 
 const PageContestManageResults: Component = () => {
-	const navigate = useNavigate();
 	const params = useParams();
 	const { t } = useTranslation();
 
@@ -58,8 +58,11 @@ const PageContestManageResults: Component = () => {
 	});
 
 	if (!store.token) {
-		navigate(`/splash/contest-${params.slug}-manage-results`, {
-			replace: true,
+		navigator.go("/splash", {
+			params: {
+				from: `/contest/${params.slug}/manage/results`,
+				haptic: false,
+			},
 		});
 		return;
 	}
@@ -67,14 +70,14 @@ const PageContestManageResults: Component = () => {
 	const [processing, setProcessing] = createSignal(false);
 
 	const onBackButton = () => {
-		navigate(`/contest/${params.slug}/manage`, {
-			replace: true,
+		navigator.go(`/contest/${params.slug}/manage`, {
+			params: {
+				theme: false,
+			},
 		});
 	};
 
 	onMount(async () => {
-		invokeHapticFeedbackImpact("light");
-
 		if (!data.placements) {
 			await fetchData();
 		}
@@ -99,6 +102,8 @@ const PageContestManageResults: Component = () => {
 			const { result, status } = request;
 
 			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
+
 				setData({
 					placements: result.placements,
 					submissions: result.submissions,
@@ -161,8 +166,10 @@ const PageContestManageResults: Component = () => {
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
 
-				navigate(`/contest/${params.slug}/normal`, {
-					replace: true,
+				navigator.go(`/contest/${params.slug}/normal`, {
+					params: {
+						theme: false,
+					},
 				});
 			}
 		}

@@ -1,5 +1,5 @@
 import "./Contest.scss";
-import { useNavigate, useParams } from "@solidjs/router";
+import { useParams } from "@solidjs/router";
 import dayjs from "dayjs";
 import { AiFillDelete } from "solid-icons/ai";
 import {
@@ -41,6 +41,7 @@ import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
 import { Color } from "../utils/colors";
 import { setModals } from "../utils/modal";
+import { navigator } from "../utils/navigator";
 import { formatNumbersInString } from "../utils/number";
 import { popupManager } from "../utils/popup";
 import { signals, toggleSignal } from "../utils/signals";
@@ -66,7 +67,6 @@ import {
 const PageContest: Component = () => {
 	const { t, td } = useTranslation();
 
-	const navigate = useNavigate();
 	const params = useParams();
 
 	const [state, setState] = createSignal<"normal" | "manage">(
@@ -86,8 +86,11 @@ const PageContest: Component = () => {
 	}>();
 
 	if (!store.token) {
-		navigate(`/splash/contest-${params.slug}-${state()}`, {
-			replace: true,
+		navigator.go(`/splash`, {
+			params: {
+				from: `/contest/${params.slug}/${state()}`,
+				haptic: false,
+			},
 		});
 		return;
 	}
@@ -143,8 +146,6 @@ const PageContest: Component = () => {
 	};
 
 	onMount(async () => {
-		invokeHapticFeedbackImpact("light");
-
 		if (!contest.contest) {
 			await fetchContest();
 		}
@@ -206,9 +207,11 @@ const PageContest: Component = () => {
 			}),
 		);
 
-		navigate("/", {
-			replace: true,
-		});
+		if (navigator.isBackable()) {
+			navigator.back();
+		} else {
+			navigator.go("/");
+		}
 	};
 
 	const ContestLoading = () => {
@@ -593,9 +596,7 @@ const PageContest: Component = () => {
 							toggleSignal("fetchMyContests");
 						});
 
-						navigate("/", {
-							replace: true,
-						});
+						navigator.go("/");
 						return;
 					}
 				}
@@ -619,9 +620,7 @@ const PageContest: Component = () => {
 								placeholder: () => contest.metadata?.submissions_count,
 								clickable: true,
 								onClick: () => {
-									navigate(`/contest/${params.slug}/manage/submissions`, {
-										replace: true,
-									});
+									navigator.go(`/contest/${params.slug}/manage/submissions`);
 								},
 							},
 							{
@@ -632,9 +631,7 @@ const PageContest: Component = () => {
 								placeholder: () => contest.metadata?.moderators_count,
 								clickable: true,
 								onClick: () => {
-									navigate(`/contest/${params.slug}/manage/moderators`, {
-										replace: true,
-									});
+									navigator.go(`/contest/${params.slug}/manage/moderators`);
 								},
 							},
 							{
@@ -644,9 +641,7 @@ const PageContest: Component = () => {
 								label: t("pages.contest.manage.list.results"),
 								clickable: true,
 								onClick: () => {
-									navigate(`/contest/${params.slug}/manage/results`, {
-										replace: true,
-									});
+									navigator.go(`/contest/${params.slug}/manage/results`);
 								},
 								placeholder: () => <SVGSymbol id="FaSolidChevronRight" />,
 							},
@@ -658,9 +653,7 @@ const PageContest: Component = () => {
 								label: t("pages.contest.manage.list.options"),
 								clickable: true,
 								onClick: () => {
-									navigate(`/contest/${params.slug}/manage/options`, {
-										replace: true,
-									});
+									navigator.go(`/contest/${params.slug}/manage/options`);
 								},
 								placeholder: () => <SVGSymbol id="FaSolidChevronRight" />,
 							},
@@ -689,15 +682,16 @@ const PageContest: Component = () => {
 
 		const ContestFooter = () => {
 			const onClickManage = () => {
-				invokeHapticFeedbackImpact("light");
 				setState(state() === "normal" ? "manage" : "normal");
-				navigate(
+				navigator.go(
 					state() === "normal"
 						? `/contest/${params.slug}/normal`
 						: `/contest/${params.slug}/manage`,
 					{
-						replace: true,
 						resolve: false,
+						params: {
+							theme: false,
+						},
 					},
 				);
 				setTimeout(handleTheme);
@@ -716,9 +710,7 @@ const PageContest: Component = () => {
 
 			const onClickSubmissions = () => {
 				invokeHapticFeedbackImpact("light");
-				navigate(`/contest/${params.slug}/manage/submissions`, {
-					replace: true,
-				});
+				navigator.go(`/contest/${params.slug}/manage/submissions`);
 			};
 
 			return (
