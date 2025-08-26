@@ -408,3 +408,19 @@
       }
    }
 }
+
+.container-result-entries {
+   > div {
+      > span {
+         display: flex;
+         align-items: center;
+         gap: 0.25rem;
+
+         > span.self {
+            font-weight: 400;
+            font-size: 0.875rem;
+            color: rgba(var(--text-color-rgb), 0.5);
+         }
+      }
+   }
+}

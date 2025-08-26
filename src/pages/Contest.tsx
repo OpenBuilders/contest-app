@@ -62,6 +62,7 @@ import {
 import {
 	ContestThemeBackdrops,
 	type ContestThemeSymbol,
+	disableThemeSync,
 } from "../utils/themes";
 
 const PageContest: Component = () => {
@@ -90,6 +91,9 @@ const PageContest: Component = () => {
 			params: {
 				from: `/contest/${params.slug}/${state()}`,
 				haptic: false,
+				fromParams: {
+					theme: false,
+				},
 			},
 		});
 		return;
@@ -146,6 +150,8 @@ const PageContest: Component = () => {
 	};
 
 	onMount(async () => {
+		disableThemeSync();
+
 		if (!contest.contest) {
 			await fetchContest();
 		}
@@ -493,6 +499,7 @@ const PageContest: Component = () => {
 				return (
 					<SectionList
 						title={props.placement.name}
+						class="container-result-entries"
 						items={
 							props.placement.submissions.length > 0
 								? props.placement.submissions.map((entry) => {
@@ -508,7 +515,16 @@ const PageContest: Component = () => {
 													.join(" ");
 
 										return {
-											label: fullname,
+											label: () => (
+												<>
+													<span>{fullname}</span>
+													<Show when={entry.self}>
+														<span class="self">
+															{t("pages.contest.results.self")}
+														</span>
+													</Show>
+												</>
+											),
 											placeholder: () => (
 												<span>
 													{formatNumbersInString(props.placement.prize ?? "")}
@@ -750,11 +766,21 @@ const PageContest: Component = () => {
 								Date.now() / 1000 < contest.contest?.date_end!
 							}
 						>
-							<CustomMainButton
-								text={t("pages.contest.footer.participate.text")}
-								onClick={onClickParticipate}
-								backgroundColor="var(--theme-bg-edge)"
-							/>
+							<Switch
+								fallback={
+									<CustomMainButton
+										text={t("pages.contest.footer.participate.text")}
+										onClick={onClickParticipate}
+										backgroundColor="var(--theme-bg-edge)"
+									/>
+								}
+							>
+								<Match when={contest.metadata?.role === "participant"}>
+									<p class="text-hint">
+										{t("pages.contest.footer.submitted.text")}
+									</p>
+								</Match>
+							</Switch>
 						</Match>
 
 						<Match

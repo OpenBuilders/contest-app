@@ -66,6 +66,9 @@ const PageContestManageSubmissions: Component = () => {
 			params: {
 				from: `/contest/${params.slug}/manage/submissions`,
 				haptic: false,
+				fromParams: {
+					theme: false,
+				},
 			},
 		});
 		return;

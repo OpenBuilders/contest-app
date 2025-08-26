@@ -1,4 +1,5 @@
 import type { Component } from "solid-js";
+import { navigator } from "./navigator";
 
 export type ContestThemeBackdrop = {
 	id: number;
@@ -906,3 +907,10 @@ export const ContestThemes: ContestTheme[] = [
 	{ backdrop: 78, symbol: "symbol-79" },
 	{ backdrop: 79, symbol: "symbol-80" },
 ];
+
+export const disableThemeSync = () => {
+	const current = navigator.getCurrentHistory();
+	current!.options = current?.options ?? {};
+	current!.options!.params = current?.options?.params ?? {};
+	current!.options!.params.theme = false;
+};

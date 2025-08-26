@@ -240,6 +240,7 @@ const dict = {
 			},
 			results: {
 				empty: "No Winners",
+				self: "Your Entry",
 			},
 			footer: {
 				manage: {
@@ -256,6 +257,9 @@ const dict = {
 				},
 				closed: {
 					text: "Submissions are closed.",
+				},
+				submitted: {
+					text: "You’ve already submitted an entry.",
 				},
 				ended: {
 					text: "This contest has ended.",

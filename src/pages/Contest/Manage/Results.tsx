@@ -62,6 +62,9 @@ const PageContestManageResults: Component = () => {
 			params: {
 				from: `/contest/${params.slug}/manage/results`,
 				haptic: false,
+				fromParams: {
+					theme: false,
+				},
 			},
 		});
 		return;

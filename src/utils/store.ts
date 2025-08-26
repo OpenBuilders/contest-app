@@ -59,14 +59,16 @@ export type Placement = {
 export type Result = {
 	name: Placement["name"];
 	prize: Placement["prize"];
-	submissions: Pick<
+	submissions: (Pick<
 		User,
 		| "anonymous_profile"
 		| "first_name"
 		| "last_name"
 		| "profile_photo"
 		| "user_id"
-	>[];
+	> & {
+		self?: boolean;
+	})[];
 };
 
 export type AnnotatedContest = {

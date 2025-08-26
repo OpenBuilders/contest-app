@@ -38,6 +38,9 @@ const PageContestManageOptions: Component = () => {
 			params: {
 				from: `/contest/${params.slug}/manage/options`,
 				haptic: false,
+				fromParams: {
+					theme: false,
+				},
 			},
 		});
 		return;

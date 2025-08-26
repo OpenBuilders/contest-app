@@ -16,6 +16,7 @@ import {
 	viewport,
 } from "@telegram-apps/sdk-solid";
 import { Color } from "./colors";
+import { navigator } from "./navigator";
 import { settings } from "./settings";
 
 const retrieveLaunchParamsSafe = () => {
@@ -179,14 +180,19 @@ export const initializeTMA = async () => {
 		const handleTheme = (isDark: boolean) => {
 			document.body.setAttribute("data-theme", isDark ? "dark" : "light");
 
-			setTimeout(() => {
-				const page = document.querySelector(".page");
-				if (!page) return;
+			const current = navigator.getCurrentHistory();
+			if (!current) return;
 
-				const color = new Color(getComputedStyle(page).backgroundColor);
+			if (current.options?.params?.theme !== false) {
+				setTimeout(() => {
+					const page = document.querySelector(".page");
+					if (!page) return;
 
-				setThemeColor(color.toHex() as any);
-			});
+					const color = new Color(getComputedStyle(page).backgroundColor);
+
+					setThemeColor(color.toHex() as any);
+				});
+			}
 		};
 
 		handleTheme(miniApp.isDark());

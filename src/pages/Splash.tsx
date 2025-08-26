@@ -67,7 +67,14 @@ const PageSplash: Component = () => {
 						typeof current?.options?.params === "object" &&
 						"from" in current.options.params
 					) {
-						navigator.go(current.options.params.from);
+						const params =
+							"fromParams" in current.options.params
+								? current.options.params.fromParams
+								: {};
+
+						navigator.go(current.options.params.from, {
+							...params,
+						});
 					} else {
 						navigator.go("/");
 					}

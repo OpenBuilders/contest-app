@@ -58,6 +58,9 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 				navigator.go(`/splash`, {
 					params: {
 						from: `/contest/${lp.tgWebAppStartParam.replace("contest-", "")}`,
+						fromParams: {
+							theme: false,
+						},
 					},
 				});
 			}
@@ -68,6 +71,9 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 				navigator.go(`/splash`, {
 					params: {
 						from: `/contest/${chunks[1]}/manage/submissions/${chunks[2]}`,
+						fromParams: {
+							theme: false,
+						},
 					},
 				});
 			}

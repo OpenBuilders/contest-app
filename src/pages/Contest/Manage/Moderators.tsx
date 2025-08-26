@@ -33,6 +33,9 @@ const PageContestManageModerators: Component = () => {
 			params: {
 				from: `/contest/${params.slug}/manage/moderators`,
 				haptic: false,
+				fromParams: {
+					theme: false,
+				},
 			},
 		});
 		return;

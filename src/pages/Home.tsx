@@ -151,6 +151,9 @@ const PageHome: Component = () => {
 				if (!href) return;
 				navigator.go(href, {
 					backable: true,
+					params: {
+						theme: false,
+					},
 				});
 			};
 

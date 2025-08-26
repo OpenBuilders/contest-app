@@ -16,6 +16,7 @@ import {
 	type ContestThemeBackdrop,
 	ContestThemeBackdrops,
 	type ContestThemeSymbol,
+	disableThemeSync,
 } from "../utils/themes";
 
 const PageProfile: Component = () => {
@@ -79,6 +80,8 @@ const PageProfile: Component = () => {
 	};
 
 	onMount(async () => {
+		disableThemeSync();
+
 		setTimeout(() => {
 			setHeaderColor(profileColor.to as any);
 
