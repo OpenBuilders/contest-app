@@ -6,6 +6,10 @@
    flex-direction: column;
    overflow: hidden;
 
+   &.loading {
+      pointer-events: none;
+   }
+
    #editor {
       display: flex;
       flex-direction: column;

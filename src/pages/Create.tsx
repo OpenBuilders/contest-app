@@ -1,12 +1,5 @@
 import "./Create.scss";
 
-import CropperCanvas from "@cropper/element-canvas";
-import CropperGrid from "@cropper/element-grid";
-import CropperHandle from "@cropper/element-handle";
-import CropperImage from "@cropper/element-image";
-import CropperSelection from "@cropper/element-selection";
-import CropperShade from "@cropper/element-shade";
-
 import { TbPhotoPlus } from "solid-icons/tb";
 import {
 	type Accessor,
@@ -48,6 +41,7 @@ import { requestAPI } from "../utils/api";
 import { canvasToBlob } from "../utils/general";
 import { isRTL } from "../utils/i18n";
 import { hideKeyboardOnEnter } from "../utils/input";
+import { initializeCropper, initializeDOMPurify } from "../utils/lazy";
 import { setModals } from "../utils/modal";
 import { navigator } from "../utils/navigator";
 import { clamp, formatNumbersInString } from "../utils/number";
@@ -74,13 +68,6 @@ declare module "solid-js" {
 		}
 	}
 }
-
-CropperCanvas.$define();
-CropperImage.$define();
-CropperHandle.$define();
-CropperShade.$define();
-CropperSelection.$define();
-CropperGrid.$define();
 
 type CreateFormStore = {
 	title: string;
@@ -119,6 +106,9 @@ const SectionIntro: Component<CreateFormSectionProps> = (props) => {
 
 	onMount(async () => {
 		invokeHapticFeedbackImpact("soft");
+
+		await initializeCropper();
+		await initializeDOMPurify();
 	});
 
 	return (
@@ -149,6 +139,10 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 
 	const [, setStep] = props.stepSignal;
 	const [form, setForm] = props.formStore;
+
+	const [dependencies, setDependencies] = createStore({
+		cropper: false,
+	});
 
 	let filePickerImage: HTMLInputElement | undefined;
 
@@ -182,6 +176,7 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 	};
 
 	const onClickImage = () => {
+		if (!dependencies.cropper) return;
 		if (!filePickerImage) return;
 
 		filePickerImage.onchange = (event) => {
@@ -211,7 +206,13 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 		};
 
 		return (
-			<Show when={imagePicker.active && imagePicker.src.length > 0}>
+			<Show
+				when={
+					dependencies.cropper &&
+					imagePicker.active &&
+					imagePicker.src.length > 0
+				}
+			>
 				<Portal mount={document.body}>
 					<cropper-canvas background>
 						<cropper-image
@@ -257,6 +258,8 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 
 	onMount(async () => {
 		invokeHapticFeedbackImpact("soft");
+
+		setDependencies("cropper", await initializeCropper());
 	});
 
 	return (

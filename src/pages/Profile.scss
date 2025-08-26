@@ -239,9 +239,13 @@
                         }
 
                         > span {
-                           flex-shrink: 0;
                            font-size: 0.875rem;
                            color: rgba(var(--text-color-rgb), 0.5);
+                           flex-shrink: 0;
+                           overflow: hidden;
+                           text-overflow: ellipsis;
+                           white-space: nowrap;
+                           line-height: normal;
                         }
                      }
                   }

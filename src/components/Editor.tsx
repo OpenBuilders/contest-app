@@ -1,6 +1,6 @@
 import pell from "pell";
 import "./Editor.scss";
-import DOMPurify from "dompurify";
+import type { DOMPurify } from "dompurify";
 import snarkdown from "snarkdown";
 import {
 	AiOutlineBold,
@@ -14,6 +14,7 @@ import { createStore } from "solid-js/store";
 import tippy, { type Instance } from "tippy.js";
 import { useTranslation } from "../contexts/TranslationContext";
 import { isValidURL } from "../utils/input";
+import { initializeDOMPurify } from "../utils/lazy";
 import { store } from "../utils/store";
 
 type EditorProps = {
@@ -30,6 +31,12 @@ const Editor: Component<EditorProps> = (props) => {
 	let realActionbar: HTMLElement | undefined;
 	let actionbar: Instance | undefined;
 	let savedRange: Range | undefined;
+
+	let domPurify: DOMPurify | undefined;
+
+	const [dependencies, setDependencies] = createStore({
+		dompurify: false,
+	});
 
 	const [actionbarToggles, setActionbarToggles] = createStore({
 		bold: false,
@@ -80,22 +87,25 @@ const Editor: Component<EditorProps> = (props) => {
 	});
 
 	const sanitizeText = (text: string) => {
-		return DOMPurify.sanitize(
-			text
-				.replace(/<strong>/g, "<b>")
-				.replace(/<\/strong>/g, "</b>")
-				.replace(/<em>/g, "<i>")
-				.replace(/<\/em>/g, "</i>")
-				.replace(/<s>/g, "<strike>")
-				.replace(/<\/s>/g, "</strike>"),
-			{
-				ALLOWED_TAGS: store.limits!.form.create.description.allowedTags,
-				ALLOWED_ATTR: store.limits!.form.create.description.allowedAttrs,
-				ALLOW_ARIA_ATTR: false,
-				ALLOW_DATA_ATTR: false,
-				KEEP_CONTENT: true,
-			},
-		)
+		if (!domPurify) return "";
+
+		return domPurify
+			.sanitize(
+				text
+					.replace(/<strong>/g, "<b>")
+					.replace(/<\/strong>/g, "</b>")
+					.replace(/<em>/g, "<i>")
+					.replace(/<\/em>/g, "</i>")
+					.replace(/<s>/g, "<strike>")
+					.replace(/<\/s>/g, "</strike>"),
+				{
+					ALLOWED_TAGS: store.limits!.form.create.description.allowedTags,
+					ALLOWED_ATTR: store.limits!.form.create.description.allowedAttrs,
+					ALLOW_ARIA_ATTR: false,
+					ALLOW_DATA_ATTR: false,
+					KEEP_CONTENT: true,
+				},
+			)
 			.replace(/(?:<div>(?:\s|&nbsp;|\u00A0|<br\s*\/?>)*<\/div>)+/gi, "\n")
 			.replace(
 				/^(?:\s|&nbsp;|\u00A0|<br\s*\/?>|\n|\r)+|(?:\s|&nbsp;|\u00A0|<br\s*\/?>|\n|\r)+$/gi,
@@ -170,7 +180,7 @@ const Editor: Component<EditorProps> = (props) => {
 		}
 	};
 
-	onMount(() => {
+	onMount(async () => {
 		if (!editor) return;
 
 		const pellInstance = pell.init({
@@ -220,10 +230,6 @@ const Editor: Component<EditorProps> = (props) => {
 			subtree: true,
 		});
 
-		if (props.value.length > 0) {
-			pellEditor.innerHTML = sanitizeText(props.value);
-		}
-
 		onCleanup(() => {
 			pellEditor.removeEventListener("paste", onPaste);
 			pellEditor.removeEventListener("blur", onBlur);
@@ -238,6 +244,13 @@ const Editor: Component<EditorProps> = (props) => {
 
 			observer.disconnect();
 		});
+
+		domPurify = await initializeDOMPurify();
+		setDependencies("dompurify", true);
+
+		if (props.value.length > 0) {
+			pellEditor.innerHTML = sanitizeText(props.value);
+		}
 	});
 
 	const ActionBar = () => {
@@ -359,7 +372,7 @@ const Editor: Component<EditorProps> = (props) => {
 	};
 
 	return (
-		<div id="container-editor">
+		<div id="container-editor" classList={{ loading: !dependencies.dompurify }}>
 			<div ref={editor} id="editor" class="content" />
 			<Placeholder />
 			<MaxLength />

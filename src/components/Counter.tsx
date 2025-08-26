@@ -1,4 +1,4 @@
-import gsap from "gsap";
+import { gsap } from "gsap/gsap-core";
 import { type Component, createEffect, onMount } from "solid-js";
 import { motionMultipler } from "../utils/motion";
 
@@ -30,7 +30,7 @@ const Counter: Component<CounterProps> = (props) => {
 					stagger: {
 						onUpdate: function () {
 							if (props.splitDigits !== false) {
-								// @ts-ignore
+								// @ts-expect-error
 								const el = this.targets()[0];
 								el.innerText = Number.parseInt(el.innerText).toLocaleString();
 							}

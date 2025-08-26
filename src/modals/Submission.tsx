@@ -179,7 +179,7 @@ const ModalSubmission: Component = () => {
 						/>
 						<Counter
 							value={modals.submission.submission.submission.likes}
-							initialValue={modals.submission.submission.submission.likes}
+							initialValue={0}
 							durationMs={250}
 						/>
 					</li>
@@ -204,7 +204,7 @@ const ModalSubmission: Component = () => {
 						/>
 						<Counter
 							value={modals.submission.submission.submission.dislikes}
-							initialValue={modals.submission.submission.submission.dislikes}
+							initialValue={0}
 							durationMs={250}
 						/>
 					</li>

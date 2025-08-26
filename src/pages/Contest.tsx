@@ -40,6 +40,7 @@ import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
 import { Color } from "../utils/colors";
+import { initializeSortable } from "../utils/lazy";
 import { setModals } from "../utils/modal";
 import { navigator } from "../utils/navigator";
 import { formatNumbersInString } from "../utils/number";
@@ -710,7 +711,10 @@ const PageContest: Component = () => {
 						},
 					},
 				);
-				setTimeout(handleTheme);
+
+				if (state() === "manage") {
+					initializeSortable();
+				}
 			};
 
 			const onClickParticipate = () => {

@@ -1,5 +1,4 @@
 import "./ClickableText.scss";
-import DOMPurify from "dompurify";
 import { createMemo, type JSX, onCleanup, onMount } from "solid-js";
 
 interface ClickableTextProps {
@@ -11,15 +10,8 @@ export default function ClickableText(props: ClickableTextProps): JSX.Element {
 	let clickable: HTMLParagraphElement | undefined;
 
 	const sanitizedHtml = createMemo(() => {
-		const clean = DOMPurify.sanitize(`<p>${props.text}</p>`, {
-			ALLOWED_TAGS: ["i", "b", "span", "clickable"],
-			ALLOWED_ATTR: ["id"],
-			ADD_TAGS: ["clickable"],
-			USE_PROFILES: { html: true },
-		});
-
 		const parser = new DOMParser();
-		const doc = parser.parseFromString(clean, "text/html");
+		const doc = parser.parseFromString(`<p>${props.text}</p>`, "text/html");
 		const container = doc.body.firstChild as HTMLElement;
 
 		const clickables = container.querySelectorAll("clickable");

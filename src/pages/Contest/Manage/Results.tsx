@@ -15,7 +15,6 @@ import {
 	Switch,
 } from "solid-js";
 import { createStore, produce, reconcile } from "solid-js/store";
-import Sortable from "solid-sortablejs";
 import { Avatar, AvatarStack } from "../../../components/Avatar";
 import BackButton from "../../../components/BackButton";
 import ButtonArray from "../../../components/ButtonArray";
@@ -25,6 +24,7 @@ import { SVGSymbol } from "../../../components/SVG";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { TGS } from "../../../utils/animations";
 import { requestAPI } from "../../../utils/api";
+import { initializeSortable } from "../../../utils/lazy";
 import { setModals } from "../../../utils/modal";
 import { navigator } from "../../../utils/navigator";
 import { formatNumbersInString } from "../../../utils/number";
@@ -70,6 +70,12 @@ const PageContestManageResults: Component = () => {
 		return;
 	}
 
+	let Sortable: any;
+
+	const [dependencies, setDependencies] = createStore({
+		sortable: false,
+	});
+
 	const [processing, setProcessing] = createSignal(false);
 
 	const onBackButton = () => {
@@ -81,6 +87,11 @@ const PageContestManageResults: Component = () => {
 	};
 
 	onMount(async () => {
+		initializeSortable().then((result) => {
+			Sortable = result;
+			setDependencies("sortable", true);
+		});
+
 		if (!data.placements) {
 			await fetchData();
 		}
@@ -340,7 +351,7 @@ const PageContestManageResults: Component = () => {
 				<Sortable
 					idField="id"
 					items={data.placements ?? []}
-					setItems={(data) => setData("placements", data)}
+					setItems={(data: Placement[]) => setData("placements", data)}
 					handle=".handle"
 					onChoose={() => {
 						invokeHapticFeedbackImpact("soft");
@@ -354,7 +365,7 @@ const PageContestManageResults: Component = () => {
 						});
 					}}
 				>
-					{(placement) => <ItemResult placement={placement} />}
+					{(placement: Placement) => <ItemResult placement={placement} />}
 				</Sortable>
 			</div>
 		);
@@ -388,7 +399,9 @@ const PageContestManageResults: Component = () => {
 							<SectionResultsEmpty />
 						</Match>
 
-						<Match when={(data.placements?.length ?? 0) > 0}>
+						<Match
+							when={(data.placements?.length ?? 0) > 0 && dependencies.sortable}
+						>
 							<SectionResults />
 						</Match>
 					</Switch>
