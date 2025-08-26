@@ -42,6 +42,10 @@ const SectionGallerySlider: Component<{ item: GallerySlider }> = (props) => {
 		}
 	};
 
+	const onSlideChange = () => {
+		invokeHapticFeedbackImpact("light");
+	};
+
 	return (
 		<section class="section-gallery-slider">
 			<swiper-container
@@ -49,6 +53,7 @@ const SectionGallerySlider: Component<{ item: GallerySlider }> = (props) => {
 				space-between="12"
 				grab-cursor={true}
 				centered-slides={true}
+				swiperslidechange={onSlideChange}
 			>
 				<For each={props.item.items}>
 					{(item) => (
