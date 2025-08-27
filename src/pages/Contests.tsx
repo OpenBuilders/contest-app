@@ -1,5 +1,12 @@
 import "./Contests.scss";
-import { type Component, For, Match, onMount, Switch } from "solid-js";
+import {
+	type Component,
+	For,
+	Match,
+	onCleanup,
+	onMount,
+	Switch,
+} from "solid-js";
 import ContestThumbnail from "../components/ContestThumbnail";
 import ImageLoader from "../components/ImageLoader";
 import { useTranslation } from "../contexts/TranslationContext";
@@ -42,18 +49,30 @@ const SectionGallerySlider: Component<{ item: GallerySlider }> = (props) => {
 		}
 	};
 
-	const onSlideChange = () => {
-		invokeHapticFeedbackImpact("light");
-	};
+	let swiper: HTMLElement | undefined;
+
+	onMount(() => {
+		if (!swiper) return;
+
+		const onSlide = () => {
+			invokeHapticFeedbackImpact("light");
+		};
+
+		swiper.addEventListener("swiperslidechange", onSlide);
+
+		onCleanup(() => {
+			swiper.removeEventListener("swiperslidechange", onSlide);
+		});
+	});
 
 	return (
 		<section class="section-gallery-slider">
 			<swiper-container
+				ref={swiper}
 				slides-per-view={props.item.items_per_view ?? "1.125"}
 				space-between="12"
 				grab-cursor={true}
 				centered-slides={true}
-				swiperslidechange={onSlideChange}
 			>
 				<For each={props.item.items}>
 					{(item) => (
