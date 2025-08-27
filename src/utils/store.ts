@@ -18,6 +18,7 @@ export type Contest = {
 	title: string;
 	description: string;
 	fee: number;
+	fee_wallet?: string;
 	prize?: string;
 	public: boolean;
 	anonymous: boolean;

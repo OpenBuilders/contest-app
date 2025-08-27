@@ -253,7 +253,7 @@
             white-space: nowrap;
          }
 
-         > span:last-child {
+         > span:last-child:not(:first-child) {
             font-size: 0.6875rem;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -264,6 +264,10 @@
             position: relative;
             z-index: 0;
             padding: 0.1875rem 0.25rem;
+
+            &.empty {
+               opacity: 0;
+            }
 
             &::before {
                position: absolute;

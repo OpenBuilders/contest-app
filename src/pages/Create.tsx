@@ -11,6 +11,7 @@ import {
 	For,
 	Match,
 	on,
+	onCleanup,
 	onMount,
 	type Setter,
 	Show,
@@ -41,7 +42,13 @@ import { requestAPI } from "../utils/api";
 import { canvasToBlob } from "../utils/general";
 import { isRTL } from "../utils/i18n";
 import { hideKeyboardOnEnter } from "../utils/input";
-import { initializeCropper, initializeDOMPurify } from "../utils/lazy";
+import {
+	initializeCropper,
+	initializeDOMPurify,
+	initializeTonConnect,
+	parseTONAddress,
+	tonConnectUI,
+} from "../utils/lazy";
 import { setModals } from "../utils/modal";
 import { navigator } from "../utils/navigator";
 import { clamp, formatNumbersInString } from "../utils/number";
@@ -54,6 +61,7 @@ import {
 	invokeHapticFeedbackSelectionChanged,
 } from "../utils/telegram";
 import { ContestThemeBackdrops, ContestThemes } from "../utils/themes";
+import { formatTonAddress, isTonAddress } from "../utils/ton";
 
 declare module "solid-js" {
 	namespace JSX {
@@ -83,12 +91,13 @@ type CreateFormStore = {
 	};
 	category: string;
 	fee: number;
+	fee_wallet?: string;
 	public: boolean;
 	anonymous: boolean;
 	slug?: string;
 };
 
-type CreateFormStep = "intro" | "basic" | "options" | "done";
+type CreateFormStep = "intro" | "basic" | "options" | "done" | "wallet";
 
 type CreateFormSectionProps = {
 	stepSignal: [Accessor<CreateFormStep>, Setter<CreateFormStep>];
@@ -109,6 +118,7 @@ const SectionIntro: Component<CreateFormSectionProps> = (props) => {
 
 		await initializeCropper();
 		await initializeDOMPurify();
+		await initializeTonConnect();
 	});
 
 	return (
@@ -354,35 +364,10 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 
 		invokeHapticFeedbackImpact("soft");
 
-		const request = await requestAPI(
-			"/contest/create",
-			{
-				title: form.title,
-				description: form.description,
-				prize: form.prize,
-				date: JSON.stringify(form.date),
-				theme: JSON.stringify(form.theme),
-				category: form.category,
-				fee: form.fee.toString(),
-				public: form.public ? "true" : "false",
-				anonymous: form.anonymous ? "true" : "false",
-				image: form.image
-					? ((await canvasToBlob(form.image, "image/webp", 0.95)) ?? undefined)
-					: undefined,
-			},
-			"POST",
-		);
-
-		if (request) {
-			const { result } = request;
-
-			invokeHapticFeedbackNotification("success");
-
-			batch(() => {
-				setForm("slug", result.slug);
-				setStep("done");
-				toggleSignal("fetchMyContests");
-			});
+		if (form.fee) {
+			setStep("wallet");
+		} else {
+			await submitContest(form, setForm, setStep);
 		}
 	};
 
@@ -756,6 +741,127 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 	);
 };
 
+const SectionWallet: Component<CreateFormSectionProps> = (props) => {
+	let btnConnect: HTMLDivElement | undefined;
+
+	const [dependencies, setDependencies] = createStore({
+		tonconnect: false,
+	});
+
+	const { t } = useTranslation();
+
+	const [, setStep] = props.stepSignal;
+	const [form, setForm] = props.formStore;
+	const [processing, setProcessing] = createSignal(false);
+
+	const buttonDisabled = createMemo(() => {
+		if (!isTonAddress(form.fee_wallet ?? "")) {
+			return true;
+		}
+
+		return false;
+	});
+
+	const onClickButton = async () => {
+		if (processing()) return;
+		setProcessing(true);
+
+		invokeHapticFeedbackImpact("soft");
+
+		await submitContest(form, setForm, setStep);
+	};
+
+	const disposeOnModalStateChange = tonConnectUI?.onModalStateChange(() => {});
+
+	const disposeOnStatusChange = tonConnectUI?.onStatusChange((wallet) => {
+		setForm("fee_wallet", wallet?.account.address);
+	});
+
+	const onClickButtonConnect = async () => {
+		if (!dependencies.tonconnect && tonConnectUI) {
+			setDependencies("tonconnect", await initializeTonConnect());
+			setTimeout(onClickButtonConnect);
+			return;
+		}
+
+		setProcessing(true);
+		invokeHapticFeedbackImpact("light");
+
+		if (tonConnectUI?.connected) {
+			await tonConnectUI?.disconnect();
+		}
+		await tonConnectUI?.openModal();
+
+		setProcessing(false);
+	};
+
+	onMount(async () => {
+		setProcessing(true);
+		invokeHapticFeedbackImpact("soft");
+
+		onCleanup(() => {
+			disposeOnModalStateChange?.();
+			disposeOnStatusChange?.();
+		});
+
+		setDependencies("tonconnect", await initializeTonConnect());
+
+		await tonConnectUI?.connectionRestored;
+		setProcessing(false);
+
+		if (tonConnectUI?.wallet) {
+			setForm("fee_wallet", tonConnectUI.wallet.account.address);
+		}
+	});
+
+	return (
+		<div id="container-create-section-wallet">
+			<div>
+				<LottiePlayerMotion
+					src={TGS.bag.url}
+					outline={TGS.bag.outline}
+					autoplay
+					playOnClick
+				/>
+
+				<h1>{t("pages.create.wallet.title")}</h1>
+
+				<p class="text-secondary">{t("pages.create.wallet.description")}</p>
+
+				<div
+					ref={btnConnect}
+					onClick={onClickButtonConnect}
+					id="btn-connect"
+					class="clickable"
+					classList={{ disabled: !dependencies.tonconnect || processing() }}
+				>
+					<SVGSymbol id="TON" />
+
+					<div>
+						<Show
+							when={form.fee_wallet}
+							fallback={<span>{t("pages.create.wallet.button.text")}</span>}
+						>
+							<span>
+								{formatTonAddress(parseTONAddress(form.fee_wallet!)!)}
+							</span>
+						</Show>
+					</div>
+				</div>
+
+				<span class="text-hint">{t("pages.create.wallet.hint")}</span>
+			</div>
+
+			<CustomMainButton
+				onClick={onClickButton}
+				text={t("general.continue")}
+				disabled={buttonDisabled() || processing()}
+				loading={processing()}
+			/>
+		</div>
+	);
+};
+
 const SectionDone: Component<CreateFormSectionProps> = (props) => {
 	const { t } = useTranslation();
 
@@ -798,6 +904,44 @@ const SectionDone: Component<CreateFormSectionProps> = (props) => {
 	);
 };
 
+const submitContest = async (
+	form: CreateFormStore,
+	setForm: SetStoreFunction<CreateFormStore>,
+	setStep: Setter<CreateFormStep>,
+) => {
+	const request = await requestAPI(
+		"/contest/create",
+		{
+			title: form.title,
+			description: form.description,
+			prize: form.prize,
+			date: JSON.stringify(form.date),
+			theme: JSON.stringify(form.theme),
+			category: form.category,
+			fee: form.fee.toString(),
+			fee_wallet: form.fee_wallet,
+			public: form.public ? "true" : "false",
+			anonymous: form.anonymous ? "true" : "false",
+			image: form.image
+				? ((await canvasToBlob(form.image, "image/webp", 0.95)) ?? undefined)
+				: undefined,
+		},
+		"POST",
+	);
+
+	if (request) {
+		const { result } = request;
+
+		invokeHapticFeedbackNotification("success");
+
+		batch(() => {
+			setForm("slug", result.slug);
+			setStep("done");
+			toggleSignal("fetchMyContests");
+		});
+	}
+};
+
 export const SectionCreateForm = () => {
 	const [step, setStep] = createSignal<CreateFormStep>("intro");
 	const [form, setForm] = createStore<CreateFormStore>({
@@ -833,6 +977,13 @@ export const SectionCreateForm = () => {
 
 				<Match when={step() === "options"}>
 					<SectionOptions
+						formStore={[form, setForm]}
+						stepSignal={[step, setStep]}
+					/>
+				</Match>
+
+				<Match when={step() === "wallet"}>
+					<SectionWallet
 						formStore={[form, setForm]}
 						stepSignal={[step, setStep]}
 					/>

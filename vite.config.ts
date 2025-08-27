@@ -55,6 +55,7 @@ export default defineConfig((config) => {
 						cropperjs: ["cropperjs"],
 						dompurify: ["dompurify"],
 						sortable: ["solid-sortablejs", "sortablejs"],
+						ton: ["@tonconnect/ui", "@tonconnect/sdk"],
 					},
 				},
 			},

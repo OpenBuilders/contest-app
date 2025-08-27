@@ -54,6 +54,9 @@ const dict = {
 						title: "You haven’t created any contests yet.",
 						button: "Let's create one!",
 					},
+					bookmark: {
+						title: "You haven’t bookmarked any contests yet.",
+					},
 				},
 				tabs: {
 					all: {
@@ -64,6 +67,9 @@ const dict = {
 					},
 					created: {
 						title: "Created",
+					},
+					bookmark: {
+						title: "Bookmarks",
 					},
 				},
 			},
@@ -142,6 +148,15 @@ const dict = {
 					"You can now view your contest, invite moderators, or share it with others.",
 				buttons: {
 					view: "View Contest",
+				},
+			},
+			wallet: {
+				title: "Connect Wallet",
+				description:
+					"Connect a TON wallet to receive entry fees from participants.",
+				hint: "5% service fee applies to each entry.",
+				button: {
+					text: "Connect Wallet",
 				},
 			},
 		},

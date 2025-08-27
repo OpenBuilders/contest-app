@@ -142,6 +142,10 @@ const PageHome: Component = () => {
 			store.contests.my!.filter((contest) => contest.metadata.role === "owner"),
 		);
 
+		const contestsBookmarked = createMemo(() =>
+			store.contests.my!.filter((contest) => contest.metadata.bookmarked),
+		);
+
 		const ListContests: Component<{ contests: AnnotatedContest[] }> = (
 			props,
 		) => {
@@ -211,7 +215,10 @@ const PageHome: Component = () => {
 											{dayjs.unix(contest.contest.date_end).format("MMM D")}
 										</span>
 
-										<Show when={contest.metadata.role}>
+										<Show
+											when={contest.metadata.role}
+											fallback={<span class="empty">|</span>}
+										>
 											<span class={contest.metadata.role}>
 												{t(`general.roles.${contest.metadata.role}` as any)}
 											</span>
@@ -283,6 +290,23 @@ const PageHome: Component = () => {
 									}
 								>
 									<ListContests contests={contestsCreated()} />
+								</Show>
+							),
+						},
+						{
+							slug: "bookmarked",
+							title: t("pages.home.contests.tabs.bookmark.title"),
+							component: () => (
+								<Show
+									when={contestsBookmarked().length > 0}
+									fallback={
+										<SectionContestsEmpty
+											title={t("pages.home.contests.empty.bookmark.title")}
+											iconIndex="duckEgg"
+										/>
+									}
+								>
+									<ListContests contests={contestsBookmarked()} />
 								</Show>
 							),
 						},

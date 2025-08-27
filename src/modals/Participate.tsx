@@ -16,6 +16,11 @@ import { Section } from "../components/Section";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
 import { hideKeyboardOnEnter, isValidURL } from "../utils/input";
+import {
+	initializeTonConnect,
+	parseTONAddress,
+	tonConnectUI,
+} from "../utils/lazy";
 import { modals, setModals } from "../utils/modal";
 import { toggleSignal } from "../utils/signals";
 import { store } from "../utils/store";
@@ -39,13 +44,19 @@ const ModalParticipate: Component = () => {
 	});
 	const [processing, setProcessing] = createSignal(false);
 
-	onMount(() => {
+	const [dependencies, setDependencies] = createStore({
+		tonconnect: false,
+	});
+
+	onMount(async () => {
 		if (!(modals.participate.contest && modals.participate.metadata)) {
 			onClose();
 			return;
 		}
 
 		invokeHapticFeedbackImpact("soft");
+
+		setDependencies("tonconnect", await initializeTonConnect());
 	});
 
 	const onClose = () => {
@@ -80,19 +91,68 @@ const ModalParticipate: Component = () => {
 		);
 	});
 
+	const handlePayment = async () => {
+		if (!(dependencies.tonconnect && tonConnectUI)) {
+			setDependencies("tonconnect", await initializeTonConnect());
+			return handlePayment();
+		}
+
+		await tonConnectUI?.connectionRestored;
+
+		if (!tonConnectUI?.connected) {
+			await tonConnectUI?.openModal();
+		}
+
+		try {
+			const result = await tonConnectUI?.sendTransaction({
+				validUntil: Math.floor(Date.now() / 1000) + 600,
+				messages: [
+					{
+						address: parseTONAddress(
+							modals.participate.contest?.fee_wallet ?? "",
+						),
+						amount: (0.95 * modals.participate.contest!.fee! * 1e9).toString(),
+						payload: `contest-${modals.participate.contest?.slug}-${store.user?.user_id}`,
+					},
+					{
+						address: import.meta.env.VITE_MASTER_WALLET,
+						amount: (0.05 * modals.participate.contest!.fee! * 1e9).toString(),
+						payload: `fee-${modals.participate.contest?.slug}-${store.user?.user_id}`,
+					},
+				],
+			});
+
+			return result.boc;
+		} catch (_) {}
+
+		return false;
+	};
+
 	const onClickButton = async () => {
 		if (processing()) return;
 		setProcessing(true);
 
 		invokeHapticFeedbackImpact("soft");
 
-		// TODO: process payment here and then continue
+		let boc: string | undefined;
+
+		if (modals.participate.contest?.fee) {
+			const result = await handlePayment();
+
+			if (result) {
+				boc = result;
+			} else {
+				setProcessing(false);
+				return;
+			}
+		}
 
 		const request = await requestAPI(
 			`/contest/${modals.participate.contest!.slug}/submit`,
 			{
 				link: form.link,
 				description: form.description,
+				boc: boc,
 			},
 			"POST",
 		);
