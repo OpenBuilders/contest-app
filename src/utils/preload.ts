@@ -16,7 +16,7 @@ import { symbolizeSVGComponent } from "../components/SVG";
 import { TGS } from "./animations";
 import { inflateWorker } from "./inflate";
 import { symbolizeSVG } from "./svg";
-import { AnimalSymbolsModule } from "./symbols";
+import { AnimalSymbolsModule, SymbolsModule } from "./symbols";
 
 const preloadAnimations = async () => {
 	const list: (keyof typeof TGS)[] = ["duckEgg"];
@@ -108,6 +108,13 @@ const predefineSVGSymbols = async () => {
 		symbolizeSVG(
 			`alias-${key.replace("../assets/icons/animals/", "").replace(".svg", "")}`,
 			AnimalSymbolsModule[key] as string,
+		);
+	}
+
+	for (const key in SymbolsModule) {
+		symbolizeSVG(
+			`backdrop-${key.replace("../assets/icons/symbols/", "").replace(".svg", "")}`,
+			SymbolsModule[key] as string,
 		);
 	}
 };

@@ -72,6 +72,11 @@ const dict = {
 						title: "Bookmarks",
 					},
 				},
+				badges: {
+					ended: "Ended",
+					closed: "Closed",
+					open: "Open",
+				},
 			},
 		},
 		create: {
@@ -140,6 +145,9 @@ const dict = {
 				},
 				themes: {
 					label: "Themes",
+					symbol: {
+						label: "Symbol",
+					},
 				},
 			},
 			done: {

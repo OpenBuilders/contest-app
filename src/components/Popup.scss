@@ -1,0 +1,56 @@
+.popup-container {
+   position: fixed;
+   inset: 0;
+   pointer-events: none;
+
+   > div.popup-backdrop {
+      position: absolute;
+      inset: 0;
+      pointer-events: all;
+   }
+
+   > div.popup {
+      position: absolute;
+      pointer-events: all;
+      top: var(--top);
+      bottom: var(--bottom);
+      left: var(--left);
+      right: var(--right);
+      width: var(--width, 12rem);
+      height: var(--height, 6rem);
+      border-radius: 0.5rem;
+      background-color: var(--section-bg-color);
+      box-shadow: 0 5px 10px 5px rgba(0, 0, 0, 0.125);
+      padding: 0.75rem;
+   }
+
+   &.animated {
+      > div.popup {
+         animation: popup-scale-in var(--animation-duration, 0.25s) ease
+            forwards;
+         transform-origin: var(--transform-origin, "unset");
+      }
+   }
+}
+
+@keyframes popup-scale-in {
+   from {
+      transform: scale(0);
+      opacity: 0;
+   }
+   to {
+      transform: scale(1);
+      opacity: 1;
+   }
+}
+
+@keyframes popup-scale-out {
+   from {
+      transform: scale(1);
+      opacity: 1;
+   }
+   to {
+      transform: scale(0);
+      opacity: 0;
+   }
+}

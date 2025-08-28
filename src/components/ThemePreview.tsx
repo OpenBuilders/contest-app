@@ -1,5 +1,12 @@
 import "./ThemePreview.scss";
-import { type Component, createSignal, onMount, Show } from "solid-js";
+import {
+	type Component,
+	createEffect,
+	createSignal,
+	on,
+	onMount,
+	Show,
+} from "solid-js";
 import type { ContestThemeBackdrop, ContestThemeSymbol } from "../utils/themes";
 import CircularIconPattern, {
 	type CircularIconPatternLayer,
@@ -25,6 +32,24 @@ const ThemePreview: Component<ThemePreviewProps> = (props) => {
 		}
 	});
 
+	const [refresh, setRefresh] = createSignal(false);
+
+	createEffect(
+		on(
+			() => props.symbol,
+			() => {
+				setRefresh(true);
+
+				setTimeout(() => {
+					setRefresh(false);
+				});
+			},
+			{
+				defer: true,
+			},
+		),
+	);
+
 	return (
 		<div
 			ref={container}
@@ -37,7 +62,7 @@ const ThemePreview: Component<ThemePreviewProps> = (props) => {
 			}}
 			onClick={props.onClick}
 		>
-			<Show when={size()}>
+			<Show when={size() && !refresh()}>
 				<CircularIconPattern
 					backdrop={props.backdrop}
 					symbol={props.symbol}

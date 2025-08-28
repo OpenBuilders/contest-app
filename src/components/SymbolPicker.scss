@@ -1,0 +1,49 @@
+.container-symbol-picker {
+   --width: calc(100% - 2rem);
+   --height: 12.5rem;
+
+   > div.popup {
+      padding: 0 !important;
+
+      > div#container-symbols-picker {
+         width: 100%;
+         height: 100%;
+         border-radius: inherit;
+         overflow: hidden;
+         overflow-y: auto;
+
+         > ul {
+            position: relative;
+            width: 100%;
+
+            > li {
+               position: absolute;
+               top: 0;
+               left: 0;
+               width: 100%;
+               text-align: center;
+               border-radius: 0.325rem;
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               cursor: pointer;
+               overflow: hidden;
+               font-size: 1.375rem;
+               color: var(--accent);
+               z-index: 0;
+
+               &.active {
+                  &::before {
+                     content: "";
+                     position: absolute;
+                     z-index: -1;
+                     background-color: var(--accent);
+                     opacity: 0.175;
+                     inset: 0;
+                  }
+               }
+            }
+         }
+      }
+   }
+}

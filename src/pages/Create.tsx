@@ -29,11 +29,11 @@ import {
 	Section,
 	SectionList,
 	SectionListInput,
-	SectionListPicker,
 	SectionListSelect,
 	SectionListSwitch,
 } from "../components/Section";
 import { SVGSymbol } from "../components/SVG";
+import SymbolPicker from "../components/SymbolPicker";
 import ThemePreview from "../components/ThemePreview";
 import WheelPicker from "../components/WheelPicker";
 import { useTranslation } from "../contexts/TranslationContext";
@@ -60,7 +60,7 @@ import {
 	invokeHapticFeedbackNotification,
 	invokeHapticFeedbackSelectionChanged,
 } from "../utils/telegram";
-import { ContestThemeBackdrops, ContestThemes } from "../utils/themes";
+import { ContestThemeBackdrops } from "../utils/themes";
 import { formatTonAddress, isTonAddress } from "../utils/ton";
 
 declare module "solid-js" {
@@ -504,60 +504,60 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 		);
 	};
 
-	const SubsectionVisibility = () => {
-		return (
-			<SectionList
-				title={t("pages.create.options.visibility.label")}
-				description={() => (
-					<ClickableText
-						text={t("pages.create.options.visibility.description")}
-						listeners={{
-							public: () => {
-								setModals("createPublic", "open", true);
-							},
-							category: () => {
-								setModals("createCategory", "open", true);
-							},
-						}}
-					/>
-				)}
-				items={[
-					{
-						label: t("pages.create.options.visibility.public.label"),
-						placeholder: () => (
-							<SectionListSwitch
-								value={form.public}
-								setValue={(value) => setForm("public", value)}
-							/>
-						),
-					},
-					{
-						label: t("pages.create.options.visibility.category.label"),
-						placeholder: () => (
-							<SectionListPicker
-								value={form.category}
-								setValue={(value) => setForm("category", value)}
-								items={[
-									{
-										value: "none",
-										label: t(
-											"pages.create.options.visibility.category.default",
-										),
-									},
-									...Object.entries(store.categories!).map(
-										([value, label]) => ({
-											value,
-											label,
-										}),
-									),
-								]}
-							/>
-						),
-					},
-				]}
-			/>
-		);
-	};
+	// const SubsectionVisibility = () => {
+	// 	return (
+	// 		<SectionList
+	// 			title={t("pages.create.options.visibility.label")}
+	// 			description={() => (
+	// 				<ClickableText
+	// 					text={t("pages.create.options.visibility.description")}
+	// 					listeners={{
+	// 						public: () => {
+	// 							setModals("createPublic", "open", true);
+	// 						},
+	// 						category: () => {
+	// 							setModals("createCategory", "open", true);
+	// 						},
+	// 					}}
+	// 				/>
+	// 			)}
+	// 			items={[
+	// 				{
+	// 					label: t("pages.create.options.visibility.public.label"),
+	// 					placeholder: () => (
+	// 						<SectionListSwitch
+	// 							value={form.public}
+	// 							setValue={(value) => setForm("public", value)}
+	// 						/>
+	// 					),
+	// 				},
+	// 				{
+	// 					label: t("pages.create.options.visibility.category.label"),
+	// 					placeholder: () => (
+	// 						<SectionListPicker
+	// 							value={form.category}
+	// 							setValue={(value) => setForm("category", value)}
+	// 							items={[
+	// 								{
+	// 									value: "none",
+	// 									label: t(
+	// 										"pages.create.options.visibility.category.default",
+	// 									),
+	// 								},
+	// 								...Object.entries(store.categories!).map(
+	// 									([value, label]) => ({
+	// 										value,
+	// 										label,
+	// 									}),
+	// 								),
+	// 							]}
+	// 						/>
+	// 					),
+	// 				},
+	// 			]}
+	// 		/>
+	// 	);
+	// };
 
 	const SubsectionParticipants = () => {
 		const updateFeeValue = (input: string) => {
@@ -620,15 +620,14 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 	};
 
 	const SubsectionThemes = () => {
+		const DEFAULT_SYMBOL = "symbol-55";
+
 		const activeSlideIndex = createMemo(() => {
-			if (form.theme.backdrop === undefined && form.theme.symbol === undefined)
-				return 0;
+			if (form.theme.backdrop === undefined) return 0;
 
 			return (
-				ContestThemes.findIndex(
-					(item) =>
-						item.backdrop === form.theme.backdrop &&
-						item.symbol === form.theme.symbol,
+				ContestThemeBackdrops.findIndex(
+					(item) => item.id === form.theme.backdrop,
 				) ?? 0
 			);
 		});
@@ -637,23 +636,14 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 			const backdrop = (e.currentTarget as HTMLElement).getAttribute(
 				"data-backdrop",
 			);
-			const symbol = (e.currentTarget as HTMLElement).getAttribute(
-				"data-symbol",
-			);
 
-			if (!(backdrop && symbol)) return;
-			selectTheme(Number.parseInt(backdrop), symbol);
+			if (!backdrop) return;
+			selectBackdrop(Number.parseInt(backdrop, 10));
 		};
 
-		const selectTheme = (
-			backdrop: number | undefined,
-			symbol: string | undefined,
-		) => {
+		const selectBackdrop = (backdrop: number | undefined) => {
 			invokeHapticFeedbackSelectionChanged();
-			setForm("theme", {
-				backdrop,
-				symbol,
-			});
+			setForm("theme", "backdrop", backdrop);
 		};
 
 		createEffect(
@@ -664,58 +654,96 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 			}),
 		);
 
-		return (
-			<Section
-				class="container-section-themes"
-				title={t("pages.create.options.themes.label")}
-			>
-				<swiper-container
-					class="slider-theme-preview"
-					slides-per-view={3.75}
-					slides-offset-before={8}
-					slides-offset-after={8}
-					initial-slide={activeSlideIndex()}
-					dir={isRTL() ? "rtl" : "ltr"}
-					free-mode="true"
-				>
-					<swiper-slide>
-						<div
-							class="theme-preview"
-							style="background-color: var(--secondary-color);"
-							classList={{
-								active:
-									form.theme.backdrop === undefined &&
-									form.theme.symbol === undefined,
-							}}
-							onClick={() => selectTheme(undefined, undefined)}
-						></div>
-					</swiper-slide>
+		const [picker, setPicker] = createSignal(false);
+		const [value, setValue] = createSignal(form.theme.symbol ?? DEFAULT_SYMBOL);
 
-					<For each={ContestThemes}>
-						{(theme) => (
-							<swiper-slide>
-								<ThemePreview
-									onClick={onClick}
-									classList={{
-										active:
-											form.theme.backdrop === theme.backdrop &&
-											form.theme.symbol === theme.symbol,
+		createEffect(
+			on(
+				value,
+				() => {
+					setForm("theme", "symbol", value());
+				},
+				{
+					defer: true,
+				},
+			),
+		);
+
+		return (
+			<section id="container-section-themes">
+				<SectionList
+					items={[
+						{
+							class: "container-section-symbol",
+							label: t("pages.create.options.themes.symbol.label"),
+							placeholder: () => (
+								<div
+									onClick={() => {
+										setPicker(true);
 									}}
-									backdrop={
-										ContestThemeBackdrops.find(
-											(item) => item.id === theme.backdrop,
-										)!
-									}
-									symbol={{
-										id: theme.symbol,
-										component: getSymbolSVGString(theme.symbol),
-									}}
-								/>
-							</swiper-slide>
-						)}
-					</For>
-				</swiper-container>
-			</Section>
+								>
+									<SVGSymbol
+										id={`backdrop-${form.theme.symbol ?? DEFAULT_SYMBOL}`}
+									/>
+									<SVGSymbol id="FaSolidChevronRight" />
+									<SymbolPicker
+										anchorSelector=".container-section-symbol div.placeholder"
+										signal={[picker, setPicker]}
+										symbol={[value, setValue]}
+										closeOnClickOutside={true}
+										animated={true}
+										anchorPosition={isRTL() ? "tl" : "tr"}
+									/>
+								</div>
+							),
+						},
+					]}
+					title={t("pages.create.options.themes.label")}
+				/>
+
+				<Section class="container-section-themes">
+					<swiper-container
+						class="slider-theme-preview"
+						slides-per-view={3.75}
+						slides-offset-before={8}
+						slides-offset-after={8}
+						initial-slide={activeSlideIndex()}
+						dir={isRTL() ? "rtl" : "ltr"}
+						free-mode="true"
+					>
+						<swiper-slide>
+							<div
+								class="theme-preview"
+								style="background-color: var(--secondary-color);"
+								classList={{
+									active: form.theme.backdrop === undefined,
+								}}
+								onClick={() => selectBackdrop(undefined)}
+							></div>
+						</swiper-slide>
+
+						<For each={ContestThemeBackdrops}>
+							{(backdrop) => (
+								<swiper-slide>
+									<ThemePreview
+										onClick={onClick}
+										classList={{
+											active: form.theme.backdrop === backdrop.id,
+										}}
+										backdrop={backdrop}
+										symbol={{
+											id: form.theme.symbol ?? DEFAULT_SYMBOL,
+											component: getSymbolSVGString(
+												form.theme.symbol ?? DEFAULT_SYMBOL,
+											),
+										}}
+									/>
+								</swiper-slide>
+							)}
+						</For>
+					</swiper-container>
+				</Section>
+			</section>
 		);
 	};
 
@@ -724,7 +752,7 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 			<div>
 				<SubsectionContest />
 
-				<SubsectionVisibility />
+				{/*<SubsectionVisibility />*/}
 
 				<SubsectionParticipants />
 

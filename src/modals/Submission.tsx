@@ -1,5 +1,11 @@
 import "./Submission.scss";
-import { type Component, createSignal, onMount, Show } from "solid-js";
+import {
+	type Component,
+	createSignal,
+	onCleanup,
+	onMount,
+	Show,
+} from "solid-js";
 import { produce } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../components/Avatar";
 import Counter from "../components/Counter";
@@ -42,6 +48,10 @@ const ModalSubmission: Component = () => {
 
 	onMount(() => {
 		invokeHapticFeedbackImpact("soft");
+
+		for (const link of document.querySelectorAll(".content a")) {
+			(link as HTMLElement).addEventListener("click", onClickLink);
+		}
 	});
 
 	const fullname = modals.submission.submission.submission.user_id
@@ -75,6 +85,19 @@ const ModalSubmission: Component = () => {
 			});
 		}
 	};
+
+	const onClickLink = (e: MouseEvent) => {
+		e.preventDefault();
+		postEvent("web_app_open_link", {
+			url: (e.currentTarget as HTMLAnchorElement).href,
+		});
+	};
+
+	onCleanup(() => {
+		for (const link of document.querySelectorAll(".content a")) {
+			(link as HTMLElement).removeEventListener("click", onClickLink);
+		}
+	});
 
 	const onClickAction = async (type: "like" | "dislike") => {
 		if (processing()) return;

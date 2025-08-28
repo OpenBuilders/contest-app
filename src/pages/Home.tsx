@@ -10,9 +10,11 @@ import {
 	createMemo,
 	createSignal,
 	For,
+	Match,
 	on,
 	onMount,
 	Show,
+	Switch,
 } from "solid-js";
 import ButtonArray from "../components/ButtonArray";
 import ContestThumbnail from "../components/ContestThumbnail";
@@ -198,15 +200,7 @@ const PageHome: Component = () => {
 										</h2>
 
 										<span>
-											{[
-												formatNumbersInString(contest.contest.prize ?? ""),
-												(contest.contest.announced
-													? t("pages.home.contests.ended")
-													: ""
-												).toUpperCase(),
-											]
-												.filter(Boolean)
-												.join(" | ")}
+											{formatNumbersInString(contest.contest.prize ?? "")}
 										</span>
 									</div>
 
@@ -217,7 +211,35 @@ const PageHome: Component = () => {
 
 										<Show
 											when={contest.metadata.role}
-											fallback={<span class="empty">|</span>}
+											fallback={
+												<Switch fallback={<span class="empty">|</span>}>
+													<Match when={contest.contest.announced}>
+														<span class="ended">
+															{t("pages.home.contests.badges.ended")}
+														</span>
+													</Match>
+
+													<Match
+														when={
+															Date.now() / 1000 < contest.contest?.date_end!
+														}
+													>
+														<span class="open">
+															{t("pages.home.contests.badges.open")}
+														</span>
+													</Match>
+
+													<Match
+														when={
+															Date.now() / 1000 >= contest.contest?.date_end!
+														}
+													>
+														<span class="closed">
+															{t("pages.home.contests.badges.closed")}
+														</span>
+													</Match>
+												</Switch>
+											}
 										>
 											<span class={contest.metadata.role}>
 												{t(`general.roles.${contest.metadata.role}` as any)}

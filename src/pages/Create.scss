@@ -249,3 +249,37 @@ cropper-shade {
       }
    }
 }
+
+#container-section-themes {
+   display: flex;
+   flex-direction: column;
+   flex-shrink: 0;
+   width: 100%;
+   gap: 0.625rem;
+   overflow: hidden;
+
+   .container-section-symbol {
+      > div.placeholder {
+         > div {
+            display: flex;
+            align-items: center;
+            padding-inline-end: 1rem;
+            padding-inline-start: 3rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: rgba(var(--text-color-rgb), 0.5);
+            height: 100%;
+            gap: 0.25rem;
+
+            > svg {
+               color: rgba(var(--text-color-rgb), 0.25);
+            }
+
+            > svg:nth-child(1) {
+               color: var(--accent);
+               font-size: 1.25rem;
+            }
+         }
+      }
+   }
+}

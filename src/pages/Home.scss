@@ -290,6 +290,18 @@
             &.participant {
                color: #fb7185;
             }
+
+            &.open {
+               color: #22c55e;
+            }
+
+            &.closed {
+               color: #6b7280;
+            }
+
+            &.ended {
+               color: #8b5cf6;
+            }
          }
       }
 
