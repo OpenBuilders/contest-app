@@ -7,7 +7,7 @@
       flex-direction: column;
       overflow: hidden;
       padding-bottom: calc(
-         var(--tg-viewport-safe-area-inset-bottom) +
+         max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
             var(--tg-viewport-content-safe-area-inset-bottom)
       );
       gap: 1rem;

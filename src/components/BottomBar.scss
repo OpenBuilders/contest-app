@@ -7,7 +7,7 @@
    background-color: var(--bg-primary);
    padding: 0.5rem 1rem
       calc(
-         var(--tg-viewport-safe-area-inset-bottom) +
+         max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
             var(--tg-viewport-content-safe-area-inset-bottom)
       );
 

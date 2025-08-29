@@ -67,7 +67,9 @@ const PageContestManageSubmissions: Component = () => {
 				from: `/contest/${params.slug}/manage/submissions`,
 				haptic: false,
 				fromParams: {
-					theme: false,
+					theme: {
+						header: false,
+					},
 				},
 			},
 		});
@@ -112,7 +114,9 @@ const PageContestManageSubmissions: Component = () => {
 
 		navigator.go(`/contest/${params.slug}/manage`, {
 			params: {
-				theme: false,
+				theme: {
+					header: false,
+				},
 			},
 		});
 	};

@@ -85,7 +85,9 @@ const PageContest: Component = () => {
 				from: `/contest/${params.slug}/${state()}`,
 				haptic: false,
 				fromParams: {
-					theme: false,
+					theme: {
+						header: false,
+					},
 				},
 			},
 		});
@@ -715,7 +717,9 @@ const PageContest: Component = () => {
 					{
 						resolve: false,
 						params: {
-							theme: false,
+							theme: {
+								header: false,
+							},
 						},
 					},
 				);

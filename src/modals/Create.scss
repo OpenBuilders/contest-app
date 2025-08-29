@@ -3,7 +3,7 @@
    flex-direction: column;
    min-height: calc(
       96vh - calc(
-            var(--tg-viewport-safe-area-inset-bottom) +
+            max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
                var(--tg-viewport-content-safe-area-inset-bottom)
          ) - calc(
             var(--tg-viewport-safe-area-inset-top) +
@@ -13,7 +13,7 @@
    );
    max-height: calc(
       96vh - calc(
-            var(--tg-viewport-safe-area-inset-bottom) +
+            max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
                var(--tg-viewport-content-safe-area-inset-bottom)
          ) - calc(
             var(--tg-viewport-safe-area-inset-top) +

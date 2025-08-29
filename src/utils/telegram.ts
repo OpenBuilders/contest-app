@@ -35,10 +35,22 @@ export const setHeaderColor = (color: `#${string}`) => {
 	});
 };
 
-export const setBackgroundColor = (color: `#${string}`) => {
+export const setBackgroundColor = (
+	color: `#${string}`,
+	applyBottomBar = true,
+) => {
 	postEvent("web_app_set_background_color", {
 		color: color,
 	});
+
+	if (applyBottomBar) {
+		postEvent("web_app_set_bottom_bar_color", {
+			color: color,
+		});
+	}
+};
+
+export const setBottomBarColor = (color: `#${string}`) => {
 	postEvent("web_app_set_bottom_bar_color", {
 		color: color,
 	});

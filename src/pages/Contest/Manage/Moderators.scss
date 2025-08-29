@@ -59,7 +59,7 @@
    display: flex;
    flex-direction: column;
    padding-bottom: calc(
-      var(--tg-viewport-safe-area-inset-bottom) +
+      max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
          var(--tg-viewport-content-safe-area-inset-bottom)
    );
 

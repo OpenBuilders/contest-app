@@ -34,7 +34,9 @@ const PageContestManageModerators: Component = () => {
 				from: `/contest/${params.slug}/manage/moderators`,
 				haptic: false,
 				fromParams: {
-					theme: false,
+					theme: {
+						header: false,
+					},
 				},
 			},
 		});
@@ -53,7 +55,9 @@ const PageContestManageModerators: Component = () => {
 	const onBackButton = () => {
 		navigator.go(`/contest/${params.slug}/manage`, {
 			params: {
-				theme: false,
+				theme: {
+					header: false,
+				},
 			},
 		});
 	};

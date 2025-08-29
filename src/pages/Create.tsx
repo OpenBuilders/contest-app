@@ -985,7 +985,9 @@ const SectionDone: Component<CreateFormSectionProps> = (props) => {
 
 		navigator.go(`/contest/${form.slug}`, {
 			params: {
-				theme: false,
+				theme: {
+					header: false,
+				},
 			},
 		});
 	};

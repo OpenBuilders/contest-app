@@ -104,7 +104,9 @@ const ModalModeratorJoin: Component = () => {
 				invokeHapticFeedbackNotification("success");
 				navigator.go(`/contest/${data()!.contest.slug}`, {
 					params: {
-						theme: false,
+						theme: {
+							header: false,
+						},
 					},
 				});
 			}

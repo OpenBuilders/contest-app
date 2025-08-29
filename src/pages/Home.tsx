@@ -158,7 +158,9 @@ const PageHome: Component = () => {
 				navigator.go(href, {
 					backable: true,
 					params: {
-						theme: false,
+						theme: {
+							header: false,
+						},
 					},
 				});
 			};

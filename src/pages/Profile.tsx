@@ -8,11 +8,12 @@ import ContestThumbnail from "../components/ContestThumbnail";
 import { Section } from "../components/Section";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
+import { Color } from "../utils/colors";
 import { navigator } from "../utils/navigator";
 import { setStore, store } from "../utils/store";
 import { stringifySVGSymbol } from "../utils/svg";
 import { getSymbolSVGString } from "../utils/symbols";
-import { setHeaderColor } from "../utils/telegram";
+import { setBackgroundColor, setHeaderColor } from "../utils/telegram";
 import {
 	type ContestThemeBackdrop,
 	ContestThemeBackdrops,
@@ -91,6 +92,12 @@ const PageProfile: Component = () => {
 				height: header.clientHeight,
 				width: header.clientWidth,
 			});
+
+			const color = new Color(
+				getComputedStyle(document.querySelector("#container-bottombar")!)
+					.backgroundColor,
+			);
+			setBackgroundColor(color.toHex() as any);
 		});
 
 		if (!store.achievements?.my) {
@@ -102,7 +109,9 @@ const PageProfile: Component = () => {
 		navigator.go(`/contest/${slug}`, {
 			backable: true,
 			params: {
-				theme: false,
+				theme: {
+					header: false,
+				},
 			},
 		});
 	};

@@ -263,7 +263,7 @@
          flex-shrink: 0;
          padding: 1rem;
          padding-bottom: calc(
-            var(--tg-viewport-safe-area-inset-bottom) +
+            max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
                var(--tg-viewport-content-safe-area-inset-bottom)
          );
 
@@ -346,7 +346,7 @@
          flex-shrink: 0;
          padding: 1rem;
          padding-bottom: calc(
-            var(--tg-viewport-safe-area-inset-bottom) +
+            max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
                var(--tg-viewport-content-safe-area-inset-bottom)
          );
 

@@ -63,7 +63,9 @@ const PageContestManageResults: Component = () => {
 				from: `/contest/${params.slug}/manage/results`,
 				haptic: false,
 				fromParams: {
-					theme: false,
+					theme: {
+						header: false,
+					},
 				},
 			},
 		});
@@ -100,7 +102,9 @@ const PageContestManageResults: Component = () => {
 
 		navigator.go(`/contest/${params.slug}/manage`, {
 			params: {
-				theme: false,
+				theme: {
+					header: false,
+				},
 			},
 		});
 	};
@@ -201,7 +205,9 @@ const PageContestManageResults: Component = () => {
 
 				navigator.go(`/contest/${params.slug}/normal`, {
 					params: {
-						theme: false,
+						theme: {
+							header: false,
+						},
 					},
 				});
 			}

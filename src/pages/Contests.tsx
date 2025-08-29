@@ -11,6 +11,7 @@ import ContestThumbnail from "../components/ContestThumbnail";
 import ImageLoader from "../components/ImageLoader";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
+import { Color } from "../utils/colors";
 import { navigator } from "../utils/navigator";
 import {
 	type GallerySection,
@@ -23,6 +24,7 @@ import {
 	invokeHapticFeedbackImpact,
 	parseTelegramLink,
 	postEvent,
+	setBackgroundColor,
 } from "../utils/telegram";
 import {
 	ContestThemeBackdrops,
@@ -96,7 +98,9 @@ const SectionGallerySection: Component<{ item: GallerySection }> = (props) => {
 		navigator.go(`/contest/${slug}`, {
 			backable: true,
 			params: {
-				theme: false,
+				theme: {
+					header: false,
+				},
 			},
 		});
 	};
@@ -171,6 +175,14 @@ const PageContests: Component = () => {
 	};
 
 	onMount(async () => {
+		setTimeout(() => {
+			const color = new Color(
+				getComputedStyle(document.querySelector("#container-bottombar")!)
+					.backgroundColor,
+			);
+			setBackgroundColor(color.toHex() as any);
+		});
+
 		if (!store.contests?.gallery) {
 			await fetchGallery();
 		}

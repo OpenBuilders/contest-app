@@ -14,7 +14,9 @@ import { navigator } from "../utils/navigator";
 import {
 	invokeHapticFeedbackImpact,
 	lp,
-	setThemeColor,
+	setBackgroundColor,
+	setBottomBarColor,
+	setHeaderColor,
 } from "../utils/telegram";
 import BottomBar, { bottomBarValidPaths } from "./BottomBar";
 import PlausibleTracker from "./PlausibleTracker";
@@ -38,16 +40,36 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 					invokeHapticFeedbackImpact("soft");
 				}
 
-				if (current.options?.params?.theme !== false) {
-					setTimeout(() => {
-						const page = document.querySelector(".page");
-						if (!page) return;
+				setTimeout(() => {
+					const page = document.querySelector(".page");
+					if (!page) return;
 
-						const color = new Color(getComputedStyle(page).backgroundColor);
+					const color = new Color(getComputedStyle(page).backgroundColor);
 
-						setThemeColor(color.toHex() as any);
-					});
-				}
+					const apply = {
+						header: true,
+						background: true,
+						bottombar: true,
+					};
+
+					if (typeof current.options?.params?.theme === "object") {
+						apply.header = current.options.params.theme.header ?? true;
+						apply.background = current.options.params.theme.background ?? true;
+						apply.bottombar = current.options.params.theme.bottombar ?? true;
+					}
+
+					if (apply.header) {
+						setHeaderColor(color.toHex() as any);
+					}
+
+					if (apply.background) {
+						setBackgroundColor(color.toHex() as any, false);
+					}
+
+					if (apply.bottombar) {
+						setBottomBarColor(color.toHex() as any);
+					}
+				});
 			},
 		),
 	);
@@ -59,7 +81,9 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 					params: {
 						from: `/contest/${lp.tgWebAppStartParam.replace("contest-", "")}`,
 						fromParams: {
-							theme: false,
+							theme: {
+								header: false,
+							},
 						},
 					},
 				});
@@ -72,7 +96,9 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 					params: {
 						from: `/contest/${chunks[1]}/manage/submissions/${chunks[2]}`,
 						fromParams: {
-							theme: false,
+							theme: {
+								header: false,
+							},
 						},
 					},
 				});
