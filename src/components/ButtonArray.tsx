@@ -11,11 +11,12 @@ type ButtonArrayItem = {
 
 type ButtonArrayProps = {
 	items: ButtonArrayItem[];
+	class?: string;
 };
 
 const ButtonArray: Component<ButtonArrayProps> = (props) => {
 	return (
-		<ul class="button-array">
+		<ul class={["button-array", props.class].filter(Boolean).join(" ")}>
 			<For each={props.items}>
 				{(item) => (
 					<li

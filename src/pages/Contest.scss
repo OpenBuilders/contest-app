@@ -115,6 +115,11 @@
             );
             inset-inline-end: 1rem;
             padding-top: 1rem;
+
+            &.button-array-secondary {
+               inset-inline-start: 1rem;
+               inset-inline-end: unset;
+            }
          }
       }
 

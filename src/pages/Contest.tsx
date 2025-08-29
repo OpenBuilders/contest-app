@@ -1,7 +1,7 @@
 import "./Contest.scss";
 import { useParams } from "@solidjs/router";
 import dayjs from "dayjs";
-import { AiFillDelete } from "solid-icons/ai";
+import { AiFillDelete, AiTwotoneInfoCircle } from "solid-icons/ai";
 import {
 	FaRegularBookmark,
 	FaSolidBookmark,
@@ -19,7 +19,6 @@ import {
 	createSignal,
 	For,
 	Match,
-	onCleanup,
 	on as onEffect,
 	onMount,
 	Show,
@@ -35,6 +34,7 @@ import CircularIconPattern from "../components/CircularIconPattern";
 import CustomMainButton from "../components/CustomMainButton";
 import Icon from "../components/Icon";
 import ImageLoader from "../components/ImageLoader";
+import RichText from "../components/RichText";
 import { Section, SectionList } from "../components/Section";
 import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
@@ -46,12 +46,7 @@ import { navigator } from "../utils/navigator";
 import { formatNumbersInString } from "../utils/number";
 import { popupManager } from "../utils/popup";
 import { signals, toggleSignal } from "../utils/signals";
-import {
-	type Contest,
-	type ContestMetadata,
-	type Result,
-	store,
-} from "../utils/store";
+import { type AnnotatedContest, type Result, store } from "../utils/store";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
 	invokeHapticFeedbackImpact,
@@ -75,10 +70,7 @@ const PageContest: Component = () => {
 		(params.state as any) ?? "normal",
 	);
 
-	const [contest, setContest] = createStore<{
-		contest?: Partial<Contest>;
-		metadata?: ContestMetadata;
-	}>({});
+	const [contest, setContest] = createStore<Partial<AnnotatedContest>>({});
 
 	let header: HTMLElement | undefined;
 
@@ -166,24 +158,7 @@ const PageContest: Component = () => {
 				width: header.clientWidth,
 			});
 		});
-
-		for (const link of document.querySelectorAll(".content a")) {
-			(link as HTMLElement).addEventListener("click", onClickLink);
-		}
 	});
-
-	onCleanup(() => {
-		for (const link of document.querySelectorAll(".content a")) {
-			(link as HTMLElement).removeEventListener("click", onClickLink);
-		}
-	});
-
-	const onClickLink = (e: MouseEvent) => {
-		e.preventDefault();
-		postEvent("web_app_open_link", {
-			url: (e.currentTarget as HTMLAnchorElement).href,
-		});
-	};
 
 	const fetchContest = async () => {
 		const request = await requestAPI(`/contest/${params.slug}`, {}, "GET");
@@ -212,6 +187,14 @@ const PageContest: Component = () => {
 			produce((data) => {
 				data.contest = undefined;
 				data.metadata = undefined;
+				data.open = false;
+			}),
+		);
+
+		setModals(
+			"contestDescription",
+			produce((data) => {
+				data.contest = undefined;
 				data.open = false;
 			}),
 		);
@@ -305,6 +288,16 @@ const PageContest: Component = () => {
 				}
 			};
 
+			const onClickInfo = () => {
+				setModals(
+					"contestDescription",
+					produce((data) => {
+						data.contest = contest as AnnotatedContest;
+						data.open = true;
+					}),
+				);
+			};
+
 			return (
 				<header
 					ref={header}
@@ -391,6 +384,20 @@ const PageContest: Component = () => {
 							},
 						]}
 					/>
+
+					<Show when={contest.contest?.announced}>
+						<ButtonArray
+							class="button-array-secondary"
+							items={[
+								{
+									component: AiTwotoneInfoCircle,
+									fontSize: "1.5rem",
+									class: "clickable",
+									onClick: onClickInfo,
+								},
+							]}
+						/>
+					</Show>
 
 					<h1>
 						{contest.contest?.title}
@@ -485,13 +492,12 @@ const PageContest: Component = () => {
 					<ContestMetadata />
 
 					<Section title={t("pages.contest.description.title")}>
-						<div
-							class="content"
-							innerHTML={
+						<RichText
+							content={
 								contest.contest?.description ||
 								t("pages.contest.description.empty")
 							}
-						></div>
+						/>
 					</Section>
 				</div>
 			);

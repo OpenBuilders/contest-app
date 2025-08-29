@@ -254,12 +254,21 @@
             }
 
             &#container-section-profile-achievements-empty {
-               > p {
-                  flex-grow: 1;
+               align-items: center;
+               justify-content: center;
+
+               > div {
                   display: flex;
-                  align-items: center;
+                  flex-direction: column;
                   justify-content: center;
+                  align-items: center;
                   text-align: center;
+                  gap: 1rem;
+
+                  > svg {
+                     font-size: 5rem;
+                     color: rgba(var(--text-color-rgb), 0.25);
+                  }
                }
             }
          }

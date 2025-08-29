@@ -52,6 +52,7 @@
 
    > div.avatar,
    > div.avatar-alias {
+      z-index: 1;
       border: 0.0625em solid var(--bg-color);
 
       &:not(:first-child) {

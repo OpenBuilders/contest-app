@@ -1,4 +1,4 @@
-.modal-submissions-picker {
+.modal-contest-description {
    display: flex;
    flex-direction: column;
    min-height: calc(
@@ -28,61 +28,16 @@
       flex-grow: 1;
       align-items: center;
       gap: 1rem;
-      padding: 0 1rem;
+      padding: 1rem 1rem 0;
       overflow: hidden;
 
       > section {
-         overflow: hidden;
          flex-shrink: unset;
 
          > div {
             overflow: hidden;
-
-            > div {
-               overflow: hidden;
-               overflow-y: auto;
-               flex-shrink: unset;
-
-               > div {
-                  flex-shrink: 0;
-               }
-            }
-         }
-      }
-   }
-}
-
-div.container-section-included-submissions {
-   > div {
-      touch-action: auto;
-
-      padding-inline-end: 1rem;
-
-      &:has(.prepend)::after {
-         inset-inline-start: 4rem;
-      }
-
-      > div.prepend {
-         > div.avatar {
-            font-size: 2rem;
-         }
-      }
-
-      > span {
-         font-size: 0.9375rem;
-         font-weight: 500;
-      }
-
-      div.placeholder > svg {
-         font-size: 1.125rem;
-         cursor: pointer;
-
-         &.filled {
-            color: var(--accent);
-         }
-
-         &.remove {
-            color: var(--tg-theme-destructive-text-color);
+            overflow-y: auto;
+            padding: 1rem;
          }
       }
    }

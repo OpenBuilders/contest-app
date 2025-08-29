@@ -1,0 +1,26 @@
+.content {
+   * {
+      line-height: normal;
+   }
+
+   a {
+      color: var(--accent);
+      border-bottom: 0.125rem solid currentColor;
+   }
+
+   b {
+      font-weight: bold;
+   }
+
+   i {
+      font-style: italic;
+   }
+
+   u {
+      text-decoration: underline;
+   }
+
+   strike {
+      text-decoration: line-through;
+   }
+}

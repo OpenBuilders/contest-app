@@ -79,6 +79,25 @@ const PageContestManageResults: Component = () => {
 	const [processing, setProcessing] = createSignal(false);
 
 	const onBackButton = () => {
+		setModals(
+			"placement",
+			produce((store) => {
+				store.placement = undefined;
+				store.slug = undefined;
+				store.submissions = undefined;
+				store.open = false;
+			}),
+		);
+
+		setModals(
+			"submissionsPicker",
+			produce((store) => {
+				store.picked = undefined;
+				store.submissions = undefined;
+				store.open = false;
+			}),
+		);
+
 		navigator.go(`/contest/${params.slug}/manage`, {
 			params: {
 				theme: false,

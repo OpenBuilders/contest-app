@@ -74,6 +74,7 @@
       padding: 0.625rem;
       cursor: pointer;
       flex-shrink: 0;
+      line-height: normal;
 
       > div.avatar,
       > div.avatar-alias {
@@ -97,12 +98,14 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            height: 1.375rem;
          }
 
          > ul {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            height: 1rem;
 
             > li {
                display: flex;
@@ -142,8 +145,10 @@
       }
 
       > div:nth-child(2) {
+         gap: 0.5rem;
+
          > span {
-            height: 0.9375rem;
+            height: 1.125rem;
             width: 8rem;
             border-radius: 0.25rem;
          }
@@ -152,6 +157,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            height: 1rem;
 
             > span {
                width: 2rem;

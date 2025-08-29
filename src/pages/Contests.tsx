@@ -235,7 +235,7 @@ const PageContests: Component = () => {
 		<div id="container-page-contests" class="page">
 			<div>
 				<Switch fallback={<SectionGalleryLoading />}>
-					<Match when={(store.contests.gallery?.length ?? -1) > 0}>
+					<Match when={(store.contests.gallery?.length ?? -1) > 0 && true}>
 						<SectionGallery />
 					</Match>
 

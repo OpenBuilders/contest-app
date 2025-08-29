@@ -1,5 +1,6 @@
 import type { Component } from "solid-js";
 import { createStore } from "solid-js/store";
+import ModalContestDescription from "../modals/ContestDescription";
 import ModalContestCreate from "../modals/Create";
 import ModalContestCreateAnonymous from "../modals/CreateAnonymous";
 import ModalContestCreateCategory from "../modals/CreateCategory";
@@ -11,6 +12,7 @@ import ModalSettings from "../modals/Settings";
 import ModalSubmission from "../modals/Submission";
 import ModalSubmissionsPicker from "../modals/SubmissionsPicker";
 import type {
+	AnnotatedContest,
 	AnnotatedSubmission,
 	Contest,
 	ContestMetadata,
@@ -47,6 +49,9 @@ type ModalsStore = {
 	submissionsPicker: ModalState & {
 		picked?: number[];
 		submissions?: AnnotatedSubmission[];
+	};
+	contestDescription: ModalState & {
+		contest?: AnnotatedContest;
 	};
 };
 
@@ -90,5 +95,9 @@ export const [modals, setModals] = createStore<ModalsStore>({
 	submissionsPicker: {
 		open: false,
 		component: ModalSubmissionsPicker,
+	},
+	contestDescription: {
+		open: false,
+		component: ModalContestDescription,
 	},
 });

@@ -101,6 +101,15 @@ const PageContestManageSubmissions: Component = () => {
 	};
 
 	const onBackButton = () => {
+		setModals(
+			"submission",
+			produce((store) => {
+				store.submission = undefined;
+				store.slug = undefined;
+				store.open = false;
+			}),
+		);
+
 		navigator.go(`/contest/${params.slug}/manage`, {
 			params: {
 				theme: false,

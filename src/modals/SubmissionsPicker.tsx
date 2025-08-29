@@ -87,7 +87,7 @@ const ModalSubmissionsPicker: Component = () => {
 
 							return {
 								label: fullname,
-								clickable: true,
+								// clickable: true,
 								prepend: () => (
 									<Show
 										when={submission.submission.user_id}
