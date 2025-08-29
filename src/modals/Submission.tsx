@@ -11,6 +11,7 @@ import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
 import { setData } from "../pages/Contest/Manage/Submissions";
 import { requestAPI } from "../utils/api";
+import { cloneObject } from "../utils/general";
 import { modals, setModals } from "../utils/modal";
 import {
 	invokeHapticFeedbackImpact,
@@ -82,6 +83,48 @@ const ModalSubmission: Component = () => {
 		setProcessing(type);
 		invokeHapticFeedbackImpact("soft");
 
+		const currentSubmission = cloneObject(modals.submission.submission!);
+
+		setData(
+			"submissions",
+			produce((data) => {
+				const item = data?.find(
+					(item) =>
+						item.submission.id === modals.submission.submission?.submission.id,
+				);
+
+				if (item) {
+					if (type === "like") {
+						if (item.metadata.liked_by_viewer) {
+							item.submission.likes--;
+							item.metadata.liked_by_viewer = false;
+						} else {
+							item.submission.likes++;
+							item.metadata.liked_by_viewer = true;
+						}
+
+						if (item.metadata.disliked_by_viewer) {
+							item.metadata.disliked_by_viewer = false;
+							item.submission.dislikes--;
+						}
+					} else if (type === "dislike") {
+						if (item.metadata.disliked_by_viewer) {
+							item.submission.dislikes--;
+							item.metadata.disliked_by_viewer = false;
+						} else {
+							item.submission.dislikes++;
+							item.metadata.disliked_by_viewer = true;
+						}
+
+						if (item.metadata.liked_by_viewer) {
+							item.metadata.liked_by_viewer = false;
+							item.submission.likes--;
+						}
+					}
+				}
+			}),
+		);
+
 		const request = await requestAPI(
 			`/contest/${modals.submission.slug}/submissions/${modals.submission.submission?.submission.id}/vote`,
 			{
@@ -114,6 +157,26 @@ const ModalSubmission: Component = () => {
 					}),
 				);
 			}
+		} else {
+			setData(
+				"submissions",
+				produce((data) => {
+					const item = data?.find(
+						(item) =>
+							item.submission.id ===
+							modals.submission.submission?.submission.id,
+					);
+
+					if (item) {
+						item.metadata.liked_by_viewer =
+							currentSubmission.metadata.liked_by_viewer;
+						item.metadata.disliked_by_viewer =
+							currentSubmission.metadata.disliked_by_viewer;
+						item.submission.likes = currentSubmission.submission.likes;
+						item.submission.dislikes = currentSubmission.submission.dislikes;
+					}
+				}),
+			);
 		}
 
 		setProcessing(false);
