@@ -23,7 +23,7 @@ import { requestAPI } from "../../../utils/api";
 import { cloneObject, compareObjects } from "../../../utils/general";
 import { navigator } from "../../../utils/navigator";
 import { clamp, formatNumbersInString } from "../../../utils/number";
-import { store } from "../../../utils/store";
+import { setStore, store } from "../../../utils/store";
 import {
 	invokeHapticFeedbackImpact,
 	invokeHapticFeedbackNotification,
@@ -124,7 +124,10 @@ const PageContestManageOptions: Component = () => {
 				invokeHapticFeedbackNotification("success");
 
 				setForm({
-					...result.contest,
+					description: result.contest.description ?? form.description,
+					fee: result.contest.fee ?? form.fee,
+					prize: result.contest.prize ?? form.prize,
+					title: result.contest.title ?? form.title,
 					loaded: true,
 				});
 				setFormData(form);
@@ -164,6 +167,7 @@ const PageContestManageOptions: Component = () => {
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
 				setFormData(form);
+				setStore("contests", "my", undefined);
 			}
 		}
 		setProcessing(false);

@@ -1,5 +1,6 @@
 import "./Create.scss";
 
+import { createVirtualizer } from "@tanstack/solid-virtual";
 import { TbPhotoPlus } from "solid-icons/tb";
 import {
 	type Accessor,
@@ -669,6 +670,84 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 			),
 		);
 
+		const BackdropsVirtualList = () => {
+			let elementParent: HTMLDivElement | undefined;
+
+			const itemsPerRow = 3;
+
+			const itemWidth = 100 / itemsPerRow;
+
+			const size = Math.floor((document.body.clientWidth - 16 * 4) / 3);
+
+			const pickerVirtualizer = createVirtualizer({
+				count: ContestThemeBackdrops.length + 1,
+				getScrollElement: () => elementParent!,
+				estimateSize: () => size,
+				lanes: itemsPerRow,
+				overscan: itemsPerRow * 2,
+				gap: 0,
+			});
+
+			onMount(() => {
+				// pickerVirtualizer.scrollToIndex(ContestThemeBackdrops.findIndex(i => ), {
+				// 	align: "start",
+				// });
+				//
+			});
+
+			return (
+				<div id="container-backdrops-list" ref={elementParent}>
+					<ul style={{ height: `${pickerVirtualizer.getTotalSize()}px` }}>
+						<For each={pickerVirtualizer.getVirtualItems()}>
+							{(virtualItem) => (
+								<li
+									style={{
+										height: `${virtualItem.size}px`,
+										transform: `translateY(${virtualItem.start}px)`,
+										left: `${virtualItem.lane * itemWidth}%`,
+										width: `${itemWidth}%`,
+									}}
+								>
+									<div>
+										<Show
+											when={virtualItem.index > 0}
+											fallback={
+												<div
+													class="theme-preview"
+													style="background-color: var(--secondary-color);"
+													classList={{
+														active: form.theme.backdrop === undefined,
+													}}
+													onClick={() => selectBackdrop(undefined)}
+												></div>
+											}
+										>
+											<ThemePreview
+												onClick={onClick}
+												classList={{
+													active:
+														form.theme.backdrop ===
+														ContestThemeBackdrops[virtualItem.index - 1].id,
+												}}
+												backdrop={ContestThemeBackdrops[virtualItem.index - 1]}
+												symbol={{
+													id: form.theme.symbol ?? DEFAULT_SYMBOL,
+													component: getSymbolSVGString(
+														form.theme.symbol ?? DEFAULT_SYMBOL,
+													),
+												}}
+												size={size}
+											/>
+										</Show>
+									</div>
+								</li>
+							)}
+						</For>
+					</ul>
+				</div>
+			);
+		};
+
 		return (
 			<section id="container-section-themes">
 				<SectionList
@@ -701,47 +780,53 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 					title={t("pages.create.options.themes.label")}
 				/>
 
-				<Section class="container-section-themes">
-					<swiper-container
-						class="slider-theme-preview"
-						slides-per-view={3.75}
-						slides-offset-before={8}
-						slides-offset-after={8}
-						initial-slide={activeSlideIndex()}
-						dir={isRTL() ? "rtl" : "ltr"}
-						free-mode="true"
-					>
-						<swiper-slide>
-							<div
-								class="theme-preview"
-								style="background-color: var(--secondary-color);"
-								classList={{
-									active: form.theme.backdrop === undefined,
-								}}
-								onClick={() => selectBackdrop(undefined)}
-							></div>
-						</swiper-slide>
+				{false && (
+					<Section class="container-section-themes">
+						<swiper-container
+							class="slider-theme-preview"
+							slides-per-view={3.75}
+							slides-offset-before={8}
+							slides-offset-after={8}
+							initial-slide={activeSlideIndex()}
+							dir={isRTL() ? "rtl" : "ltr"}
+							free-mode="true"
+						>
+							<swiper-slide>
+								<div
+									class="theme-preview"
+									style="background-color: var(--secondary-color);"
+									classList={{
+										active: form.theme.backdrop === undefined,
+									}}
+									onClick={() => selectBackdrop(undefined)}
+								></div>
+							</swiper-slide>
 
-						<For each={ContestThemeBackdrops}>
-							{(backdrop) => (
-								<swiper-slide>
-									<ThemePreview
-										onClick={onClick}
-										classList={{
-											active: form.theme.backdrop === backdrop.id,
-										}}
-										backdrop={backdrop}
-										symbol={{
-											id: form.theme.symbol ?? DEFAULT_SYMBOL,
-											component: getSymbolSVGString(
-												form.theme.symbol ?? DEFAULT_SYMBOL,
-											),
-										}}
-									/>
-								</swiper-slide>
-							)}
-						</For>
-					</swiper-container>
+							<For each={ContestThemeBackdrops}>
+								{(backdrop) => (
+									<swiper-slide>
+										<ThemePreview
+											onClick={onClick}
+											classList={{
+												active: form.theme.backdrop === backdrop.id,
+											}}
+											backdrop={backdrop}
+											symbol={{
+												id: form.theme.symbol ?? DEFAULT_SYMBOL,
+												component: getSymbolSVGString(
+													form.theme.symbol ?? DEFAULT_SYMBOL,
+												),
+											}}
+										/>
+									</swiper-slide>
+								)}
+							</For>
+						</swiper-container>
+					</Section>
+				)}
+
+				<Section class="container-section-themes">
+					<BackdropsVirtualList />
 				</Section>
 			</section>
 		);

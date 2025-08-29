@@ -195,6 +195,8 @@ const PageContest: Component = () => {
 				contest: result.contest,
 				metadata: result.metadata,
 			});
+		} else {
+			navigator.go("/");
 		}
 	};
 
