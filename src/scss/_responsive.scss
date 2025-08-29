@@ -1,2 +1,6 @@
-@media screen and (max-height: 720px) {
+@media screen and (max-height: 640px) {
+   html,
+   body {
+      font-size: 15px;
+   }
 }
