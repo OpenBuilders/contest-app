@@ -12,7 +12,7 @@
          2.25rem
    );
    max-height: calc(
-      96vh - calc(
+      100vh - calc(
             max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
                var(--tg-viewport-content-safe-area-inset-bottom)
          ) - calc(
