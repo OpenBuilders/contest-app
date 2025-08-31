@@ -33,6 +33,8 @@
 }
 
 body[data-theme="dark"] {
+   color-scheme: dark;
+
    --text-color: var(--white);
    --text-color-rgb: var(--white-rgb);
 
