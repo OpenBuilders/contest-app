@@ -43,7 +43,7 @@
             z-index: -1;
             bottom: 0;
             top: var(--tg-viewport-safe-area-inset-top);
-            height: calc(100% - var(--tg-viewport-safe-area-inset-top));
+            height: calc(100% - var(--tg-viewport-safe-area-inset-top, 0px));
             width: auto;
             left: 50%;
             transform: translate(-50%) scale(0.5);
@@ -67,7 +67,7 @@
             height: 6rem;
             border-radius: 0.75rem;
             position: absolute;
-            top: calc(50% + (var(--tg-viewport-safe-area-inset-top) / 2));
+            top: calc(50% + (var(--tg-viewport-safe-area-inset-top, 0px) / 2));
             transform: translateY(-50%);
 
             &.empty {
@@ -110,8 +110,8 @@
             position: absolute;
             z-index: -1;
             top: calc(
-               var(--tg-viewport-safe-area-inset-top) +
-                  var(--tg-viewport-content-safe-area-inset-top)
+               var(--tg-viewport-safe-area-inset-top, 0px) +
+                  var(--tg-viewport-content-safe-area-inset-top, 0px)
             );
             inset-inline-end: 1rem;
             padding-top: 1rem;
@@ -263,8 +263,8 @@
          flex-shrink: 0;
          padding: 1rem;
          padding-bottom: calc(
-            max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
-               var(--tg-viewport-content-safe-area-inset-bottom)
+            max(var(--tg-viewport-safe-area-inset-bottom, 0px), 1rem) +
+               var(--tg-viewport-content-safe-area-inset-bottom, 0px)
          );
 
          > p {
@@ -280,7 +280,7 @@
       overflow: hidden;
 
       > header {
-         height: calc(12rem + var(--tg-viewport-safe-area-inset-top));
+         height: calc(12rem + var(--tg-viewport-safe-area-inset-top, 0px));
          width: 100%;
       }
 
@@ -346,8 +346,8 @@
          flex-shrink: 0;
          padding: 1rem;
          padding-bottom: calc(
-            max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
-               var(--tg-viewport-content-safe-area-inset-bottom)
+            max(var(--tg-viewport-safe-area-inset-bottom, 0px), 1rem) +
+               var(--tg-viewport-content-safe-area-inset-bottom, 0px)
          );
 
          > span {

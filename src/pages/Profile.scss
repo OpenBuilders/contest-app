@@ -37,7 +37,7 @@
             z-index: -1;
             bottom: 0;
             top: var(--tg-viewport-safe-area-inset-top);
-            height: calc(100% - var(--tg-viewport-safe-area-inset-top));
+            height: calc(100% - var(--tg-viewport-safe-area-inset-top, 0px));
             width: auto;
             left: 50%;
             transform: translate(-50%) scale(0.5);
@@ -60,7 +60,7 @@
             height: 6rem;
             border-radius: 50%;
             position: absolute;
-            top: calc(50% + (var(--tg-viewport-safe-area-inset-top) / 2));
+            top: calc(50% + (var(--tg-viewport-safe-area-inset-top, 0px) / 2));
             transform: translateY(-50%);
             font-size: 5rem;
          }
