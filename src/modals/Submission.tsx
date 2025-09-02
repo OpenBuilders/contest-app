@@ -13,6 +13,8 @@ import { setData } from "../pages/Contest/Manage/Submissions";
 import { requestAPI } from "../utils/api";
 import { cloneObject } from "../utils/general";
 import { modals, setModals } from "../utils/modal";
+import { popupManager } from "../utils/popup";
+import { truncateMiddle } from "../utils/string";
 import {
 	invokeHapticFeedbackImpact,
 	invokeHapticFeedbackNotification,
@@ -21,7 +23,7 @@ import {
 } from "../utils/telegram";
 
 const ModalSubmission: Component = () => {
-	const { t } = useTranslation();
+	const { t, td } = useTranslation();
 
 	const onClose = () => {
 		setModals(
@@ -60,7 +62,30 @@ const ModalSubmission: Component = () => {
 				.filter(Boolean)
 				.join(" ");
 
-	const onClickButton = () => {
+	const onClickButton = async () => {
+		const popup = await popupManager.openPopup({
+			title: t("general.confirmOpenLink.title"),
+			message: td("general.confirmOpenLink.prompt", {
+				link: truncateMiddle(
+					modals.submission.submission!.submission.submission.link,
+					64,
+					32,
+				),
+			}),
+			buttons: [
+				{
+					id: "ok",
+					type: "ok",
+				},
+				{
+					id: "cancel",
+					type: "cancel",
+				},
+			],
+		});
+
+		if (!popup.button_id || popup.button_id === "cancel") return;
+
 		const path = parseTelegramLink(
 			modals.submission.submission!.submission.submission.link,
 		);

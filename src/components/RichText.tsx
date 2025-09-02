@@ -1,4 +1,7 @@
-import { postEvent } from "../utils/telegram";
+import { useTranslation } from "../contexts/TranslationContext";
+import { popupManager } from "../utils/popup";
+import { truncateMiddle } from "../utils/string";
+import { invokeHapticFeedbackImpact, postEvent } from "../utils/telegram";
 import "./RichText.scss";
 import { type Component, onCleanup, onMount } from "solid-js";
 
@@ -9,10 +12,36 @@ type RichTextProps = {
 const RichText: Component<RichTextProps> = (props) => {
 	let container: HTMLDivElement | undefined;
 
-	const onClickLink = (e: MouseEvent) => {
+	const { t, td } = useTranslation();
+
+	const onClickLink = async (e: MouseEvent) => {
 		e.preventDefault();
+
+		invokeHapticFeedbackImpact("light");
+
+		const link = (e.currentTarget as HTMLAnchorElement).href;
+
+		const popup = await popupManager.openPopup({
+			title: t("general.confirmOpenLink.title"),
+			message: td("general.confirmOpenLink.prompt", {
+				link: truncateMiddle(link, 64, 32),
+			}),
+			buttons: [
+				{
+					id: "ok",
+					type: "ok",
+				},
+				{
+					id: "cancel",
+					type: "cancel",
+				},
+			],
+		});
+
+		if (!popup.button_id || popup.button_id === "cancel") return;
+
 		postEvent("web_app_open_link", {
-			url: (e.currentTarget as HTMLAnchorElement).href,
+			url: link,
 		});
 	};
 

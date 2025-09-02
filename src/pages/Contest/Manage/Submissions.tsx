@@ -137,8 +137,18 @@ const PageContestManageSubmissions: Component = () => {
 				setData({
 					submissions: result.submissions,
 				});
+
+				return;
 			}
 		}
+
+		navigator.go(`/contest/${params.slug}`, {
+			params: {
+				theme: {
+					header: false,
+				},
+			},
+		});
 	};
 
 	onMount(async () => {

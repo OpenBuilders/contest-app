@@ -273,6 +273,13 @@ const PageContest: Component = () => {
 					});
 				} else {
 					setBookmarkProgress(false);
+					navigator.go(`/contest/${params.slug}/manage`, {
+						params: {
+							theme: {
+								header: false,
+							},
+						},
+					});
 				}
 			};
 

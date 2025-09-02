@@ -15,7 +15,7 @@ import Modal from "../components/Modal";
 import { Section } from "../components/Section";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
-import { hideKeyboardOnEnter, isValidURL } from "../utils/input";
+import { hideKeyboardOnEnter, isValidURL, normalizeURL } from "../utils/input";
 import {
 	initializeTonConnect,
 	parseTONAddress,
@@ -150,7 +150,7 @@ const ModalParticipate: Component = () => {
 		const request = await requestAPI(
 			`/contest/${modals.participate.contest!.slug}/submit`,
 			{
-				link: form.link,
+				link: normalizeURL(form.link)!,
 				description: form.description,
 				boc: boc,
 			},

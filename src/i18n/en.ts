@@ -21,6 +21,10 @@ const dict = {
 		ok: "Ok",
 		continue: "Continue",
 		soon: "Soon",
+		confirmOpenLink: {
+			title: "Open Link",
+			prompt: "Do you wish to continue to {link}?",
+		},
 	},
 	pages: {
 		error: {

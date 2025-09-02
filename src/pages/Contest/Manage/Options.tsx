@@ -172,6 +172,7 @@ const PageContestManageOptions: Component = () => {
 				invokeHapticFeedbackNotification("success");
 				setFormData(form);
 				setStore("contests", "my", undefined);
+				onBackButton();
 			}
 		}
 		setProcessing(false);
