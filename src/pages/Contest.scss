@@ -20,7 +20,7 @@
          position: relative;
          z-index: 0;
          color: var(--theme-text);
-         height: calc(12rem + var(--tg-viewport-safe-area-inset-top));
+         height: calc(12rem + var(--tg-viewport-safe-area-inset-top, 0px));
          width: 100%;
          flex-shrink: 0;
 
