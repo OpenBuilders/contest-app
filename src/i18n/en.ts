@@ -198,7 +198,7 @@ const dict = {
 				},
 			},
 			description: {
-				title: "Description",
+				title: "About Contest",
 				empty: "No description provided",
 			},
 			manage: {
@@ -290,6 +290,22 @@ const dict = {
 				},
 				ended: {
 					text: "This contest has ended.",
+				},
+				placements: {
+					announced: "Manage Results",
+					unannounced: "Set Winners",
+				},
+			},
+			admin: {
+				results: {
+					title: "Results",
+				},
+				submissions: {
+					title: "Submissions",
+					today: "Today",
+				},
+				about: {
+					title: "About",
 				},
 			},
 		},

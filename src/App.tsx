@@ -150,7 +150,10 @@ const App = () => {
 						<Route path="/profile" component={PageProfile} />
 						<Route path="/contests" component={PageContests} />
 
-						<Route path="/contest/:slug/:state?" component={PageContest} />
+						<Route
+							path="/contest/:slug/:state?/:extra?"
+							component={PageContest}
+						/>
 
 						<Route
 							path="/contest/:slug/manage/submissions/:id?"

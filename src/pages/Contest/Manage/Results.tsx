@@ -100,7 +100,7 @@ const PageContestManageResults: Component = () => {
 			}),
 		);
 
-		navigator.go(`/contest/${params.slug}/manage`, {
+		navigator.go(`/contest/${params.slug}/submissions`, {
 			params: {
 				theme: {
 					header: false,
@@ -203,7 +203,7 @@ const PageContestManageResults: Component = () => {
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
 
-				navigator.go(`/contest/${params.slug}/normal`, {
+				navigator.go(`/contest/${params.slug}`, {
 					params: {
 						theme: {
 							header: false,

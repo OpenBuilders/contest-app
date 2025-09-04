@@ -29,6 +29,10 @@
    --bg-primary: var(--bg-color);
    --bg-secondary: var(--section-bg-color);
 
+   --segmented-bg: #e5e5ea;
+   --segmented-active: #ffffff;
+   --segmented-border: #d1d1d6;
+
    --motion-multiplier: 1;
 }
 
@@ -56,6 +60,10 @@ body[data-theme="dark"] {
 
    --bg-primary: var(--section-bg-color);
    --bg-secondary: var(--bg-color);
+
+   --segmented-bg: #1c1c1e;
+   --segmented-active: #2c2c2e;
+   --segmented-border: #3a3a3c;
 
    .container-section-list-switch {
       > button {

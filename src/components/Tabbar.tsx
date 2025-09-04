@@ -13,7 +13,7 @@ import { Dynamic } from "solid-js/web";
 import { isRTL } from "../utils/i18n";
 import { invokeHapticFeedbackSelectionChanged } from "../utils/telegram";
 
-type TabbarItem = {
+export type TabbarItem = {
 	slug: string;
 	title: string;
 	component: Component;
@@ -23,12 +23,16 @@ type TabbarProps = {
 	items: TabbarItem[];
 	value: TabbarItem["slug"];
 	setValue: (value: TabbarItem["slug"]) => void;
+	mode?: "segmented" | "iOS";
+	gap?: number;
 };
 
 const Tabbar: Component<TabbarProps> = (props) => {
 	const id = createUniqueId();
 
 	let slider: any;
+
+	const mode = props.mode ?? "iOS";
 
 	const [indicatorPosition, setIndicatorPosition] = createStore({
 		x: "auto",
@@ -88,7 +92,7 @@ const Tabbar: Component<TabbarProps> = (props) => {
 	};
 
 	return (
-		<div class="tabbar" id={id}>
+		<div class={["tabbar", mode].filter(Boolean).join(" ")} id={id}>
 			<ul>
 				<For each={props.items}>
 					{(item) => (
@@ -118,6 +122,7 @@ const Tabbar: Component<TabbarProps> = (props) => {
 				slides-per-view={1}
 				initial-slide={getIndex(props.value)}
 				dir={isRTL() ? "rtl" : "ltr"}
+				space-between={props.gap ?? 0}
 			>
 				<For each={props.items}>
 					{(item) => (

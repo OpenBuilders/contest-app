@@ -94,7 +94,7 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 
 				navigator.go(`/splash`, {
 					params: {
-						from: `/contest/${chunks[1]}/manage/submissions/${chunks[2]}`,
+						from: `/contest/${chunks[1]}/submissions/${chunks[2]}`,
 						fromParams: {
 							theme: {
 								header: false,

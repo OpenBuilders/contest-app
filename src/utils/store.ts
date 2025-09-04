@@ -7,6 +7,7 @@ export type User = {
 	profile_photo?: string;
 	anonymous_profile: [number, string[], string[]];
 	language?: string;
+	created_at?: string;
 };
 
 export type Contest = {
@@ -32,6 +33,7 @@ export type Contest = {
 	};
 	results?: Result[];
 	date_end: number;
+	created_at?: string;
 };
 
 export type ContestMetadata = {
@@ -90,6 +92,7 @@ export type Submission = {
 	};
 	likes: number;
 	dislikes: number;
+	created_at?: string;
 };
 
 export type SubmissionMetadata = {

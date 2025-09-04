@@ -9,7 +9,7 @@ import RichText from "../components/RichText";
 import { Section } from "../components/Section";
 import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
-import { setData } from "../pages/Contest/Manage/Submissions";
+import { setData } from "../pages/Contest";
 import { requestAPI } from "../utils/api";
 import { cloneObject } from "../utils/general";
 import { modals, setModals } from "../utils/modal";
