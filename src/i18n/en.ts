@@ -138,7 +138,7 @@ const dict = {
 				participants: {
 					label: "Participants",
 					description:
-						"Enable <clickable id='anonymous'>Anonymous</clickable> mode to keep participant identities hidden. Choose whether joining is <b>Free</b> or requires an <b>Entry Fee</b>.",
+						"Enable <clickable id='anonymous'>Anonymous</clickable> mode to keep participant identities hidden.",
 					anonymous: {
 						label: "Anonymous",
 					},

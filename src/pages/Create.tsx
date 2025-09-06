@@ -20,6 +20,7 @@ import {
 } from "solid-js";
 import { createStore, type SetStoreFunction } from "solid-js/store";
 import { Portal } from "solid-js/web";
+import CircularIconPattern from "../components/CircularIconPattern";
 import ClickableText from "../components/ClickableText";
 import CustomMainButton from "../components/CustomMainButton";
 import Editor from "../components/Editor";
@@ -61,7 +62,10 @@ import {
 	invokeHapticFeedbackNotification,
 	invokeHapticFeedbackSelectionChanged,
 } from "../utils/telegram";
-import { ContestThemeBackdrops } from "../utils/themes";
+import {
+	ContestThemeBackdrops,
+	type ContestThemeSymbol,
+} from "../utils/themes";
 import { formatTonAddress, isTonAddress } from "../utils/ton";
 
 declare module "solid-js" {
@@ -105,6 +109,8 @@ type CreateFormSectionProps = {
 	formStore: [CreateFormStore, SetStoreFunction<CreateFormStore>];
 };
 
+const DEFAULT_SYMBOL = "symbol-55";
+
 const SectionIntro: Component<CreateFormSectionProps> = (props) => {
 	const { t } = useTranslation();
 
@@ -146,7 +152,7 @@ const SectionIntro: Component<CreateFormSectionProps> = (props) => {
 };
 
 const SectionBasic: Component<CreateFormSectionProps> = (props) => {
-	const { t } = useTranslation();
+	const { t, td } = useTranslation();
 
 	const [, setStep] = props.stepSignal;
 	const [form, setForm] = props.formStore;
@@ -174,6 +180,21 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 			) {
 				return true;
 			}
+		}
+
+		if (form.date.end < Math.trunc(Date.now() / 86400_000 + 1) * 86400_000) {
+			return true;
+		}
+
+		if (form.prize.length > store.limits!.form.create.prize.maxLength) {
+			return true;
+		}
+
+		if (
+			form.fee < store.limits!.form.create.fee.min ||
+			form.fee > store.limits!.form.create.fee.max
+		) {
+			return true;
 		}
 
 		return (
@@ -267,116 +288,7 @@ const SectionBasic: Component<CreateFormSectionProps> = (props) => {
 		);
 	};
 
-	onMount(async () => {
-		invokeHapticFeedbackImpact("soft");
-
-		setDependencies("cropper", await initializeCropper());
-	});
-
-	return (
-		<>
-			<div id="container-create-section-basic">
-				<div>
-					<Section>
-						<button type="button" onClick={onClickImage}>
-							<Show when={form.image} fallback={<TbPhotoPlus />}>
-								{form.image}
-							</Show>
-						</button>
-
-						<input
-							class="input"
-							type="text"
-							placeholder={t("pages.create.basic.name.placeholder")}
-							value={form.title}
-							onInput={(e) => setForm("title", e.currentTarget.value)}
-							onBlur={(e) => setForm("title", e.currentTarget.value.trim())}
-							onKeyDown={hideKeyboardOnEnter}
-							maxLength={store.limits!.form.create.title.maxLength}
-						/>
-					</Section>
-
-					<Section description={t("pages.create.basic.description.hint")}>
-						<Editor
-							value={form.description}
-							setValue={(data) => setForm("description", data)}
-							placeholder={t("pages.create.basic.description.placeholder")}
-							maxLength={store.limits!.form.create.description.maxLength}
-						/>
-					</Section>
-				</div>
-
-				<CustomMainButton
-					onClick={onClickButton}
-					text={t("general.continue")}
-					disabled={buttonDisabled()}
-				/>
-			</div>
-
-			<input
-				ref={filePickerImage}
-				type="file"
-				accept="image/*"
-				style={{ display: "none" }}
-			/>
-
-			<ImagePicker />
-		</>
-	);
-};
-
-const SectionOptions: Component<CreateFormSectionProps> = (props) => {
-	const { t, td } = useTranslation();
-
-	const [, setStep] = props.stepSignal;
-	const [form, setForm] = props.formStore;
-	const [processing, setProcessing] = createSignal(false);
-
-	const buttonDisabled = createMemo(() => {
-		if (form.date.end < Math.trunc(Date.now() / 86400_000 + 1) * 86400_000) {
-			return true;
-		}
-
-		if (form.prize.length > store.limits!.form.create.prize.maxLength) {
-			return true;
-		}
-
-		if (form.public && form.category === "none") {
-			return true;
-		}
-
-		if (form.category !== "none" && !(form.category in store.categories!)) {
-			return true;
-		}
-
-		if (
-			form.fee < store.limits!.form.create.fee.min ||
-			form.fee > store.limits!.form.create.fee.max
-		) {
-			return true;
-		}
-
-		return false;
-	});
-
-	const onClickButton = async () => {
-		if (processing()) return;
-		setProcessing(true);
-
-		invokeHapticFeedbackImpact("soft");
-
-		if (form.fee) {
-			setStep("wallet");
-		} else {
-			await submitContest(form, setForm, setStep);
-		}
-	};
-
-	onMount(async () => {
-		invokeHapticFeedbackImpact("soft");
-	});
-
-	const SubsectionContest = () => {
+	const SubsectionContestInfo = () => {
 		const [duration, setDuration] = createSignal("7");
 		const [modal, setModal] = createSignal(false);
 
@@ -394,15 +306,30 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 					"date",
 					"end",
 					Math.trunc(Date.now() / 86400) * 86400 +
-						Number.parseInt(duration()) * 86400_000,
+						Number.parseInt(duration(), 10) * 86400_000,
 				);
 			}),
+		);
+
+		const updateFeeValue = (input: string) => {
+			const value = clamp(
+				Number.isNaN(Number.parseFloat(input))
+					? store.limits!.form.create.fee.min
+					: Number.parseFloat(input),
+				store.limits!.form.create.fee.min,
+				store.limits!.form.create.fee.max,
+			);
+			setForm("fee", value);
+		};
+
+		const feeDisplayValue = createMemo(() =>
+			form.fee > 0 ? form.fee.toString() : "",
 		);
 
 		return (
 			<>
 				<SectionList
-					title={t("pages.create.options.contest.label")}
+					// title={t("pages.create.options.contest.label")}
 					items={[
 						{
 							label: t("pages.create.options.contest.duration.label"),
@@ -467,6 +394,22 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 								/>
 							),
 						},
+						{
+							label: t("pages.create.options.participants.fee.label"),
+							placeholder: () => (
+								<SectionListInput
+									class="input-fee"
+									type="number"
+									inputmode="decimal"
+									placeholder={t("pages.create.options.participants.fee.free")}
+									value={feeDisplayValue()}
+									setValue={updateFeeValue}
+									min={store.limits!.form.create.fee.min}
+									max={store.limits!.form.create.fee.max}
+									append={() => <SVGSymbol id="TON" />}
+								/>
+							),
+						},
 					]}
 				/>
 
@@ -504,6 +447,385 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 			</>
 		);
 	};
+
+	onMount(async () => {
+		invokeHapticFeedbackImpact("soft");
+
+		setDependencies("cropper", await initializeCropper());
+	});
+
+	return (
+		<>
+			<div id="container-create-section-basic">
+				<div>
+					<Section>
+						<button type="button" onClick={onClickImage}>
+							<Show when={form.image} fallback={<TbPhotoPlus />}>
+								{form.image}
+							</Show>
+						</button>
+
+						<input
+							class="input"
+							type="text"
+							placeholder={t("pages.create.basic.name.placeholder")}
+							value={form.title}
+							onInput={(e) => setForm("title", e.currentTarget.value)}
+							onBlur={(e) => setForm("title", e.currentTarget.value.trim())}
+							onKeyDown={hideKeyboardOnEnter}
+							maxLength={store.limits!.form.create.title.maxLength}
+						/>
+					</Section>
+
+					<SubsectionContestInfo />
+
+					<Section
+						class="container-section-editor"
+						description={t("pages.create.basic.description.hint")}
+					>
+						<Editor
+							value={form.description}
+							setValue={(data) => setForm("description", data)}
+							placeholder={t("pages.create.basic.description.placeholder")}
+							maxLength={store.limits!.form.create.description.maxLength}
+						/>
+					</Section>
+				</div>
+
+				<CustomMainButton
+					onClick={onClickButton}
+					text={t("general.continue")}
+					disabled={buttonDisabled()}
+				/>
+			</div>
+
+			<input
+				ref={filePickerImage}
+				type="file"
+				accept="image/*"
+				style={{ display: "none" }}
+			/>
+
+			<ImagePicker />
+		</>
+	);
+};
+
+const SectionOptions: Component<CreateFormSectionProps> = (props) => {
+	const { t } = useTranslation();
+
+	const [, setStep] = props.stepSignal;
+	const [form, setForm] = props.formStore;
+	const [processing, setProcessing] = createSignal(false);
+
+	const [togglePreview, setTogglePreview] = createSignal(true);
+
+	const buttonDisabled = createMemo(() => {
+		// if (form.date.end < Math.trunc(Date.now() / 86400_000 + 1) * 86400_000) {
+		// 	return true;
+		// }
+
+		// if (form.prize.length > store.limits!.form.create.prize.maxLength) {
+		// 	return true;
+		// }
+
+		// if (form.public && form.category === "none") {
+		// 	return true;
+		// }
+
+		// if (form.category !== "none" && !(form.category in store.categories!)) {
+		// 	return true;
+		// }
+
+		// if (
+		// 	form.fee < store.limits!.form.create.fee.min ||
+		// 	form.fee > store.limits!.form.create.fee.max
+		// ) {
+		// 	return true;
+		// }
+
+		return false;
+	});
+
+	const onClickButton = async () => {
+		if (processing()) return;
+		setProcessing(true);
+
+		invokeHapticFeedbackImpact("soft");
+
+		if (form.fee) {
+			setStep("wallet");
+		} else {
+			await submitContest(form, setForm, setStep);
+		}
+	};
+
+	onMount(async () => {
+		invokeHapticFeedbackImpact("soft");
+	});
+
+	const SubsectionPreview = () => {
+		let container: HTMLElement | undefined;
+
+		const [patternSize, setPatternSize] = createStore<{
+			width?: number;
+			height?: number;
+		}>();
+
+		const theme = createMemo(() => {
+			if (!form.theme.backdrop) return;
+
+			const backdrop = ContestThemeBackdrops.find(
+				(i) => i.id === form.theme.backdrop,
+			);
+			if (!backdrop) return;
+
+			const symbol: ContestThemeSymbol = {
+				id: form.theme.symbol ?? DEFAULT_SYMBOL,
+				component: getSymbolSVGString(form.theme.symbol ?? DEFAULT_SYMBOL),
+			};
+
+			return {
+				backdrop,
+				symbol,
+			};
+		});
+
+		createEffect(
+			on(
+				theme,
+				() => {
+					setTogglePreview(false);
+
+					setTimeout(() => {
+						setTogglePreview(true);
+					});
+				},
+				{
+					defer: true,
+				},
+			),
+		);
+
+		onMount(() => {
+			if (!container) return;
+
+			setPatternSize({
+				height: container.clientHeight,
+				width: container.clientWidth,
+			});
+		});
+
+		return (
+			<section
+				ref={container}
+				id="container-subsection-preview"
+				classList={{
+					theme: theme() !== undefined,
+					empty: theme() === undefined,
+				}}
+				style={{
+					"--theme-bg": theme()
+						? `radial-gradient(${theme()!.backdrop.colors.center}, ${theme()!.backdrop.colors.edge})`
+						: "var(--accent)",
+					"--theme-bg-edge": theme()
+						? theme()!.backdrop.colors.edge
+						: "var(--accent)",
+					"--theme-bg-center": theme()
+						? theme()!.backdrop.colors.center
+						: "var(--accent)",
+					"--theme-pattern": theme()
+						? theme()!.backdrop.colors.pattern
+						: "white",
+					"--theme-text": theme() ? theme()!.backdrop.colors.text : "white",
+				}}
+			>
+				<Show when={theme()?.symbol && patternSize.width && patternSize.height}>
+					<Show when={togglePreview()}>
+						<CircularIconPattern
+							backdrop={theme()!.backdrop}
+							symbol={theme()!.symbol}
+							size={{
+								width: patternSize.width!,
+								height: patternSize.height!,
+							}}
+							layers={[
+								{
+									count: 6,
+									alpha: 0.425,
+									distance: patternSize.height! / 3,
+									size: patternSize.height! / 10,
+								},
+								{
+									count: 9,
+									alpha: 0.25,
+									distance: patternSize.height! / 1.875,
+									size: patternSize.height! / 15,
+								},
+								{
+									count: 15,
+									alpha: 0.125,
+									distance: patternSize.height! / 1.325,
+									size: patternSize.height! / 18,
+								},
+							]}
+						/>
+					</Show>
+				</Show>
+
+				<Show
+					when={form.image}
+					fallback={
+						<div class="empty">
+							<Show
+								when={theme()?.symbol}
+								fallback={
+									<div>
+										<SVGSymbol id="AiOutlineTrophy" />
+									</div>
+								}
+							>
+								<div innerHTML={theme()!.symbol.component as string}></div>
+							</Show>
+						</div>
+					}
+				>
+					<div>{form.image}</div>
+				</Show>
+
+				<h1>{form.title}</h1>
+			</section>
+		);
+	};
+
+	// const SubsectionContest = () => {
+	// 	const [duration, setDuration] = createSignal("7");
+	// 	const [modal, setModal] = createSignal(false);
+
+	// 	createEffect(
+	// 		on(duration, (current, prev) => {
+	// 			if (current === "0") {
+	// 				batch(() => {
+	// 					setDuration(prev ?? "7");
+	// 					setModal(true);
+	// 				});
+	// 				return;
+	// 			}
+
+	// 			setForm(
+	// 				"date",
+	// 				"end",
+	// 				Math.trunc(Date.now() / 86400) * 86400 +
+	// 					Number.parseInt(duration()) * 86400_000,
+	// 			);
+	// 		}),
+	// 	);
+
+	// 	return (
+	// 		<>
+	// 			<SectionList
+	// 				title={t("pages.create.options.contest.label")}
+	// 				items={[
+	// 					{
+	// 						label: t("pages.create.options.contest.duration.label"),
+	// 						placeholder: () => (
+	// 							<SectionListSelect
+	// 								value={duration()}
+	// 								setValue={setDuration}
+	// 								items={[
+	// 									{
+	// 										value: "1",
+	// 										label: t(
+	// 											"pages.create.options.contest.duration.options.day",
+	// 										),
+	// 									},
+	// 									{
+	// 										value: "7",
+	// 										label: t(
+	// 											"pages.create.options.contest.duration.options.week",
+	// 										),
+	// 									},
+	// 									{
+	// 										value: "30",
+	// 										label: t(
+	// 											"pages.create.options.contest.duration.options.month",
+	// 										),
+	// 									},
+	// 									{
+	// 										value: "0",
+	// 										label: t(
+	// 											"pages.create.options.contest.duration.options.custom",
+	// 										),
+	// 									},
+	// 									...Array.from(new Array(90))
+	// 										.map((_, i) => ({
+	// 											value: (i + 1).toString(),
+	// 											label: td(
+	// 												"pages.create.options.contest.duration.custom.plural",
+	// 												{
+	// 													day: (i + 1).toString(),
+	// 												},
+	// 											),
+	// 											disabled: true,
+	// 											hidden: true,
+	// 										}))
+	// 										.filter((_, i) => ![1, 7, 30].includes(i + 1)),
+	// 								]}
+	// 							/>
+	// 						),
+	// 					},
+	// 					{
+	// 						label: t("pages.create.options.contest.prize.label"),
+	// 						placeholder: () => (
+	// 							<SectionListInput
+	// 								type="text"
+	// 								placeholder="$10,000 USDT"
+	// 								value={form.prize}
+	// 								setValue={(value) => setForm("prize", value)}
+	// 								maxLength={store.limits!.form.create.prize.maxLength}
+	// 								onBlur={() => {
+	// 									setForm("prize", formatNumbersInString(form.prize));
+	// 								}}
+	// 							/>
+	// 						),
+	// 					},
+	// 				]}
+	// 			/>
+
+	// 			<Show when={modal()}>
+	// 				<Modal
+	// 					onClose={() => setModal(false)}
+	// 					portalParent={document.querySelector("#portals")!}
+	// 					class="modal-section-list-picker"
+	// 				>
+	// 					<p>{t("pages.create.options.contest.duration.custom.label")}</p>
+
+	// 					<WheelPicker
+	// 						items={Array.from(new Array(90)).map((_, index) => ({
+	// 							value: (index + 1).toString(),
+	// 							label:
+	// 								index === 0
+	// 									? td(
+	// 											"pages.create.options.contest.duration.custom.singular",
+	// 											{
+	// 												day: (index + 1).toString(),
+	// 											},
+	// 										)
+	// 									: td(
+	// 											"pages.create.options.contest.duration.custom.plural",
+	// 											{
+	// 												day: (index + 1).toString(),
+	// 											},
+	// 										),
+	// 						}))}
+	// 						setValue={setDuration}
+	// 						value={duration()}
+	// 					/>
+	// 				</Modal>
+	// 			</Show>
+	// 		</>
+	// 	);
+	// };
 
 	// const SubsectionVisibility = () => {
 	// 	return (
@@ -561,24 +883,9 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 	// };
 
 	const SubsectionParticipants = () => {
-		const updateFeeValue = (input: string) => {
-			const value = clamp(
-				Number.isNaN(Number.parseFloat(input))
-					? store.limits!.form.create.fee.min
-					: Number.parseFloat(input),
-				store.limits!.form.create.fee.min,
-				store.limits!.form.create.fee.max,
-			);
-			setForm("fee", value);
-		};
-
-		const feeDisplayValue = createMemo(() =>
-			form.fee > 0 ? form.fee.toString() : "",
-		);
-
 		return (
 			<SectionList
-				title={t("pages.create.options.participants.label")}
+				// title={t("pages.create.options.participants.label")}
 				description={() => (
 					<ClickableText
 						text={t("pages.create.options.participants.description")}
@@ -599,30 +906,12 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 							/>
 						),
 					},
-					{
-						label: t("pages.create.options.participants.fee.label"),
-						placeholder: () => (
-							<SectionListInput
-								class="input-fee"
-								type="number"
-								inputmode="decimal"
-								placeholder={t("pages.create.options.participants.fee.free")}
-								value={feeDisplayValue()}
-								setValue={updateFeeValue}
-								min={store.limits!.form.create.fee.min}
-								max={store.limits!.form.create.fee.max}
-								append={() => <SVGSymbol id="TON" />}
-							/>
-						),
-					},
 				]}
 			/>
 		);
 	};
 
 	const SubsectionThemes = () => {
-		const DEFAULT_SYMBOL = "symbol-55";
-
 		const activeSlideIndex = createMemo(() => {
 			if (form.theme.backdrop === undefined) return 0;
 
@@ -835,13 +1124,15 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 	return (
 		<div id="container-create-section-options">
 			<div>
-				<SubsectionContest />
+				<SubsectionPreview />
+
+				{/*<SubsectionContest />*/}
 
 				{/*<SubsectionVisibility />*/}
 
-				<SubsectionParticipants />
-
 				<SubsectionThemes />
+
+				<SubsectionParticipants />
 			</div>
 
 			<CustomMainButton
