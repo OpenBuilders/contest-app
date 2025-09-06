@@ -885,7 +885,7 @@ const SectionOptions: Component<CreateFormSectionProps> = (props) => {
 	const SubsectionParticipants = () => {
 		return (
 			<SectionList
-				// title={t("pages.create.options.participants.label")}
+				title={t("pages.create.options.participants.label")}
 				description={() => (
 					<ClickableText
 						text={t("pages.create.options.participants.description")}
