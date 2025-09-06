@@ -352,8 +352,7 @@ cropper-shade {
       position: absolute;
       z-index: -1;
       bottom: 0;
-      top: var(--tg-viewport-safe-area-inset-top);
-      height: calc(100% - var(--tg-viewport-safe-area-inset-top, 0px));
+      height: 100%;
       width: auto;
       left: 50%;
       transform: translate(-50%) scale(0.5);
