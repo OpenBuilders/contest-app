@@ -1,14 +1,16 @@
 import { useParams } from "@solidjs/router";
 import "./Options.scss";
 import {
+	type Accessor,
 	type Component,
 	createMemo,
 	createSignal,
 	Match,
 	onMount,
+	type Setter,
 	Switch,
 } from "solid-js";
-import { createStore } from "solid-js/store";
+import { createStore, type SetStoreFunction } from "solid-js/store";
 import BackButton from "../../../components/BackButton";
 import CustomMainButton from "../../../components/CustomMainButton";
 import Editor from "../../../components/Editor";
@@ -29,14 +31,31 @@ import {
 	invokeHapticFeedbackNotification,
 } from "../../../utils/telegram";
 
+export type SectionContestManageOptionsForm = {
+	fee: number;
+	title: string;
+	description: string;
+	prize: string;
+	loaded: boolean;
+};
+
+type SectionContestManageOptionsProps = {
+	form: [
+		SectionContestManageOptionsForm,
+		SetStoreFunction<SectionContestManageOptionsForm>,
+	];
+	processing: [Accessor<boolean>, Setter<boolean>];
+	slug: string;
+	onBackButton: () => void;
+};
+
 const PageContestManageOptions: Component = () => {
 	const params = useParams();
-	const { t } = useTranslation();
 
 	if (!store.token) {
 		navigator.go("/splash", {
 			params: {
-				from: `/contest/${params.slug}/manage/options`,
+				from: `/contest/${params.slug}/manage/settings/options`,
 				haptic: false,
 				fromParams: {
 					theme: {
@@ -48,22 +67,6 @@ const PageContestManageOptions: Component = () => {
 		return;
 	}
 
-	const onBackButton = () => {
-		navigator.go(`/contest/${params.slug}/manage`, {
-			params: {
-				theme: {
-					header: false,
-				},
-			},
-		});
-	};
-
-	onMount(async () => {
-		if (!form.loaded) {
-			await fetchData();
-		}
-	});
-
 	const [form, setForm] = createStore({
 		fee: 0,
 		title: "",
@@ -72,72 +75,39 @@ const PageContestManageOptions: Component = () => {
 		loaded: false,
 	});
 
-	const [formData, setFormData] = createStore(cloneObject(form));
+	const onBackButton = () => {
+		navigator.go(`/contest/${params.slug}`, {
+			params: {
+				theme: {
+					header: false,
+				},
+			},
+		});
+	};
 
 	const [processing, setProcessing] = createSignal(false);
-	const buttonDisabled = createMemo(() => {
-		if (form.description) {
-			const {
-				body: { textContent },
-			} = new DOMParser().parseFromString(form.description, "text/html");
 
-			if (
-				(textContent?.length ?? 0) >
-				store.limits!.form.create.description.maxLength
-			) {
-				return true;
-			}
-		}
+	return (
+		<>
+			<SectionContestManageOptions
+				form={[form, setForm]}
+				processing={[processing, setProcessing]}
+				slug={params.slug}
+				onBackButton={onBackButton}
+			/>
 
-		if (
-			form.title.trim().length < store.limits!.form.create.title.minLength ||
-			form.title.trim().length > store.limits!.form.create.title.maxLength
-		) {
-			return true;
-		}
+			<BackButton onClick={onBackButton} />
+		</>
+	);
+};
 
-		if (form.prize.length > store.limits!.form.create.prize.maxLength) {
-			return true;
-		}
+export const SectionContestManageOptions: Component<
+	SectionContestManageOptionsProps
+> = (props) => {
+	const { t } = useTranslation();
 
-		if (
-			form.fee < store.limits!.form.create.fee.min ||
-			form.fee > store.limits!.form.create.fee.max
-		) {
-			return true;
-		}
-
-		if (compareObjects(form, formData)) {
-			return true;
-		}
-
-		return false;
-	});
-
-	const fetchData = async () => {
-		const request = await requestAPI(
-			`/contest/${params.slug}/options`,
-			{},
-			"GET",
-		);
-
-		if (request) {
-			const { result, status } = request;
-
-			if (status === "success") {
-				invokeHapticFeedbackNotification("success");
-
-				setForm({
-					description: result.contest.description ?? form.description,
-					fee: result.contest.fee ?? form.fee,
-					prize: result.contest.prize ?? form.prize,
-					title: result.contest.title ?? form.title,
-					loaded: true,
-				});
-				setFormData(form);
-			}
-		}
-	};
+	const [processing, setProcessing] = props.processing;
+	const [form, setForm] = props.form;
 
 	const SectionOptionsLoading = () => {
 		return (
@@ -155,7 +125,7 @@ const PageContestManageOptions: Component = () => {
 		invokeHapticFeedbackImpact("soft");
 
 		const request = await requestAPI(
-			`/contest/${params.slug}/options/update`,
+			`/contest/${props.slug}/options/update`,
 			{
 				title: form.title,
 				description: form.description,
@@ -172,7 +142,7 @@ const PageContestManageOptions: Component = () => {
 				invokeHapticFeedbackNotification("success");
 				setFormData(form);
 				setStore("contests", "my", undefined);
-				onBackButton();
+				props.onBackButton();
 			}
 		}
 		setProcessing(false);
@@ -258,41 +228,109 @@ const PageContestManageOptions: Component = () => {
 		);
 	};
 
+	const buttonDisabled = createMemo(() => {
+		if (form.description) {
+			const {
+				body: { textContent },
+			} = new DOMParser().parseFromString(form.description, "text/html");
+
+			if (
+				(textContent?.length ?? 0) >
+				store.limits!.form.create.description.maxLength
+			) {
+				return true;
+			}
+		}
+
+		if (
+			form.title.trim().length < store.limits!.form.create.title.minLength ||
+			form.title.trim().length > store.limits!.form.create.title.maxLength
+		) {
+			return true;
+		}
+
+		if (form.prize.length > store.limits!.form.create.prize.maxLength) {
+			return true;
+		}
+
+		if (
+			form.fee < store.limits!.form.create.fee.min ||
+			form.fee > store.limits!.form.create.fee.max
+		) {
+			return true;
+		}
+
+		if (compareObjects(form, formData)) {
+			return true;
+		}
+
+		return false;
+	});
+
+	const fetchData = async () => {
+		const request = await requestAPI(
+			`/contest/${props.slug}/options`,
+			{},
+			"GET",
+		);
+
+		if (request) {
+			const { result, status } = request;
+
+			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
+
+				setForm({
+					description: result.contest.description ?? form.description,
+					fee: result.contest.fee ?? form.fee,
+					prize: result.contest.prize ?? form.prize,
+					title: result.contest.title ?? form.title,
+					loaded: true,
+				});
+				setFormData(form);
+			}
+		}
+	};
+
+	onMount(async () => {
+		if (!form.loaded) {
+			await fetchData();
+		}
+	});
+
+	const [formData, setFormData] = createStore(cloneObject(form));
+
 	return (
-		<>
-			<div id="container-page-contest-manage-options" class="page">
-				<div>
-					<header>
-						<h1>{t("pages.contest.manage.options.title")}</h1>
-					</header>
+		<div id="container-page-contest-manage-options" class="page">
+			<div>
+				<header>
+					<h1>{t("pages.contest.manage.options.title")}</h1>
+				</header>
 
-					<Switch>
-						<Match when={!form.loaded}>
-							<SectionOptionsLoading />
-						</Match>
+				<Switch>
+					<Match when={!form.loaded}>
+						<SectionOptionsLoading />
+					</Match>
 
-						<Match when={form.loaded}>
-							<SectionOptions />
-						</Match>
-					</Switch>
+					<Match when={form.loaded}>
+						<SectionOptions />
+					</Match>
+				</Switch>
 
-					<footer>
-						<Switch>
-							<Match when={form.loaded}>
-								<CustomMainButton
-									text={t("pages.contest.manage.options.button")}
-									onClick={onClickButton}
-									disabled={buttonDisabled() || processing()}
-									loading={processing()}
-								/>{" "}
-							</Match>
-						</Switch>
-					</footer>
-				</div>
+				<Switch>
+					<Match when={form.loaded}>
+						<footer>
+							<CustomMainButton
+								text={t("pages.contest.manage.options.button")}
+								onClick={onClickButton}
+								disabled={buttonDisabled() || processing()}
+								loading={processing()}
+							/>
+						</footer>
+					</Match>
+				</Switch>
 			</div>
-
-			<BackButton onClick={onBackButton} />
-		</>
+		</div>
 	);
 };
 

@@ -2,8 +2,16 @@ import { useParams } from "@solidjs/router";
 import BackButton from "../../../components/BackButton";
 import "./Moderators.scss";
 import { FaSolidLink, FaSolidPlus } from "solid-icons/fa";
-import { type Component, createSignal, Match, onMount, Switch } from "solid-js";
-import { createStore } from "solid-js/store";
+import {
+	type Accessor,
+	type Component,
+	createSignal,
+	Match,
+	onMount,
+	type Setter,
+	Switch,
+} from "solid-js";
+import { createStore, type SetStoreFunction } from "solid-js/store";
 import { Avatar } from "../../../components/Avatar";
 import ButtonArray from "../../../components/ButtonArray";
 import LottiePlayerMotion from "../../../components/LottiePlayerMotion";
@@ -43,14 +51,7 @@ const PageContestManageModerators: Component = () => {
 		return;
 	}
 
-	const [data, setData] = createStore<{
-		title?: string;
-		slug_moderator?: string;
-		moderators?: Pick<
-			User,
-			"user_id" | "first_name" | "last_name" | "profile_photo"
-		>[];
-	}>({});
+	const [data, setData] = createStore<SectionContestManageModeratorsData>({});
 
 	const onBackButton = () => {
 		navigator.go(`/contest/${params.slug}/manage`, {
@@ -61,34 +62,6 @@ const PageContestManageModerators: Component = () => {
 			},
 		});
 	};
-
-	const fetchData = async () => {
-		const request = await requestAPI(
-			`/contest/${params.slug}/moderators`,
-			{},
-			"GET",
-		);
-
-		if (request) {
-			const { result, status } = request;
-
-			if (status === "success") {
-				invokeHapticFeedbackNotification("success");
-
-				setData({
-					title: result.title,
-					slug_moderator: result.slug_moderator,
-					moderators: result.moderators,
-				});
-			}
-		}
-	};
-
-	onMount(async () => {
-		if (!data.slug_moderator) {
-			await fetchData();
-		}
-	});
 
 	const onClickButtonInvite = () => {
 		if (!data.slug_moderator) return;
@@ -149,6 +122,132 @@ const PageContestManageModerators: Component = () => {
 		setProcessing(false);
 	};
 
+	return (
+		<>
+			<div id="container-page-contest-manage-moderators" class="page">
+				<div>
+					<header>
+						<h1>{t("pages.contest.manage.moderators.title")}</h1>
+
+						<ButtonArray
+							items={[
+								{
+									component: FaSolidLink,
+									fontSize: "1.25rem",
+									class: "clickable",
+									onClick: onClickButtonRevoke,
+								},
+								{
+									component: FaSolidPlus,
+									fontSize: "1.1875rem",
+									class: "clickable",
+									onClick: onClickButtonInvite,
+								},
+							]}
+						/>
+					</header>
+
+					<SectionContestManageModerators
+						data={[data, setData]}
+						processing={[processing, setProcessing]}
+						onClickButtonInvite={onClickButtonInvite}
+						slug={params.slug}
+					/>
+				</div>
+			</div>
+
+			<BackButton onClick={onBackButton} />
+		</>
+	);
+};
+
+export type SectionContestManageModeratorsData = {
+	title?: string;
+	slug_moderator?: string;
+	moderators?: Pick<
+		User,
+		"user_id" | "first_name" | "last_name" | "profile_photo"
+	>[];
+};
+
+type SectionContestManageModerators = {
+	processing: [Accessor<boolean>, Setter<boolean>];
+	data: [
+		SectionContestManageModeratorsData,
+		SetStoreFunction<SectionContestManageModeratorsData>,
+	];
+	onClickButtonInvite: () => void;
+	slug: string;
+};
+
+export const SectionContestManageModerators: Component<
+	SectionContestManageModerators
+> = (props) => {
+	const { t } = useTranslation();
+	const [processing, setProcessing] = props.processing;
+	const [data, setData] = props.data;
+
+	const fetchData = async () => {
+		const request = await requestAPI(
+			`/contest/${props.slug}/moderators`,
+			{},
+			"GET",
+		);
+
+		if (request) {
+			const { result, status } = request;
+
+			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
+
+				setData({
+					title: result.title,
+					slug_moderator: result.slug_moderator,
+					moderators: result.moderators,
+				});
+			}
+		}
+	};
+
+	onMount(async () => {
+		if (!data.slug_moderator) {
+			await fetchData();
+		}
+	});
+
+	const SectionModeratorsLoading = () => {
+		return (
+			<div id="container-contest-moderators-loading">
+				<div class="shimmer"></div>
+			</div>
+		);
+	};
+
+	const SectionModeratorsEmpty = () => {
+		return (
+			<div id="container-contest-moderators-empty">
+				<LottiePlayerMotion
+					src={TGS.duckCommentate.url}
+					outline={TGS.duckCommentate.outline}
+					autoplay
+					playOnClick
+				/>
+
+				<span class="text-secondary">
+					{t("pages.contest.manage.moderators.empty.text")}
+				</span>
+
+				<button
+					type="button"
+					onClick={props.onClickButtonInvite}
+					class="clickable"
+				>
+					{t("pages.contest.manage.moderators.empty.button")}
+				</button>
+			</div>
+		);
+	};
+
 	const onClickButtonRemove = async (user_id: number) => {
 		if (!data.slug_moderator) return;
 		if (processing()) return;
@@ -175,7 +274,7 @@ const PageContestManageModerators: Component = () => {
 		setProcessing(true);
 
 		const request = await requestAPI(
-			`/contest/${params.slug}/moderators/remove`,
+			`/contest/${props.slug}/moderators/remove`,
 			{
 				user_id: user_id.toString(),
 			},
@@ -192,35 +291,6 @@ const PageContestManageModerators: Component = () => {
 		}
 
 		setProcessing(false);
-	};
-
-	const SectionModeratorsLoading = () => {
-		return (
-			<div id="container-contest-moderators-loading">
-				<div class="shimmer"></div>
-			</div>
-		);
-	};
-
-	const SectionModeratorsEmpty = () => {
-		return (
-			<div id="container-contest-moderators-empty">
-				<LottiePlayerMotion
-					src={TGS.duckCommentate.url}
-					outline={TGS.duckCommentate.outline}
-					autoplay
-					playOnClick
-				/>
-
-				<span class="text-secondary">
-					{t("pages.contest.manage.moderators.empty.text")}
-				</span>
-
-				<button type="button" onClick={onClickButtonInvite} class="clickable">
-					{t("pages.contest.manage.moderators.empty.button")}
-				</button>
-			</div>
-		);
 	};
 
 	const SectionModerators = () => {
@@ -257,48 +327,19 @@ const PageContestManageModerators: Component = () => {
 	};
 
 	return (
-		<>
-			<div id="container-page-contest-manage-moderators" class="page">
-				<div>
-					<header>
-						<h1>{t("pages.contest.manage.moderators.title")}</h1>
+		<Switch>
+			<Match when={!data.moderators}>
+				<SectionModeratorsLoading />
+			</Match>
 
-						<ButtonArray
-							items={[
-								{
-									component: FaSolidLink,
-									fontSize: "1.25rem",
-									class: "clickable",
-									onClick: onClickButtonRevoke,
-								},
-								{
-									component: FaSolidPlus,
-									fontSize: "1.1875rem",
-									class: "clickable",
-									onClick: onClickButtonInvite,
-								},
-							]}
-						/>
-					</header>
+			<Match when={data.moderators?.length === 0}>
+				<SectionModeratorsEmpty />
+			</Match>
 
-					<Switch>
-						<Match when={!data.moderators}>
-							<SectionModeratorsLoading />
-						</Match>
-
-						<Match when={data.moderators?.length === 0}>
-							<SectionModeratorsEmpty />
-						</Match>
-
-						<Match when={(data.moderators?.length ?? 0) > 0}>
-							<SectionModerators />
-						</Match>
-					</Switch>
-				</div>
-			</div>
-
-			<BackButton onClick={onBackButton} />
-		</>
+			<Match when={(data.moderators?.length ?? 0) > 0}>
+				<SectionModerators />
+			</Match>
+		</Switch>
 	);
 };
 

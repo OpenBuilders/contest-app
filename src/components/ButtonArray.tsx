@@ -2,7 +2,7 @@ import "./ButtonArray.scss";
 import { type Component, For } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
-type ButtonArrayItem = {
+export type ButtonArrayItem = {
 	component: Component;
 	fontSize?: string;
 	class?: string;

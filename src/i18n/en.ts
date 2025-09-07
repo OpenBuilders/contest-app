@@ -264,6 +264,18 @@ const dict = {
 						},
 					},
 				},
+				settings: {
+					title: "Settings",
+					button: "Update Options",
+					tabs: {
+						options: {
+							title: "Options",
+						},
+						moderators: {
+							title: "Moderators",
+						},
+					},
+				},
 			},
 			results: {
 				empty: "No Winners",
@@ -280,7 +292,7 @@ const dict = {
 					text: "View Contest",
 				},
 				participate: {
-					text: "Participate",
+					text: "Join for {price}",
 				},
 				closed: {
 					text: "Submissions are closed.",
