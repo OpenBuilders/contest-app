@@ -43,9 +43,12 @@ export default defineConfig((config) => {
 			},
 		},
 		envDir: "./",
+		optimizeDeps: {
+			exclude: ["./src/thorvg/thorvg-wasm.js"],
+		},
 		build: {
-			minify: "terser",
 			rollupOptions: {
+				external: ["./src/thorvg/thorvg-wasm.js"],
 				output: {
 					manualChunks: {
 						svgAssets: [
