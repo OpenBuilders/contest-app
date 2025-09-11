@@ -1,10 +1,6 @@
 import type { Component } from "solid-js";
 import { createStore } from "solid-js/store";
-import ModalContestDescription from "../modals/ContestDescription";
-import ModalContestCreate from "../modals/Create";
-import ModalContestCreateAnonymous from "../modals/CreateAnonymous";
-import ModalContestCreateCategory from "../modals/CreateCategory";
-import ModalContestCreatePublic from "../modals/CreatePublic";
+import ModalAnonymous from "../modals/Anonymous";
 import ModalModeratorJoin from "../modals/ModeratorJoin";
 import ModalParticipate from "../modals/Participate";
 import ModalPlacement from "../modals/Placement";
@@ -12,7 +8,6 @@ import ModalSettings from "../modals/Settings";
 import ModalSubmission from "../modals/Submission";
 import ModalSubmissionsPicker from "../modals/SubmissionsPicker";
 import type {
-	AnnotatedContest,
 	AnnotatedSubmission,
 	Contest,
 	ContestMetadata,
@@ -26,10 +21,7 @@ type ModalState = {
 
 type ModalsStore = {
 	settings: ModalState;
-	create: ModalState;
-	createPublic: ModalState;
-	createAnonymous: ModalState;
-	createCategory: ModalState;
+	anonymous: ModalState;
 	participate: ModalState & {
 		contest?: Contest;
 		metadata?: ContestMetadata;
@@ -50,9 +42,6 @@ type ModalsStore = {
 		picked?: number[];
 		submissions?: AnnotatedSubmission[];
 	};
-	contestDescription: ModalState & {
-		contest?: AnnotatedContest;
-	};
 };
 
 export const [modals, setModals] = createStore<ModalsStore>({
@@ -60,21 +49,9 @@ export const [modals, setModals] = createStore<ModalsStore>({
 		open: false,
 		component: ModalSettings,
 	},
-	create: {
+	anonymous: {
 		open: false,
-		component: ModalContestCreate,
-	},
-	createPublic: {
-		open: false,
-		component: ModalContestCreatePublic,
-	},
-	createAnonymous: {
-		open: false,
-		component: ModalContestCreateAnonymous,
-	},
-	createCategory: {
-		open: false,
-		component: ModalContestCreateCategory,
+		component: ModalAnonymous,
 	},
 	participate: {
 		open: false,
@@ -95,9 +72,5 @@ export const [modals, setModals] = createStore<ModalsStore>({
 	submissionsPicker: {
 		open: false,
 		component: ModalSubmissionsPicker,
-	},
-	contestDescription: {
-		open: false,
-		component: ModalContestDescription,
 	},
 });

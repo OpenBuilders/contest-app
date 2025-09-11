@@ -24,7 +24,6 @@ import Tabbar from "../components/Tabbar";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
-import { setModals } from "../utils/modal";
 import { navigator } from "../utils/navigator";
 import { formatNumbersInString } from "../utils/number";
 import { setSettings, settings } from "../utils/settings";
@@ -84,7 +83,9 @@ const PageHome: Component = () => {
 	};
 
 	const onClickButtonCreate = () => {
-		setModals("create", "open", true);
+		navigator.go("/create", {
+			backable: true,
+		});
 	};
 
 	onMount(async () => {

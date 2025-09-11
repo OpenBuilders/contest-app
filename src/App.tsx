@@ -19,12 +19,11 @@ import {
 } from "./contexts/TranslationContext.ts";
 import { dict as en_dict } from "./i18n/en.ts";
 import { fetchDictionary, type Locale, localeDirections } from "./locale";
-// import PageContestManageModerators from "./pages/Contest/Manage/Moderators.tsx";
 import PageContestManageResults from "./pages/Contest/Manage/Results.tsx";
 import PageContestManageSettings from "./pages/Contest/Manage/Settings.tsx";
-// import PageContestManageSubmissions from "./pages/Contest/Manage/Submissions.tsx";
 import PageContest from "./pages/Contest.tsx";
 import PageContests from "./pages/Contests.tsx";
+import PageCreate from "./pages/Create.tsx";
 import PageError from "./pages/Error";
 import PageHome from "./pages/Home.tsx";
 import PageProfile from "./pages/Profile.tsx";
@@ -146,6 +145,7 @@ const App = () => {
 						</Show>
 
 						<Route path="/" component={PageHome} />
+						<Route path="/create" component={PageCreate} />
 						<Route path="/splash" component={PageSplash} />
 						<Route path="/profile" component={PageProfile} />
 						<Route path="/contests" component={PageContests} />
@@ -154,15 +154,6 @@ const App = () => {
 							path="/contest/:slug/:state?/:extra?"
 							component={PageContest}
 						/>
-
-						{/*<Route
-							path="/contest/:slug/manage/submissions/:id?"
-							component={PageContestManageSubmissions}
-						/>*/}
-						{/*<Route
-							path="/contest/:slug/manage/moderators"
-							component={PageContestManageModerators}
-						/>*/}
 						<Route
 							path="/contest/:slug/manage/settings/:tab?"
 							component={PageContestManageSettings}

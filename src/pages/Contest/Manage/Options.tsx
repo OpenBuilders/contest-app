@@ -183,7 +183,7 @@ export const SectionContestManageOptions: Component<
 							),
 						},
 						{
-							label: t("pages.create.options.contest.prize.label"),
+							label: t("pages.create.options.prize.label"),
 							placeholder: () => (
 								<SectionListInput
 									type="text"
@@ -198,13 +198,13 @@ export const SectionContestManageOptions: Component<
 							),
 						},
 						{
-							label: t("pages.create.options.participants.fee.label"),
+							label: t("pages.create.options.fee.label"),
 							placeholder: () => (
 								<SectionListInput
 									class="input-fee"
 									type="number"
 									inputmode="decimal"
-									placeholder={t("pages.create.options.participants.fee.free")}
+									placeholder={t("pages.create.options.fee.free")}
 									value={feeDisplayValue()}
 									setValue={updateFeeValue}
 									min={store.limits!.form.create.fee.min}
@@ -221,7 +221,7 @@ export const SectionContestManageOptions: Component<
 						value={form.description}
 						setValue={(data) => setForm("description", data)}
 						maxLength={store.limits!.form.create.description.maxLength}
-						placeholder={t("pages.create.basic.description.placeholder")}
+						placeholder={t("pages.create.options.description.placeholder")}
 					/>
 				</Section>
 			</div>

@@ -8,7 +8,7 @@
 
    > span {
       text-transform: uppercase;
-      opacity: 0.625;
+      color: rgba(var(--text-color-rgb), 0.625);
       font-size: 0.75rem;
       padding-inline-start: 1rem;
       flex-shrink: 0;

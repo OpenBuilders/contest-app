@@ -250,6 +250,7 @@ const ModalParticipate: Component = () => {
 					<input
 						class="input"
 						type="text"
+						inputmode="url"
 						placeholder={t("modals.participate.form.link.placeholder")}
 						value={form.link}
 						onInput={(e) => setForm("link", e.currentTarget.value)}

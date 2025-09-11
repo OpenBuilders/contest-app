@@ -193,14 +193,6 @@ const PageContest: Component = () => {
 			}),
 		);
 
-		setModals(
-			"contestDescription",
-			produce((data) => {
-				data.contest = undefined;
-				data.open = false;
-			}),
-		);
-
 		if (navigator.isBackable()) {
 			navigator.back();
 		} else {

@@ -8,6 +8,7 @@ import {
 	Show,
 } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import { Toaster } from "solid-toast";
 import { Color } from "../utils/colors";
 import { modals, setModals } from "../utils/modal";
 import { navigator } from "../utils/navigator";
@@ -125,6 +126,14 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 			/>
 
 			<PlausibleTracker />
+
+			<Toaster
+				containerStyle={{
+					top: "calc(var(--tg-viewport-safe-area-inset-top) + var(--tg-viewport-content-safe-area-inset-top))",
+					bottom:
+						"calc(var(--tg-viewport-safe-area-inset-bottom) + var(--tg-viewport-content-safe-area-inset-bottom))",
+				}}
+			/>
 		</>
 	);
 };

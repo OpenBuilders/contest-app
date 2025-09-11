@@ -84,82 +84,57 @@ const dict = {
 			},
 		},
 		create: {
-			intro: {
-				title: "What is a Contest?",
-				description:
-					"Contests are interactive events where creators set challenges, participants compete, and moderators pick winners—with prizes. They’re a fun way to engage your community, reward talent, and grow your audience.",
-				button: "Create Contest",
-			},
-			basic: {
+			options: {
 				image: {
+					label: "Set New Photo",
 					crop: "Crop Image",
 				},
 				name: {
 					placeholder: "Contest Name",
 				},
 				description: {
-					placeholder: "Contest Description",
+					placeholder: "Description",
 					hint: "You can provide an optional description for your contest.",
 				},
-			},
-			options: {
-				contest: {
-					label: "Contest",
-					duration: {
-						label: "Duration",
-						options: {
-							day: "1 Day",
-							week: "1 Week",
-							month: "1 Month",
-							custom: "Set Custom Time",
-						},
-						custom: {
-							label: "Contest ends in...",
-							singular: "{day} day",
-							plural: "{day} days",
-						},
+				duration: {
+					label: "Duration",
+					options: {
+						day: "1 Day",
+						week: "1 Week",
+						month: "1 Month",
+						custom: "Set Custom Time",
 					},
-					prize: {
-						label: "Prize Pool",
+					custom: {
+						label: "Contest ends in...",
+						singular: "{day} day",
+						plural: "{day} days",
 					},
 				},
-				visibility: {
-					label: "Visibility",
-					description:
-						"Control who can discover your contest. Make it <clickable id='public'>Public</clickable> so anyone can find and join, and assign a <clickable id='category'>Category</clickable> to help users explore similar contests.",
-					public: {
-						label: "Public",
-					},
-					category: {
-						label: "Category",
-						default: "Not Set",
-					},
+				prize: {
+					label: "Prize Pool",
 				},
 				participants: {
 					label: "Participants",
-					description:
-						"Enable <clickable id='anonymous'>Anonymous</clickable> mode to keep participant identities hidden.",
 					anonymous: {
 						label: "Anonymous",
+						anonymous: {
+							label: "Anonymous",
+						},
+						fee: {
+							label: "Entry Fee",
+							free: "Free",
+						},
 					},
-					fee: {
-						label: "Entry Fee",
-						free: "Free",
-					},
+				},
+				fee: {
+					label: "Entry Fee",
+					free: "Free",
 				},
 				themes: {
 					label: "Themes",
 					symbol: {
 						label: "Symbol",
 					},
-				},
-			},
-			done: {
-				title: "Done!",
-				description:
-					"You can now view your contest, invite moderators, or share it with others.",
-				buttons: {
-					view: "View Contest",
 				},
 			},
 			wallet: {
@@ -170,6 +145,22 @@ const dict = {
 				button: {
 					text: "Connect Wallet",
 				},
+			},
+			done: {
+				title: "Done!",
+				description:
+					"You can now view your contest, invite moderators, or share it with others.",
+				buttons: {
+					view: "View Contest",
+				},
+			},
+			button: {
+				create: {
+					text: "Create",
+				},
+			},
+			error: {
+				create: "Failed to create contest.",
 			},
 		},
 		contest: {
@@ -340,28 +331,16 @@ const dict = {
 		},
 	},
 	modals: {
-		create: {
-			public: {
-				title: "Public or Private?",
-				description:
-					"Public contests may appear in discovery and can be joined by anyone. Private contests are hidden and only accessible via a unique invite link.",
-			},
-			category: {
-				title: "What Are Categories?",
-				description:
-					"Categories help users discover contests by topic—like Photography, Writing, or Design. Choose one that best fits your contest so the right audience can find it.",
-			},
-			anonymous: {
-				title: "What Is Anonymous Mode?",
-				description:
-					"Participant identities are hidden from the public and replaced with fun aliases. Moderators and the contest owner can still see who joined.",
-			},
-		},
 		moderators: {
 			join: {
 				prompt: "Do you want to join the moderator team for this contest?",
 				button: "Join Moderators",
 			},
+		},
+		anonymous: {
+			title: "What Is Anonymous Mode?",
+			description:
+				"Participant identities are hidden from the public and replaced with fun aliases. The contest owner can still see who joined.",
 		},
 		participate: {
 			alias: {
