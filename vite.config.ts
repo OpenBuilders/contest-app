@@ -44,6 +44,7 @@ export default defineConfig((config) => {
 		},
 		envDir: "./",
 		build: {
+			minify: "terser",
 			rollupOptions: {
 				output: {
 					manualChunks: {

@@ -47,6 +47,7 @@
 		"sass": "^1.92.1",
 		"solid-devtools": "^0.34.3",
 		"tailwindcss": "^4.1.13",
+		"terser": "^5.44.0",
 		"typescript": "~5.9.2",
 		"vite": "^7.1.5",
 		"vite-plugin-purgecss": "^0.2.13",
