@@ -294,6 +294,12 @@ const PageCreate: Component = () => {
 					setStep("done");
 					toggleSignal("fetchMyContests");
 				});
+			} else {
+				invokeHapticFeedbackNotification("error");
+				toast({
+					icon: FaSolidCircleExclamation,
+					text: t("pages.create.error.create"),
+				});
 			}
 		}
 	};
@@ -819,11 +825,7 @@ const PageCreate: Component = () => {
 								label: () => (
 									<span
 										onClick={() => {
-											toast({
-												icon: FaSolidCircleExclamation,
-												text: t("pages.create.error.create"),
-											});
-											// setModals("anonymous", "open", true);
+											setModals("anonymous", "open", true);
 										}}
 										class="clickable"
 										style={{
