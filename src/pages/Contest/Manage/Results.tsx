@@ -1,6 +1,6 @@
 import { useParams } from "@solidjs/router";
 import "./Results.scss";
-import { FaSolidPlus } from "solid-icons/fa";
+import { IoAddCircle } from "solid-icons/io";
 import {
 	type Component,
 	createEffect,
@@ -9,7 +9,6 @@ import {
 	For,
 	Match,
 	on,
-	onCleanup,
 	onMount,
 	Show,
 	Switch,
@@ -17,12 +16,10 @@ import {
 import { createStore, produce, reconcile } from "solid-js/store";
 import { Avatar, AvatarStack } from "../../../components/Avatar";
 import BackButton from "../../../components/BackButton";
-import ButtonArray from "../../../components/ButtonArray";
 import CustomMainButton from "../../../components/CustomMainButton";
-import LottiePlayerMotion from "../../../components/LottiePlayerMotion";
+import { Section } from "../../../components/Section";
 import { SVGSymbol } from "../../../components/SVG";
 import { useTranslation } from "../../../contexts/TranslationContext";
-import { TGS } from "../../../utils/animations";
 import { requestAPI } from "../../../utils/api";
 import { initializeSortable } from "../../../utils/lazy";
 import { setModals } from "../../../utils/modal";
@@ -41,17 +38,15 @@ import {
 	invokeHapticFeedbackSelectionChanged,
 } from "../../../utils/telegram";
 
-export const [data, setData] = createStore<{
-	placements?: Placement[];
-	submissions?: AnnotatedSubmission[];
-	announced?: boolean;
-}>({});
-
 const PageContestManageResults: Component = () => {
 	const params = useParams();
-	const { t } = useTranslation();
+	const { t, td } = useTranslation();
 
-	setData({
+	const [data, setData] = createStore<{
+		placements?: Placement[];
+		submissions?: AnnotatedSubmission[];
+		announced?: boolean;
+	}>({
 		placements: undefined,
 		submissions: undefined,
 		announced: undefined,
@@ -118,14 +113,6 @@ const PageContestManageResults: Component = () => {
 		if (!data.placements) {
 			await fetchData();
 		}
-	});
-
-	onCleanup(() => {
-		setData({
-			placements: undefined,
-			submissions: undefined,
-			announced: undefined,
-		});
 	});
 
 	const fetchData = async () => {
@@ -232,6 +219,7 @@ const PageContestManageResults: Component = () => {
 									<div>
 										<span class="shimmer"></span>
 										<span class="shimmer"></span>
+										<span class="shimmer"></span>
 									</div>
 
 									<AvatarStack
@@ -246,27 +234,6 @@ const PageContestManageResults: Component = () => {
 						)}
 					</For>
 				</div>
-			</div>
-		);
-	};
-
-	const SectionResultsEmpty = () => {
-		return (
-			<div id="container-contest-manage-results-empty">
-				<LottiePlayerMotion
-					src={TGS.duckTrophy.url}
-					outline={TGS.duckTrophy.outline}
-					autoplay
-					playOnClick
-				/>
-
-				<span class="text-secondary">
-					{t("pages.contest.manage.results.empty.text")}
-				</span>
-
-				<button type="button" onClick={onClickButtonAdd} class="clickable">
-					{t("pages.contest.manage.results.empty.button")}
-				</button>
 			</div>
 		);
 	};
@@ -310,8 +277,20 @@ const PageContestManageResults: Component = () => {
 
 					<div>
 						<span>{props.placement.name}</span>
+
 						<Show when={props.placement.prize}>
-							<span>{formatNumbersInString(props.placement.prize!)}</span>
+							<span>
+								{td("pages.contest.manage.results.list.reward", {
+									reward: formatNumbersInString(props.placement.prize!),
+								})}
+							</span>
+						</Show>
+						<Show when={props.placement.submissions.length > 0}>
+							<span>
+								{td("pages.contest.manage.results.list.winners", {
+									count: props.placement.submissions.length.toString(),
+								})}
+							</span>
 						</Show>
 					</div>
 
@@ -336,6 +315,38 @@ const PageContestManageResults: Component = () => {
 						})}
 					/>
 				</div>
+			);
+		};
+
+		const SectionItems = () => {
+			return (
+				<Sortable
+					idField="id"
+					items={data.placements ?? []}
+					setItems={(data: Placement[]) => setData("placements", data)}
+					handle=".handle"
+					onChoose={() => {
+						invokeHapticFeedbackImpact("soft");
+					}}
+					onMove={() => {
+						invokeHapticFeedbackSelectionChanged();
+					}}
+					onUpdate={() => {
+						setTimeout(() => {
+							toggleSignal("orderResults");
+						});
+					}}
+				>
+					{(placement: Placement) => <ItemResult placement={placement} />}
+				</Sortable>
+			);
+		};
+
+		const SectionEmpty = () => {
+			return (
+				<Section class="container-contest-manage-results-empty">
+					{t("pages.contest.manage.results.empty.text")}
+				</Section>
 			);
 		};
 
@@ -373,25 +384,19 @@ const PageContestManageResults: Component = () => {
 
 		return (
 			<div id="container-contest-manage-results" class="shimmer-section-bg">
-				<Sortable
-					idField="id"
-					items={data.placements ?? []}
-					setItems={(data: Placement[]) => setData("placements", data)}
-					handle=".handle"
-					onChoose={() => {
-						invokeHapticFeedbackImpact("soft");
-					}}
-					onMove={() => {
-						invokeHapticFeedbackSelectionChanged();
-					}}
-					onUpdate={() => {
-						setTimeout(() => {
-							toggleSignal("orderResults");
-						});
-					}}
+				<Show
+					when={(data.placements?.length ?? 0) > 0}
+					fallback={<SectionEmpty />}
 				>
-					{(placement: Placement) => <ItemResult placement={placement} />}
-				</Sortable>
+					<SectionItems />
+				</Show>
+
+				<footer>
+					<button class="clickable" type="button" onClick={onClickButtonAdd}>
+						<IoAddCircle />
+						<span>{t("pages.contest.manage.results.add.button")}</span>
+					</button>
+				</footer>
 			</div>
 		);
 	};
@@ -401,18 +406,10 @@ const PageContestManageResults: Component = () => {
 			<div id="container-page-contest-manage-results" class="page">
 				<div>
 					<header>
-						<h1>{t("pages.contest.manage.results.title")}</h1>
-
-						<ButtonArray
-							items={[
-								{
-									component: FaSolidPlus,
-									fontSize: "1.1875rem",
-									class: "clickable",
-									onClick: onClickButtonAdd,
-								},
-							]}
-						/>
+						<div>
+							<h1>{t("pages.contest.manage.results.title")}</h1>
+							<p>{t("pages.contest.manage.results.description")}</p>
+						</div>
 					</header>
 
 					<Switch>
@@ -420,13 +417,7 @@ const PageContestManageResults: Component = () => {
 							<SectionResultsLoading />
 						</Match>
 
-						<Match when={data.placements?.length === 0}>
-							<SectionResultsEmpty />
-						</Match>
-
-						<Match
-							when={(data.placements?.length ?? 0) > 0 && dependencies.sortable}
-						>
+						<Match when={dependencies.sortable}>
 							<SectionResults />
 						</Match>
 					</Switch>

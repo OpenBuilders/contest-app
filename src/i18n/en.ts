@@ -237,9 +237,17 @@ const dict = {
 				},
 				results: {
 					title: "Results",
+					description:
+						"Create and arrange placements to announce your contest winners with ease.",
 					empty: {
 						text: "No placements yet.",
-						button: "Let's create one!",
+					},
+					list: {
+						reward: "Reward: {reward}",
+						winners: "{count} winners",
+					},
+					add: {
+						button: "Add placement",
 					},
 					announce: {
 						button: "Announce Results",

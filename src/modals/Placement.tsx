@@ -8,14 +8,13 @@ import {
 	onMount,
 	Show,
 } from "solid-js";
-import { createStore, produce, reconcile } from "solid-js/store";
+import { createStore, produce } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../components/Avatar";
 import CustomMainButton from "../components/CustomMainButton";
 import Modal from "../components/Modal";
 import { SectionList, SectionListInput } from "../components/Section";
 import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
-import { setData } from "../pages/Contest/Manage/Results";
 import { requestAPI } from "../utils/api";
 import { cloneObject, compareObjects } from "../utils/general";
 import { modals, setModals } from "../utils/modal";
@@ -169,19 +168,10 @@ const ModalPlacement: Component = () => {
 		);
 
 		if (request) {
-			const { status, result } = request;
+			const { status } = request;
 
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
-
-				setData(
-					reconcile({
-						placements: result.placements,
-						submissions: result.submissions,
-						announced: result.announced,
-					}),
-				);
-
 				onClose();
 			}
 		}
@@ -220,19 +210,10 @@ const ModalPlacement: Component = () => {
 		);
 
 		if (request) {
-			const { status, result } = request;
+			const { status } = request;
 
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
-
-				setData(
-					reconcile({
-						placements: result.placements,
-						submissions: result.submissions,
-						announced: result.announced,
-					}),
-				);
-
 				onClose();
 			}
 		}
