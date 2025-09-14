@@ -1,4 +1,5 @@
 import "./Submission.scss";
+import dayjs from "dayjs";
 import { type Component, createSignal, onMount, Show } from "solid-js";
 import { produce } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../components/Avatar";
@@ -6,7 +7,6 @@ import Counter from "../components/Counter";
 import CustomMainButton from "../components/CustomMainButton";
 import Modal from "../components/Modal";
 import RichText from "../components/RichText";
-import { Section } from "../components/Section";
 import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
 import { setData } from "../pages/Contest";
@@ -207,6 +207,10 @@ const ModalSubmission: Component = () => {
 		setProcessing(false);
 	};
 
+	const created_at = new Date(
+		modals.submission.submission.submission.created_at!,
+	);
+
 	return (
 		<Modal
 			containerClass="container-modal-submission"
@@ -235,36 +239,52 @@ const ModalSubmission: Component = () => {
 					/>
 				</Show>
 
-				<h1>{fullname}</h1>
+				<header>
+					<h1>{fullname}</h1>
 
-				<Section title={t("modals.submission.description.title")}>
-					<RichText
-						content={
-							modals.submission.submission.submission.submission.description ||
-							t("modals.submission.description.empty")
-						}
-					/>
-				</Section>
+					<span>
+						{td("modals.submission.date", {
+							date: dayjs(created_at).format("MMM D"),
+							time: dayjs(created_at).format("HH:mm"),
+						})}
+					</span>
+				</header>
+
+				<section>
+					<div>
+						<span>{t("modals.submission.submission.description.label")}</span>
+
+						<div>
+							<RichText
+								content={
+									modals.submission.submission.submission.submission
+										.description || t("modals.submission.description.empty")
+								}
+							/>
+						</div>
+					</div>
+
+					<div>
+						<span>{t("modals.submission.submission.link.label")}</span>
+
+						<div>
+							<p class="clickable" onClick={onClickButton}>
+								{modals.submission.submission.submission.submission.link}
+							</p>
+						</div>
+					</div>
+
+					<div>
+						<div>
+							<CustomMainButton
+								onClick={onClickButton}
+								text={t("modals.submission.button")}
+							/>
+						</div>
+					</div>
+				</section>
 
 				<ul>
-					<li
-						class="clickable"
-						classList={{
-							fill:
-								modals.submission.submission.metadata.liked_by_viewer ||
-								processing() === "like",
-							empty: !modals.submission.submission.metadata.liked_by_viewer,
-						}}
-						onClick={() => onClickAction("like")}
-					>
-						<SVGSymbol id="HiSolidHandThumbUp" />
-						<Counter
-							value={modals.submission.submission.submission.likes}
-							initialValue={0}
-							durationMs={250}
-						/>
-					</li>
-
 					<li
 						class="clickable"
 						classList={{
@@ -275,19 +295,56 @@ const ModalSubmission: Component = () => {
 						}}
 						onClick={() => onClickAction("dislike")}
 					>
-						<SVGSymbol id="HiSolidHandThumbDown" />
-						<Counter
-							value={modals.submission.submission.submission.dislikes}
-							initialValue={0}
-							durationMs={250}
+						<SVGSymbol
+							id={
+								modals.submission.submission.metadata.disliked_by_viewer ||
+								processing() === "dislike"
+									? "HiSolidHandThumbDown"
+									: "HiOutlineHandThumbDown"
+							}
 						/>
+						<span>{t("modals.submission.actions.dislike")}</span>
+						<div>
+							{"("}
+							<Counter
+								value={modals.submission.submission.submission.dislikes}
+								initialValue={0}
+								durationMs={250}
+							/>
+							{")"}
+						</div>
+					</li>
+
+					<li
+						class="clickable"
+						classList={{
+							fill:
+								modals.submission.submission.metadata.liked_by_viewer ||
+								processing() === "like",
+							empty: !modals.submission.submission.metadata.liked_by_viewer,
+						}}
+						onClick={() => onClickAction("like")}
+					>
+						<SVGSymbol
+							id={
+								modals.submission.submission.metadata.liked_by_viewer ||
+								processing() === "like"
+									? "HiSolidHandThumbUp"
+									: "HiOutlineHandThumbUp"
+							}
+						/>
+						<span>{t("modals.submission.actions.like")}</span>
+						<div>
+							{"("}
+							<Counter
+								value={modals.submission.submission.submission.likes}
+								initialValue={0}
+								durationMs={250}
+							/>
+							{")"}
+						</div>
 					</li>
 				</ul>
-
-				<CustomMainButton
-					onClick={onClickButton}
-					text={t("modals.submission.button")}
-				/>
 			</div>
 		</Modal>
 	);

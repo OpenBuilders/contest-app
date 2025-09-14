@@ -89,6 +89,10 @@
 
    &.clickable {
       touch-action: auto;
+
+      svg {
+         touch-action: auto;
+      }
    }
 
    > div.prepend {

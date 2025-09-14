@@ -528,6 +528,10 @@
 
       &.clickable {
          touch-action: auto;
+
+         svg {
+            touch-action: auto;
+         }
       }
 
       &:has(.prepend)::after {

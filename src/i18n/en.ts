@@ -272,6 +272,7 @@ const dict = {
 					},
 					prize: {
 						label: "Prize",
+						hint: "Each participant in this placement will receive this prize.",
 					},
 					buttons: {
 						add: "Add a Placement",
@@ -401,7 +402,20 @@ const dict = {
 				title: "Description",
 				empty: "No description provided",
 			},
-			button: "View Submission",
+			actions: {
+				like: "Like",
+				dislike: "Dislike",
+			},
+			submission: {
+				description: {
+					label: "Description",
+				},
+				link: {
+					label: "Shared Link",
+				},
+			},
+			date: "{date} at {time}",
+			button: "Open Link",
 		},
 	},
 };

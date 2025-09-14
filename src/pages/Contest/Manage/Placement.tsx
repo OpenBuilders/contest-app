@@ -252,6 +252,7 @@ const PageContestManagePlacement: Component = () => {
 									),
 								},
 							]}
+							description={t("pages.contest.manage.placement.prize.hint")}
 						/>
 
 						<Show when={isPlacement()}>

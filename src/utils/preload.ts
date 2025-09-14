@@ -1,8 +1,13 @@
 import { AiOutlineTrophy } from "solid-icons/ai";
-import { BsCheckCircleFill, BsCircle } from "solid-icons/bs";
+import { BsCheckCircleFill } from "solid-icons/bs";
 import { CgMenu, CgRemove } from "solid-icons/cg";
 import { FaSolidChevronRight } from "solid-icons/fa";
-import { HiSolidHandThumbDown, HiSolidHandThumbUp } from "solid-icons/hi";
+import {
+	HiOutlineHandThumbDown,
+	HiOutlineHandThumbUp,
+	HiSolidHandThumbDown,
+	HiSolidHandThumbUp,
+} from "solid-icons/hi";
 import { VsVerifiedFilled } from "solid-icons/vs";
 import type { Component } from "solid-js";
 import { CustomIconTON } from "../components/CustomIcons";
@@ -70,12 +75,16 @@ const predefineSVGSymbols = async () => {
 			component: HiSolidHandThumbUp,
 		},
 		{
-			id: "BsCheckCircleFill",
-			component: BsCheckCircleFill,
+			id: "HiOutlineHandThumbDown",
+			component: HiOutlineHandThumbDown,
 		},
 		{
-			id: "BsCircle",
-			component: BsCircle,
+			id: "HiOutlineHandThumbUp",
+			component: HiOutlineHandThumbUp,
+		},
+		{
+			id: "BsCheckCircleFill",
+			component: BsCheckCircleFill,
 		},
 		{
 			id: "CgMenu",
