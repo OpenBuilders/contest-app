@@ -74,13 +74,13 @@ const PageContestManagePlacement: Component = () => {
 		invokeHapticFeedbackImpact("rigid");
 
 		const popup = await popupManager.openPopup({
-			title: t("modals.placement.delete.title"),
-			message: t("modals.placement.delete.prompt"),
+			title: t("pages.contest.manage.placement.delete.button"),
+			message: t("pages.contest.manage.placement.delete.prompt"),
 			buttons: [
 				{
 					id: "delete",
 					type: "destructive",
-					text: t("modals.placement.delete.button"),
+					text: t("pages.contest.manage.placement.delete.button"),
 				},
 				{
 					id: "cancel",

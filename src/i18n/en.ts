@@ -260,6 +260,8 @@ const dict = {
 					title: "A winner placement",
 					delete: {
 						button: "Delete Placement",
+						prompt:
+							"Are you sure you want to delete this placement from the results?",
 					},
 					participants: {
 						title: "Participants",
@@ -400,38 +402,6 @@ const dict = {
 				empty: "No description provided",
 			},
 			button: "View Submission",
-		},
-		placement: {
-			title: "Placement",
-			name: {
-				label: "Name",
-				placeholder: "1st Tier",
-			},
-			prize: {
-				label: "Prize",
-			},
-			submissions: {
-				title: "Included Submissions",
-				hint: "Choose submissions that will appear in this placement.",
-				add: "Add Submission",
-			},
-			button: {
-				create: "Create Placement",
-				update: "Update Placement",
-				delete: "Delete Placement",
-			},
-			remove: {
-				title: "Remove Submission",
-				prompt:
-					"Are you sure you want to remove this submission from the placement?",
-				button: "Remove",
-			},
-			delete: {
-				title: "Delete Placement",
-				prompt:
-					"Are you sure you want to delete this placement from the results?",
-				button: "Remove",
-			},
 		},
 	},
 };
