@@ -43,7 +43,7 @@ import {
 	type Result,
 	store,
 } from "../utils/store";
-import { truncateMiddle } from "../utils/string";
+import { stripURLProtocol, truncateMiddle } from "../utils/string";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
 	invokeHapticFeedbackImpact,
@@ -760,7 +760,9 @@ const PageContest: Component = () => {
 															<span>{fullname}</span>
 															<span>
 																{truncateMiddle(
-																	item.submission.submission.link,
+																	stripURLProtocol(
+																		item.submission.submission.link,
+																	),
 																)}
 															</span>
 														</>
@@ -794,13 +796,7 @@ const PageContest: Component = () => {
 																	empty: !item.metadata.liked_by_viewer,
 																}}
 															>
-																<SVGSymbol
-																	id={
-																		item.metadata.liked_by_viewer
-																			? "AiFillLike"
-																			: "AiOutlineLike"
-																	}
-																/>
+																<SVGSymbol id="HiSolidHandThumbUp" />
 																<span>{item.submission.likes}</span>
 															</li>
 
@@ -810,13 +806,7 @@ const PageContest: Component = () => {
 																	empty: !item.metadata.disliked_by_viewer,
 																}}
 															>
-																<SVGSymbol
-																	id={
-																		item.metadata.disliked_by_viewer
-																			? "AiFillDislike"
-																			: "AiOutlineDislike"
-																	}
-																/>
+																<SVGSymbol id="HiSolidHandThumbDown" />
 																<span>{item.submission.dislikes}</span>
 															</li>
 														</ul>

@@ -257,14 +257,7 @@ const ModalSubmission: Component = () => {
 						}}
 						onClick={() => onClickAction("like")}
 					>
-						<SVGSymbol
-							id={
-								modals.submission.submission.metadata.liked_by_viewer ||
-								processing() === "like"
-									? "AiFillLike"
-									: "AiOutlineLike"
-							}
-						/>
+						<SVGSymbol id="HiSolidHandThumbUp" />
 						<Counter
 							value={modals.submission.submission.submission.likes}
 							initialValue={0}
@@ -282,14 +275,7 @@ const ModalSubmission: Component = () => {
 						}}
 						onClick={() => onClickAction("dislike")}
 					>
-						<SVGSymbol
-							id={
-								modals.submission.submission.metadata.disliked_by_viewer ||
-								processing() === "dislike"
-									? "AiFillDislike"
-									: "AiOutlineDislike"
-							}
-						/>
+						<SVGSymbol id="HiSolidHandThumbDown" />
 						<Counter
 							value={modals.submission.submission.submission.dislikes}
 							initialValue={0}

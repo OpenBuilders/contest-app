@@ -10,3 +10,7 @@ export const truncateMiddle = (
 	const end = text.slice(-endLen);
 	return `${start}...${end}`;
 };
+
+export const stripURLProtocol = (url: string) => {
+	return url.replace(/http(s?):\/\//i, "");
+};

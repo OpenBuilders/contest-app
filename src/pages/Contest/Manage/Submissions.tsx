@@ -282,13 +282,7 @@ const PageContestManageSubmissions: Component = () => {
 												empty: !submission.metadata.liked_by_viewer,
 											}}
 										>
-											<SVGSymbol
-												id={
-													submission.metadata.liked_by_viewer
-														? "AiFillLike"
-														: "AiOutlineLike"
-												}
-											/>
+											<SVGSymbol id="HiSolidHandThumbUp" />
 											<span>{submission.submission.likes}</span>
 										</li>
 
@@ -298,13 +292,7 @@ const PageContestManageSubmissions: Component = () => {
 												empty: !submission.metadata.disliked_by_viewer,
 											}}
 										>
-											<SVGSymbol
-												id={
-													submission.metadata.disliked_by_viewer
-														? "AiFillDislike"
-														: "AiOutlineDislike"
-												}
-											/>
+											<SVGSymbol id="HiSolidHandThumbDown" />
 											<span>{submission.submission.dislikes}</span>
 										</li>
 									</ul>

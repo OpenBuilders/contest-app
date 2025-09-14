@@ -13,7 +13,7 @@ import {
 	Show,
 	Switch,
 } from "solid-js";
-import { createStore, produce, reconcile } from "solid-js/store";
+import { createStore, reconcile } from "solid-js/store";
 import { Avatar, AvatarStack } from "../../../components/Avatar";
 import BackButton from "../../../components/BackButton";
 import CustomMainButton from "../../../components/CustomMainButton";
@@ -22,7 +22,6 @@ import { SVGSymbol } from "../../../components/SVG";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { requestAPI } from "../../../utils/api";
 import { initializeSortable } from "../../../utils/lazy";
-import { setModals } from "../../../utils/modal";
 import { navigator } from "../../../utils/navigator";
 import { formatNumbersInString } from "../../../utils/number";
 import { popupManager } from "../../../utils/popup";
@@ -38,15 +37,17 @@ import {
 	invokeHapticFeedbackSelectionChanged,
 } from "../../../utils/telegram";
 
+export const [placements, setPlacements] = createStore<{
+	placements?: Placement[];
+	submissions?: AnnotatedSubmission[];
+	announced?: boolean;
+}>();
+
 const PageContestManageResults: Component = () => {
 	const params = useParams();
 	const { t, td } = useTranslation();
 
-	const [data, setData] = createStore<{
-		placements?: Placement[];
-		submissions?: AnnotatedSubmission[];
-		announced?: boolean;
-	}>({
+	setPlacements({
 		placements: undefined,
 		submissions: undefined,
 		announced: undefined,
@@ -76,25 +77,6 @@ const PageContestManageResults: Component = () => {
 	const [processing, setProcessing] = createSignal(false);
 
 	const onBackButton = () => {
-		setModals(
-			"placement",
-			produce((store) => {
-				store.placement = undefined;
-				store.slug = undefined;
-				store.submissions = undefined;
-				store.open = false;
-			}),
-		);
-
-		setModals(
-			"submissionsPicker",
-			produce((store) => {
-				store.picked = undefined;
-				store.submissions = undefined;
-				store.open = false;
-			}),
-		);
-
 		navigator.go(`/contest/${params.slug}/submissions`, {
 			params: {
 				theme: {
@@ -110,7 +92,7 @@ const PageContestManageResults: Component = () => {
 			setDependencies("sortable", true);
 		});
 
-		if (!data.placements) {
+		if (!placements.placements) {
 			await fetchData();
 		}
 	});
@@ -128,7 +110,7 @@ const PageContestManageResults: Component = () => {
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
 
-				setData({
+				setPlacements({
 					placements: result.placements,
 					submissions: result.submissions,
 					announced: result.announced,
@@ -138,21 +120,13 @@ const PageContestManageResults: Component = () => {
 	};
 
 	const onClickButtonAdd = () => {
-		if (!(data.placements && data.submissions)) return;
+		if (!(placements.placements && placements.submissions)) return;
 
-		setModals(
-			"placement",
-			produce((store) => {
-				store.slug = params.slug;
-				store.placement = undefined;
-				store.submissions = data.submissions;
-				store.open = true;
-			}),
-		);
+		navigator.go(`/contest/${params.slug}/manage/results/new`);
 	};
 
 	const buttonDisabled = createMemo(() => {
-		return (data.placements?.length ?? -1) === 0;
+		return (placements.placements?.length ?? -1) === 0;
 	});
 
 	const onClickButtonAnnounce = async () => {
@@ -160,13 +134,13 @@ const PageContestManageResults: Component = () => {
 		invokeHapticFeedbackImpact("soft");
 
 		const popup = await popupManager.openPopup({
-			title: t("modals.placement.announce.button"),
-			message: t("modals.placement.announce.prompt"),
+			title: t("pages.contest.manage.results.announce.title"),
+			message: t("pages.contest.manage.results.announce.prompt"),
 			buttons: [
 				{
 					id: "announce",
 					type: "destructive",
-					text: t("modals.placement.announce.button"),
+					text: t("pages.contest.manage.results.announce.button"),
 				},
 				{
 					id: "cancel",
@@ -210,7 +184,7 @@ const PageContestManageResults: Component = () => {
 				class="shimmer-section-bg"
 			>
 				<div>
-					<For each={Array.from(new Array(8))}>
+					<For each={Array.from(new Array(6))}>
 						{() => (
 							<div>
 								<div>
@@ -240,15 +214,7 @@ const PageContestManageResults: Component = () => {
 
 	const SectionResults = () => {
 		const onClickPlacement = (placement: Placement) => {
-			setModals(
-				"placement",
-				produce((store) => {
-					store.slug = params.slug;
-					store.placement = placement;
-					store.submissions = data.submissions;
-					store.open = true;
-				}),
-			);
+			navigator.go(`/contest/${params.slug}/manage/results/${placement.id}`);
 		};
 
 		const onClickHandle = (e: MouseEvent) => e.stopPropagation();
@@ -259,7 +225,9 @@ const PageContestManageResults: Component = () => {
 			);
 			if (!id) return;
 			const placement_id = Number.parseInt(id);
-			const placement = data.placements?.find((i) => i.id === placement_id);
+			const placement = placements.placements?.find(
+				(i) => i.id === placement_id,
+			);
 			if (!placement) return;
 			onClickPlacement(placement);
 		};
@@ -296,7 +264,7 @@ const PageContestManageResults: Component = () => {
 
 					<AvatarStack
 						avatars={props.placement.submissions.map((submission_id) => {
-							const submission = data.submissions?.find(
+							const submission = placements.submissions?.find(
 								(i) => i.submission.id === submission_id,
 							);
 
@@ -322,8 +290,8 @@ const PageContestManageResults: Component = () => {
 			return (
 				<Sortable
 					idField="id"
-					items={data.placements ?? []}
-					setItems={(data: Placement[]) => setData("placements", data)}
+					items={placements.placements ?? []}
+					setItems={(data: Placement[]) => setPlacements("placements", data)}
 					handle=".handle"
 					onChoose={() => {
 						invokeHapticFeedbackImpact("soft");
@@ -357,7 +325,7 @@ const PageContestManageResults: Component = () => {
 					const request = await requestAPI(
 						`/contest/${params.slug}/results/order`,
 						{
-							placements: JSON.stringify(data.placements),
+							placements: JSON.stringify(placements.placements),
 						},
 						"POST",
 					);
@@ -366,7 +334,7 @@ const PageContestManageResults: Component = () => {
 						const { status, result } = request;
 
 						if (status === "success") {
-							setData(
+							setPlacements(
 								reconcile({
 									placements: result.placements,
 									submissions: result.submissions,
@@ -385,7 +353,7 @@ const PageContestManageResults: Component = () => {
 		return (
 			<div id="container-contest-manage-results" class="shimmer-section-bg">
 				<Show
-					when={(data.placements?.length ?? 0) > 0}
+					when={(placements.placements?.length ?? 0) > 0}
 					fallback={<SectionEmpty />}
 				>
 					<SectionItems />
@@ -413,7 +381,7 @@ const PageContestManageResults: Component = () => {
 					</header>
 
 					<Switch>
-						<Match when={!data.placements}>
+						<Match when={!placements.placements || false}>
 							<SectionResultsLoading />
 						</Match>
 
@@ -424,7 +392,8 @@ const PageContestManageResults: Component = () => {
 
 					<Show
 						when={
-							(data.placements?.length ?? 0) > 0 && data.announced === false
+							(placements.placements?.length ?? 0) > 0 &&
+							placements.announced === false
 						}
 					>
 						<footer>

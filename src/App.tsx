@@ -19,6 +19,7 @@ import {
 } from "./contexts/TranslationContext.ts";
 import { dict as en_dict } from "./i18n/en.ts";
 import { fetchDictionary, type Locale, localeDirections } from "./locale";
+import PageContestManagePlacement from "./pages/Contest/Manage/Placement.tsx";
 import PageContestManageResults from "./pages/Contest/Manage/Results.tsx";
 import PageContestManageSettings from "./pages/Contest/Manage/Settings.tsx";
 import PageContest from "./pages/Contest.tsx";
@@ -161,6 +162,10 @@ const App = () => {
 						<Route
 							path="/contest/:slug/manage/results"
 							component={PageContestManageResults}
+						/>
+						<Route
+							path="/contest/:slug/manage/results/:id"
+							component={PageContestManagePlacement}
 						/>
 					</Router>
 				</ErrorBoundary>

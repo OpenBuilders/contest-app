@@ -191,13 +191,20 @@
                   gap: 1rem;
                   overflow: hidden;
                   flex-grow: 1;
-               }
 
-               > span {
-                  width: 100%;
-                  height: 3.125rem;
-                  flex-shrink: 0;
-                  border-radius: 0.6875rem;
+                  > div {
+                     display: flex;
+                     flex-direction: column;
+                     gap: 0.625rem;
+
+                     > span {
+                        display: block;
+                        width: 4rem;
+                        height: 0.875rem;
+                        flex-shrink: 0;
+                        border-radius: 0.25rem;
+                     }
+                  }
                }
             }
 
@@ -517,7 +524,7 @@
 .container-submission-entries-shimmer {
    > div {
       padding-inline-end: 1rem;
-      height: 3rem;
+      height: 3.5rem;
 
       &.clickable {
          touch-action: auto;
@@ -532,7 +539,7 @@
 
          > div.avatar,
          > div.avatar-alias {
-            font-size: 2rem;
+            font-size: 2.5rem;
          }
       }
 
@@ -553,19 +560,19 @@
             > li {
                display: flex;
                align-items: center;
-               gap: 0.125rem;
-               color: rgba(var(--text-color-rgb), 0.5);
+               gap: 0.25rem;
+               color: rgba(var(--text-color-rgb), 0.375);
 
                &.fill {
                   color: var(--accent);
                }
 
                > svg {
-                  font-size: 1rem;
+                  font-size: 1.25rem;
                }
 
                > span {
-                  font-size: 0.75rem;
+                  font-size: 0.875rem;
                   font-weight: 500;
                }
             }
@@ -577,6 +584,7 @@
          overflow: hidden;
          text-overflow: ellipsis;
          flex-direction: column;
+         gap: 0.125rem;
 
          > span {
             white-space: nowrap;
@@ -585,12 +593,12 @@
 
             &:nth-child(1) {
                font-weight: 500;
-               font-size: 0.875rem;
+               font-size: 0.9375rem;
                color: rgba(var(--text-color-rgb), 1);
             }
 
             &:nth-child(2) {
-               font-size: 0.6875rem;
+               font-size: 0.75rem;
                font-weight: 400;
                color: rgba(var(--text-color-rgb), 0.5);
             }
@@ -602,14 +610,14 @@
 .container-submission-entries-shimmer {
    > div {
       padding-inline-end: 1rem;
-      height: 3rem;
+      height: 3.5rem;
 
       > div.prepend {
          flex-shrink: 0;
 
          > div {
-            height: 2rem;
-            width: 2rem;
+            height: 2.5rem;
+            width: 2.5rem;
             border-radius: 50%;
          }
       }
