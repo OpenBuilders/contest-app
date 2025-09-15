@@ -14,7 +14,7 @@ import { navigator } from "../utils/navigator";
 import { lp } from "../utils/telegram";
 import ImageLoader from "./ImageLoader";
 
-export const bottomBarValidPaths = ["/", "/contests", "/profile"];
+export const bottomBarValidPaths = ["/contests", "/profile"];
 
 const BottomBar: Component = () => {
 	const { t } = useTranslation();

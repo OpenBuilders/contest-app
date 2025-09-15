@@ -1,23 +1,20 @@
-import { A } from "@solidjs/router";
 import { type AnnotatedContest, setStore, store } from "../utils/store";
 import "./Home.scss";
 
 import dayjs from "dayjs";
-import { FaSolidPlus } from "solid-icons/fa";
 import {
 	type Component,
 	createEffect,
 	createMemo,
 	createSignal,
 	For,
-	Match,
 	on,
 	onMount,
 	Show,
-	Switch,
 } from "solid-js";
-import ButtonArray from "../components/ButtonArray";
+import { Dynamic } from "solid-js/web";
 import ContestThumbnail from "../components/ContestThumbnail";
+import CustomMainButton from "../components/CustomMainButton";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import { SVGSymbol } from "../components/SVG";
 import Tabbar from "../components/Tabbar";
@@ -34,32 +31,6 @@ import {
 	type ContestThemeSymbol,
 } from "../utils/themes";
 
-export const SectionContestsEmpty: Component<{
-	title: string;
-	iconIndex: keyof typeof TGS;
-	buttonText?: string;
-	onClickButton?: () => void;
-}> = (props) => {
-	return (
-		<div class="container-home-contests-empty">
-			<LottiePlayerMotion
-				src={TGS[props.iconIndex].url}
-				outline={TGS[props.iconIndex].outline}
-				autoplay
-				playOnClick
-			/>
-
-			<span class="text-secondary">{props.title}</span>
-
-			<Show when={props.buttonText}>
-				<button type="button" onClick={props.onClickButton}>
-					{props.buttonText}
-				</button>
-			</Show>
-		</div>
-	);
-};
-
 const PageHome: Component = () => {
 	if (!store.token) {
 		navigator.go("/splash", {
@@ -70,7 +41,7 @@ const PageHome: Component = () => {
 		return;
 	}
 
-	const { t } = useTranslation();
+	const { t, td } = useTranslation();
 
 	const fetchContests = async () => {
 		const request = await requestAPI("/contests/my", {}, "GET");
@@ -78,7 +49,10 @@ const PageHome: Component = () => {
 		if (request) {
 			const { result } = request;
 
-			setStore("contests", "my", result.contests);
+			setStore("contests", {
+				my: result.contests,
+				gallery: result.gallery,
+			});
 		}
 	};
 
@@ -89,7 +63,7 @@ const PageHome: Component = () => {
 	};
 
 	onMount(async () => {
-		if (!store.contests?.my) {
+		if (!(store.contests.my && store.contests.gallery)) {
 			await fetchContests();
 		}
 	});
@@ -97,31 +71,34 @@ const PageHome: Component = () => {
 	const SectionContestsLoading = () => {
 		return (
 			<div id="container-home-contests-loading">
-				<ul>
+				<span class="shimmer"></span>
+
+				<div>
 					<For each={Array.from(new Array(3))}>
-						{() => <li class="shimmer"></li>}
-					</For>
-				</ul>
-
-				<section>
-					<For each={Array.from(new Array(20))}>
 						{() => (
-							<div>
-								<div class="shimmer"></div>
+							<section>
+								<span class="shimmer"></span>
 
-								<div>
-									<span class="shimmer"></span>
-									<span class="shimmer"></span>
-								</div>
+								<div class="shimmer-section-bg">
+									<For each={Array.from(new Array(2))}>
+										{() => (
+											<div>
+												<div class="shimmer"></div>
 
-								<div>
-									<span class="shimmer"></span>
-									<span class="shimmer"></span>
+												<div>
+													<span class="shimmer"></span>
+													<span class="shimmer"></span>
+													<span class="shimmer"></span>
+													<span class="shimmer"></span>
+												</div>
+											</div>
+										)}
+									</For>
 								</div>
-							</div>
+							</section>
 						)}
 					</For>
-				</section>
+				</div>
 			</div>
 		);
 	};
@@ -135,28 +112,53 @@ const PageHome: Component = () => {
 			}),
 		);
 
-		const contestsJoined = createMemo(() =>
-			store.contests.my!.filter(
-				(contest) => contest.metadata.role === "participant",
-			),
-		);
+		const contestsAll = createMemo(() => {
+			return store.contests.gallery!.find(
+				(i) => i.type === "section" && i.id === "public",
+			)!.items as AnnotatedContest[];
+		});
 
-		const contestsCreated = createMemo(() =>
-			store.contests.my!.filter((contest) => contest.metadata.role === "owner"),
-		);
+		const now = Date.now() / 1000;
 
-		const contestsBookmarked = createMemo(() =>
-			store.contests.my!.filter((contest) => contest.metadata.bookmarked),
-		);
+		const contestsAllOpen = createMemo(() => {
+			return contestsAll().filter(
+				(i) => i.contest.date_end > now && !i.contest.announced,
+			);
+		});
 
-		const ListContests: Component<{ contests: AnnotatedContest[] }> = (
+		const contestsAllFinished = createMemo(() => {
+			return contestsAll().filter(
+				(i) => i.contest.date_end <= now || i.contest.announced,
+			);
+		});
+
+		const contestsYours = createMemo(() => {
+			return store.contests.my!.filter(
+				(contest) => contest.metadata.role === "owner",
+			);
+		});
+
+		const contestsSaved = createMemo(() => {
+			return store.contests.my!.filter(
+				(contest) => contest.metadata.bookmarked,
+			);
+		});
+
+		const SectionContest: Component<{ contest: AnnotatedContest }> = (
 			props,
 		) => {
-			const onClickContest = (e: MouseEvent) => {
-				e.preventDefault();
-				const href = (e.currentTarget as HTMLElement).getAttribute("data-href");
-				if (!href) return;
-				navigator.go(href, {
+			const { backdrop, symbol } = {
+				backdrop: props.contest.contest.theme?.backdrop,
+				symbol: {
+					id: props.contest.contest.theme?.symbol,
+					component: props.contest.contest.theme?.symbol
+						? getSymbolSVGString(props.contest.contest.theme?.symbol)
+						: "",
+				},
+			};
+
+			const onClickContest = () => {
+				navigator.go(`/contest/${props.contest.contest.slug}`, {
 					backable: true,
 					params: {
 						theme: {
@@ -167,91 +169,99 @@ const PageHome: Component = () => {
 			};
 
 			return (
-				<div class="container-list-contests">
-					<For each={props.contests}>
-						{(contest) => {
-							const { backdrop, symbol } = {
-								backdrop: contest.contest.theme?.backdrop,
-								symbol: {
-									id: contest.contest.theme?.symbol,
-									component: contest.contest.theme?.symbol
-										? getSymbolSVGString(contest.contest.theme?.symbol)
-										: "",
-								},
-							};
+				<div
+					class="container-home-contests-item clickable"
+					onClick={onClickContest}
+				>
+					<ContestThumbnail
+						image={props.contest.contest.image}
+						backdrop={ContestThemeBackdrops.find((i) => i.id === backdrop)!}
+						symbol={symbol as ContestThemeSymbol}
+						symbolSize={64}
+					/>
 
-							return (
-								<A
-									data-href={`/contest/${contest.contest.slug}`}
-									href={`/contest/${contest.contest.slug}`}
-									onClick={onClickContest}
-								>
-									<ContestThumbnail
-										image={contest.contest.image}
-										backdrop={
-											ContestThemeBackdrops.find((i) => i.id === backdrop)!
-										}
-										symbol={symbol as ContestThemeSymbol}
-									/>
+					<div>
+						<span>
+							{props.contest.contest.title}
+							<Show when={props.contest.contest.verified}>
+								<SVGSymbol id="VsVerifiedFilled" />
+							</Show>
+						</span>
 
-									<div>
-										<h2>
-											{contest.contest.title}
-											<Show when={contest.contest.verified}>
-												<SVGSymbol id="VsVerifiedFilled" />
-											</Show>
-										</h2>
+						<span>
+							{td("pages.home.contests.items.reward", {
+								reward: formatNumbersInString(
+									props.contest.contest.prize ??
+										t("pages.contest.header.prize.unknown"),
+								),
+							})}
+						</span>
 
-										<span>
-											{formatNumbersInString(contest.contest.prize ?? "")}
-										</span>
-									</div>
+						<span>
+							{td("pages.home.contests.items.participants", {
+								count: props.contest.metadata.submissions_count ?? 0,
+							})}
+						</span>
 
-									<div>
-										<span>
-											{dayjs.unix(contest.contest.date_end).format("MMM D")}
-										</span>
+						<span>
+							<Show
+								when={props.contest.contest.date_end >= Date.now() / 1000}
+								fallback={<SVGSymbol id="FinishFlags" class="finish" />}
+							>
+								<SVGSymbol id="WiTime9" class="open" />
+							</Show>
 
-										<Show
-											when={contest.metadata.role}
-											fallback={
-												<Switch fallback={<span class="empty">|</span>}>
-													<Match when={contest.contest.announced}>
-														<span class="ended">
-															{t("pages.home.contests.badges.ended")}
-														</span>
-													</Match>
+							<span>
+								{dayjs(props.contest.contest.date_end * 1000).format("MMM D")}
+							</span>
+						</span>
+					</div>
+				</div>
+			);
+		};
 
-													<Match
-														when={
-															Date.now() / 1000 < contest.contest?.date_end!
-														}
-													>
-														<span class="open">
-															{t("pages.home.contests.badges.open")}
-														</span>
-													</Match>
+		const SectionContests: Component<{
+			contests: AnnotatedContest[];
+			title?: string;
+		}> = (props) => {
+			return (
+				<div class="container-home-contests-section">
+					<Show when={props.title}>
+						<span>{props.title}</span>
+					</Show>
 
-													<Match
-														when={
-															Date.now() / 1000 >= contest.contest?.date_end!
-														}
-													>
-														<span class="closed">
-															{t("pages.home.contests.badges.closed")}
-														</span>
-													</Match>
-												</Switch>
-											}
-										>
-											<span class={contest.metadata.role}>
-												{t(`general.roles.${contest.metadata.role}` as any)}
-											</span>
-										</Show>
-									</div>
-								</A>
-							);
-						}}
+					<Show when={props.contests.length > 0}>
+						<section>
+							<For each={props.contests}>
+								{(contest) => <SectionContest contest={contest} />}
+							</For>
+						</section>
+					</Show>
+				</div>
+			);
+		};
+
+		const SectionContestsEmpty = () => {
+			return (
+				<div class="container-home-contests-empty">
+					<LottiePlayerMotion
+						src={TGS.duckEgg.url}
+						autoplay
+						playOnClick
+						outline={TGS.duckEgg.outline}
+					/>
+
+					<span>{t("pages.home.contests.empty.all.title")}</span>
+					<p>{t("pages.home.contests.empty.all.subtitle")}</p>
+				</div>
+			);
+		};
+
+		const SectionHolder: Component<{ sections: Component[] }> = (props) => {
+			return (
+				<div class="container-home-contests-holder">
+					<For each={props.sections}>
+						{(component) => <Dynamic component={component} />}
 					</For>
 				</div>
 			);
@@ -260,78 +270,83 @@ const PageHome: Component = () => {
 		return (
 			<div id="container-home-contests">
 				<Tabbar
+					mode="segmented"
+					gap={16}
 					items={[
 						{
 							slug: "all",
 							title: t("pages.home.contests.tabs.all.title"),
 							component: () => (
 								<Show
-									when={store.contests.my!.length > 0}
-									fallback={
-										<SectionContestsEmpty
-											title={t("pages.home.contests.empty.all.title")}
-											iconIndex="duckEgg"
-										/>
-									}
+									fallback={<SectionContestsEmpty />}
+									when={contestsAll().length > 0}
 								>
-									<ListContests contests={store.contests.my!} />
+									<SectionHolder
+										sections={[
+											() => (
+												<Show when={contestsAllOpen().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.open")}
+														contests={contestsAllOpen()}
+													/>
+												</Show>
+											),
+											() => (
+												<Show when={contestsAllFinished().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.finished")}
+														contests={contestsAllFinished()}
+													/>
+												</Show>
+											),
+										]}
+									/>
 								</Show>
 							),
 						},
 						{
-							slug: "joined",
-							title: t("pages.home.contests.tabs.joined.title"),
+							slug: "yours",
+							title: t("pages.home.contests.tabs.yours.title"),
 							component: () => (
 								<Show
-									when={contestsJoined().length > 0}
-									fallback={
-										<SectionContestsEmpty
-											title={t("pages.home.contests.empty.joined.title")}
-											iconIndex="duckCry"
-											buttonText={t("pages.home.contests.empty.joined.button")}
-											onClickButton={() => {
-												navigator.go("/contests");
-											}}
-										/>
-									}
+									fallback={<SectionContestsEmpty />}
+									when={contestsYours().length > 0}
 								>
-									<ListContests contests={contestsJoined()} />
+									<SectionHolder
+										sections={[
+											() => (
+												<Show when={contestsYours().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.yours")}
+														contests={contestsYours()}
+													/>
+												</Show>
+											),
+										]}
+									/>
 								</Show>
 							),
 						},
 						{
-							slug: "created",
-							title: t("pages.home.contests.tabs.created.title"),
+							slug: "saved",
+							title: t("pages.home.contests.tabs.saved.title"),
 							component: () => (
 								<Show
-									when={contestsCreated().length > 0}
-									fallback={
-										<SectionContestsEmpty
-											title={t("pages.home.contests.empty.created.title")}
-											iconIndex="duckCraft"
-											buttonText={t("pages.home.contests.empty.created.button")}
-											onClickButton={onClickButtonCreate}
-										/>
-									}
+									fallback={<SectionContestsEmpty />}
+									when={contestsSaved().length > 0}
 								>
-									<ListContests contests={contestsCreated()} />
-								</Show>
-							),
-						},
-						{
-							slug: "bookmarked",
-							title: t("pages.home.contests.tabs.bookmark.title"),
-							component: () => (
-								<Show
-									when={contestsBookmarked().length > 0}
-									fallback={
-										<SectionContestsEmpty
-											title={t("pages.home.contests.empty.bookmark.title")}
-											iconIndex="duckEgg"
-										/>
-									}
-								>
-									<ListContests contests={contestsBookmarked()} />
+									<SectionHolder
+										sections={[
+											() => (
+												<Show when={contestsSaved().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.saved")}
+														contests={contestsSaved()}
+													/>
+												</Show>
+											),
+										]}
+									/>
 								</Show>
 							),
 						},
@@ -347,7 +362,10 @@ const PageHome: Component = () => {
 		on(
 			() => signals.fetchMyContests,
 			async () => {
-				setStore("contests", "my", undefined);
+				setStore("contests", {
+					gallery: undefined,
+					my: undefined,
+				});
 				await fetchContests();
 			},
 			{
@@ -359,24 +377,19 @@ const PageHome: Component = () => {
 	return (
 		<div id="container-page-home" class="page">
 			<div>
-				<header>
-					<h1>{t("pages.home.contests.title")}</h1>
-
-					<ButtonArray
-						items={[
-							{
-								component: FaSolidPlus,
-								fontSize: "1.1875rem",
-								class: "clickable",
-								onClick: onClickButtonCreate,
-							},
-						]}
-					/>
-				</header>
-
-				<Show when={store.contests?.my} fallback={<SectionContestsLoading />}>
+				<Show
+					when={store.contests.my && store.contests.gallery && true}
+					fallback={<SectionContestsLoading />}
+				>
 					<SectionContests />
 				</Show>
+
+				<footer>
+					<CustomMainButton
+						text={t("pages.home.contests.create.button")}
+						onClick={onClickButtonCreate}
+					/>
+				</footer>
 			</div>
 		</div>
 	);

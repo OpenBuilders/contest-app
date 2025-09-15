@@ -1,6 +1,7 @@
 import { useParams } from "@solidjs/router";
 import "./Settings.scss";
 import { FaSolidLink, FaSolidPlus } from "solid-icons/fa";
+import { RiSystemDeleteBin7Line } from "solid-icons/ri";
 import {
 	type Component,
 	createEffect,
@@ -16,8 +17,7 @@ import { useTranslation } from "../../../contexts/TranslationContext";
 import { requestAPI } from "../../../utils/api";
 import { navigator } from "../../../utils/navigator";
 import { popupManager } from "../../../utils/popup";
-import { toggleSignal } from "../../../utils/signals";
-import { store } from "../../../utils/store";
+import { setStore, store } from "../../../utils/store";
 import {
 	invokeHapticFeedbackImpact,
 	isVersionAtLeast,
@@ -28,7 +28,6 @@ import {
 	type SectionContestManageModeratorsData,
 } from "./Moderators";
 import { SectionContestManageOptions } from "./Options";
-import { RiSystemDeleteBin7Line } from "solid-icons/ri";
 
 const PageContestManageSettings: Component = () => {
 	const params = useParams();
@@ -204,8 +203,9 @@ const PageContestManageSettings: Component = () => {
 
 				invokeHapticFeedbackImpact("heavy");
 
-				setTimeout(() => {
-					toggleSignal("fetchMyContests");
+				setStore("contests", {
+					gallery: undefined,
+					my: undefined,
 				});
 
 				navigator.go("/");

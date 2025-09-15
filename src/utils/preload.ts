@@ -9,8 +9,12 @@ import {
 	HiSolidHandThumbUp,
 } from "solid-icons/hi";
 import { VsVerifiedFilled } from "solid-icons/vs";
+import { WiTime9 } from "solid-icons/wi";
 import type { Component } from "solid-js";
-import { CustomIconTON } from "../components/CustomIcons";
+import {
+	CustomIconFinishFlags,
+	CustomIconTON,
+} from "../components/CustomIcons";
 import { LottiePlayerFileCache } from "../components/LottiePlayer";
 import { symbolizeSVGComponent } from "../components/SVG";
 import { TGS } from "./animations";
@@ -93,6 +97,14 @@ const predefineSVGSymbols = async () => {
 		{
 			id: "TON",
 			component: CustomIconTON,
+		},
+		{
+			id: "FinishFlags",
+			component: CustomIconFinishFlags,
+		},
+		{
+			id: "WiTime9",
+			component: WiTime9,
 		},
 	];
 

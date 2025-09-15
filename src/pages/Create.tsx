@@ -3,7 +3,7 @@ import BackButton from "../components/BackButton";
 import MainButton from "../components/MainButton";
 import { useTranslation } from "../contexts/TranslationContext";
 import { navigator } from "../utils/navigator";
-import { store } from "../utils/store";
+import { setStore, store } from "../utils/store";
 import "./Create.scss";
 import { FaSolidCircleExclamation } from "solid-icons/fa";
 import { FiInfo } from "solid-icons/fi";
@@ -54,7 +54,6 @@ import {
 } from "../utils/lazy";
 import { setModals } from "../utils/modal";
 import { clamp, formatNumbersInString } from "../utils/number";
-import { toggleSignal } from "../utils/signals";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
 	invokeHapticFeedbackImpact,
@@ -292,7 +291,10 @@ const PageCreate: Component = () => {
 				batch(() => {
 					setForm("slug", result.slug);
 					setStep("done");
-					toggleSignal("fetchMyContests");
+					setStore("contests", {
+						gallery: undefined,
+						my: undefined,
+					});
 				});
 			} else {
 				invokeHapticFeedbackNotification("error");

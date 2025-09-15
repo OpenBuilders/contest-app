@@ -23,11 +23,11 @@ import PageContestManagePlacement from "./pages/Contest/Manage/Placement.tsx";
 import PageContestManageResults from "./pages/Contest/Manage/Results.tsx";
 import PageContestManageSettings from "./pages/Contest/Manage/Settings.tsx";
 import PageContest from "./pages/Contest.tsx";
-import PageContests from "./pages/Contests.tsx";
+// import PageContests from "./pages/Contests.tsx";
 import PageCreate from "./pages/Create.tsx";
 import PageError from "./pages/Error";
 import PageHome from "./pages/Home.tsx";
-import PageProfile from "./pages/Profile.tsx";
+// import PageProfile from "./pages/Profile.tsx";
 import PageSplash from "./pages/Splash.tsx";
 import { setIsRTL } from "./utils/i18n.ts";
 import { initializeSettings, settings } from "./utils/settings.ts";
@@ -148,8 +148,8 @@ const App = () => {
 						<Route path="/" component={PageHome} />
 						<Route path="/create" component={PageCreate} />
 						<Route path="/splash" component={PageSplash} />
-						<Route path="/profile" component={PageProfile} />
-						<Route path="/contests" component={PageContests} />
+						{/*<Route path="/profile" component={PageProfile} />*/}
+						{/*<Route path="/contests" component={PageContests} />*/}
 
 						<Route
 							path="/contest/:slug/:state?/:extra?"

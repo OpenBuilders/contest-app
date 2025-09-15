@@ -44,37 +44,35 @@ const dict = {
 		},
 		home: {
 			contests: {
-				title: "My Contests",
-				ended: "Ended",
+				create: {
+					button: "Create Contest",
+				},
 				empty: {
 					all: {
-						title: "You’re not part of any contests yet.",
-					},
-					joined: {
-						title: "You haven’t joined any contests yet.",
-						button: "Let's join one!",
-					},
-					created: {
-						title: "You haven’t created any contests yet.",
-						button: "Let's create one!",
-					},
-					bookmark: {
-						title: "You haven’t bookmarked any contests yet.",
+						title: "No Contests yet",
+						subtitle: "Create one or wait for it",
 					},
 				},
 				tabs: {
 					all: {
 						title: "All",
 					},
-					joined: {
-						title: "Joined",
+					yours: {
+						title: "Yours",
 					},
-					created: {
-						title: "Created",
+					saved: {
+						title: "Saved",
 					},
-					bookmark: {
-						title: "Bookmarks",
-					},
+				},
+				topics: {
+					open: "Open Contests",
+					finished: "Finished",
+					saved: "Saved",
+					yours: "Yours",
+				},
+				items: {
+					reward: "Reward: {reward}",
+					participants: "{count} participants",
 				},
 				badges: {
 					ended: "Ended",

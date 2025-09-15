@@ -120,14 +120,16 @@ export type GallerySliderItem = {
 
 export type GallerySlider = {
 	type: "slider";
+	id: string;
 	items_per_view?: number;
 	items: GallerySliderItem[];
 };
 
 export type GallerySection = {
 	type: "section";
+	id: string;
 	title: string;
-	items: Pick<Contest, "slug" | "title" | "image" | "theme">[];
+	items: AnnotatedContest[];
 };
 
 export type GalleryItem = GallerySlider | GallerySection;

@@ -41,6 +41,7 @@ import {
 	type AnnotatedContest,
 	type AnnotatedSubmission,
 	type Result,
+	setStore,
 	store,
 } from "../utils/store";
 import { stripURLProtocol, truncateMiddle } from "../utils/string";
@@ -262,6 +263,10 @@ const PageContest: Component = () => {
 					batch(() => {
 						setContest("metadata", "bookmarked", result.bookmarked);
 						setBookmarkProgress(false);
+						setStore("contests", {
+							gallery: undefined,
+							my: undefined,
+						});
 					});
 				} else {
 					setBookmarkProgress(false);
