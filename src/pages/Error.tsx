@@ -18,6 +18,8 @@ export const SectionError: Component<PageErrorProps> = ({
 	const { t } = useTranslation();
 
 	onMount(() => {
+		localStorage.clear();
+		sessionStorage.clear();
 		invokeHapticFeedbackNotification("error");
 	});
 
