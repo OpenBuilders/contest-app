@@ -1,3 +1,16 @@
 .modal-settings {
+   display: flex;
+   flex-direction: column;
    min-height: 50vh;
+
+   > div {
+      padding: 0 1rem;
+      flex-grow: 1;
+   }
+
+   > p {
+      text-align: center;
+      font-size: 0.875rem;
+      color: rgba(var(--text-color-rgb), 0.5);
+   }
 }

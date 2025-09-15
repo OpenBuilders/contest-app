@@ -415,6 +415,13 @@ const dict = {
 			date: "{date} at {time}",
 			button: "Open Link",
 		},
+		settings: {
+			title: "Settings",
+			language: "Language",
+			haptic: "Haptic Feedback",
+			click: "Click Me!",
+			footer: "$BUILD with <3 for Notcoin",
+		},
 	},
 };
 

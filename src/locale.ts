@@ -1,7 +1,11 @@
 import * as i18n from "@solid-primitives/i18n";
+import { dict_ar } from "./i18n/ar.ts";
+import { dict_de } from "./i18n/de.ts";
 import type * as en from "./i18n/en.ts";
-
-import { dict as en_dict } from "./i18n/en.ts";
+import { dict as dict_en } from "./i18n/en.ts";
+import { dict_fa } from "./i18n/fa.ts";
+import { dict_hi } from "./i18n/hi.ts";
+import { dict_ru } from "./i18n/ru.ts";
 
 const locales = ["en", "ru", "fa", "ar", "de", "hi"] as const;
 
@@ -27,23 +31,23 @@ function fetchDictionary(locale: Locale): Dictionary {
 	let dict: RawDictionary;
 
 	switch (locale) {
-		// case "fa":
-		// 	dict = fa_dict;
-		// 	break;
-		// case "ar":
-		// 	dict = ar_dict;
-		// 	break;
-		// case "de":
-		// 	dict = de_dict;
-		// 	break;
-		// case "ru":
-		// 	dict = ru_dict;
-		// 	break;
-		// case "hi":
-		// 	dict = hi_dict;
-		// 	break;
+		case "fa":
+			dict = dict_fa;
+			break;
+		case "ar":
+			dict = dict_ar;
+			break;
+		case "de":
+			dict = dict_de;
+			break;
+		case "ru":
+			dict = dict_ru;
+			break;
+		case "hi":
+			dict = dict_hi;
+			break;
 		default:
-			dict = en_dict;
+			dict = dict_en;
 			break;
 	}
 

@@ -205,7 +205,10 @@ const PageHome: Component = () => {
 
 						<span>
 							<Show
-								when={props.contest.contest.date_end >= Date.now() / 1000}
+								when={
+									props.contest.contest.date_end >= Date.now() / 1000 &&
+									!props.contest.contest.announced
+								}
 								fallback={<SVGSymbol id="FinishFlags" class="finish" />}
 							>
 								<SVGSymbol id="WiTime9" class="open" />
