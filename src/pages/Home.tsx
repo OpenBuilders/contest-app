@@ -134,7 +134,9 @@ const PageHome: Component = () => {
 
 		const contestsYours = createMemo(() => {
 			return store.contests.my!.filter(
-				(contest) => contest.metadata.role === "owner",
+				(contest) =>
+					contest.metadata.role === "owner" ||
+					contest.metadata.role === "participant",
 			);
 		});
 

@@ -207,7 +207,7 @@ const PageContest: Component = () => {
 				<header class="shimmer"></header>
 
 				<div>
-					<ul>
+					{/*<ul>
 						<li>
 							<span class="shimmer"></span>
 							<div class="shimmer"></div>
@@ -222,7 +222,7 @@ const PageContest: Component = () => {
 							<span class="shimmer"></span>
 							<div class="shimmer"></div>
 						</li>
-					</ul>
+					</ul>*/}
 
 					<div>
 						<span class="shimmer"></span>
@@ -352,19 +352,19 @@ const PageContest: Component = () => {
 								{
 									count: 6,
 									alpha: 0.425,
-									distance: patternSize.height! / 3,
+									distance: patternSize.height! / 3.5,
 									size: patternSize.height! / 10,
 								},
 								{
 									count: 9,
-									alpha: 0.25,
-									distance: patternSize.height! / 1.875,
+									alpha: 0.225,
+									distance: patternSize.height! / 2,
 									size: patternSize.height! / 15,
 								},
 								{
-									count: 15,
-									alpha: 0.125,
-									distance: patternSize.height! / 1.325,
+									count: 14,
+									alpha: 0.1025,
+									distance: patternSize.height! / 1.5,
 									size: patternSize.height! / 18,
 								},
 							]}
@@ -401,6 +401,8 @@ const PageContest: Component = () => {
 							<SVGSymbol id="VsVerifiedFilled" />
 						</Show>
 					</h1>
+
+					<ContestMetadata />
 				</header>
 			);
 		};
@@ -496,7 +498,7 @@ const PageContest: Component = () => {
 
 			return (
 				<div id="container-contest-info">
-					<ContestMetadata />
+					{/*<ContestMetadata />*/}
 
 					<Section
 						class="section-content"
@@ -907,7 +909,7 @@ const PageContest: Component = () => {
 
 			return (
 				<div id="container-contest-view-admin">
-					<ContestMetadata />
+					{/*<ContestMetadata />*/}
 
 					<Tabbar
 						items={items}
@@ -956,7 +958,7 @@ const PageContest: Component = () => {
 
 			return (
 				<div id="container-contest-results">
-					<ContestMetadata />
+					{/*<ContestMetadata />*/}
 
 					<Tabbar
 						items={items}
