@@ -104,11 +104,13 @@ const PageHome: Component = () => {
 	};
 
 	const SectionContests = () => {
-		const [tabbar, setTabbar] = createSignal(settings.tabs.home.myContests);
+		const [tabbar, setTabbar] = createSignal(
+			settings.tabs.home.contests ?? "all",
+		);
 
 		createEffect(
 			on(tabbar, () => {
-				setSettings("tabs", "home", "myContests", tabbar());
+				setSettings("tabs", "home", "contests", tabbar());
 			}),
 		);
 

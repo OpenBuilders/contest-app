@@ -19,7 +19,7 @@ export type Settings = {
 	};
 	tabs: {
 		home: {
-			myContests: "all" | "joined" | "created";
+			contests: "all" | "joined" | "created";
 		};
 	};
 };
@@ -34,7 +34,7 @@ export const [settings, setSettingsStore] = createStore<Settings>({
 	},
 	tabs: {
 		home: {
-			myContests: "all",
+			contests: "all",
 		},
 	},
 });
@@ -83,7 +83,7 @@ export const initializeSettings = () => {
 };
 
 export const setSettings: SetStoreFunction<Settings> = (...args: any) => {
-	// @ts-ignore
+	// @ts-expect-error
 	setSettingsStore(...args);
 
 	if (settingsStorage === "DeviceStorage") {
