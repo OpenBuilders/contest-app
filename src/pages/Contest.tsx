@@ -140,7 +140,7 @@ const PageContest: Component = () => {
 			const color = new Color(
 				getComputedStyle(
 					document.querySelector(":root") as HTMLElement,
-				).getPropertyValue("--accent"),
+				).getPropertyValue("--bg-color"),
 			);
 
 			setHeaderColor(color.toHex() as any);
@@ -238,6 +238,10 @@ const PageContest: Component = () => {
 	};
 
 	const Contest = () => {
+		const [submissionsCount, setSubmissionsCount] = createSignal<
+			string | undefined
+		>(undefined);
+
 		const ContestHeader = () => {
 			const [bookmarkProgress, setBookmarkProgress] = createSignal(false);
 
@@ -604,6 +608,8 @@ const PageContest: Component = () => {
 							submissions: result.submissions,
 						});
 
+						setSubmissionsCount(data.submissions?.length.toString());
+
 						return;
 					}
 				}
@@ -871,6 +877,7 @@ const PageContest: Component = () => {
 				{
 					slug: "submissions",
 					title: t("pages.contest.admin.submissions.title"),
+					subtitle: submissionsCount,
 					component: ContestAdminSubmissions,
 				},
 				{
@@ -1181,7 +1188,7 @@ const PageContest: Component = () => {
 				style={{
 					"--theme-bg": theme()
 						? `radial-gradient(${theme()!.backdrop.colors.center}, ${theme()!.backdrop.colors.edge})`
-						: "var(--accent)",
+						: "var(--bg-color)",
 					"--theme-bg-edge": theme()
 						? theme()!.backdrop.colors.edge
 						: "var(--accent)",
@@ -1191,7 +1198,9 @@ const PageContest: Component = () => {
 					"--theme-pattern": theme()
 						? theme()!.backdrop.colors.pattern
 						: "white",
-					"--theme-text": theme() ? theme()!.backdrop.colors.text : "white",
+					"--theme-text": theme()
+						? theme()!.backdrop.colors.text
+						: "var(--text-color)",
 				}}
 			>
 				<ContestHeader />

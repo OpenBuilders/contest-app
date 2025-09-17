@@ -1,4 +1,5 @@
 import {
+	type Accessor,
 	type Component,
 	createEffect,
 	createUniqueId,
@@ -6,6 +7,7 @@ import {
 	on,
 	onCleanup,
 	onMount,
+	Show,
 } from "solid-js";
 import "./Tabbar.scss";
 import { createStore } from "solid-js/store";
@@ -16,6 +18,7 @@ import { invokeHapticFeedbackSelectionChanged } from "../utils/telegram";
 export type TabbarItem = {
 	slug: string;
 	title: string;
+	subtitle?: string | Accessor<string | undefined>;
 	component: Component;
 };
 
@@ -103,7 +106,16 @@ const Tabbar: Component<TabbarProps> = (props) => {
 							onClick={onClickTabbarItem}
 							data-slug={item.slug}
 						>
-							<span>{item.title}</span>
+							<span>
+								{item.title}
+								<Show when={item.subtitle}>
+									<span>
+										{typeof item.subtitle === "string"
+											? item.subtitle
+											: item.subtitle?.()}
+									</span>
+								</Show>
+							</span>
 						</li>
 					)}
 				</For>
