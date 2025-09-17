@@ -1,6 +1,7 @@
 import { useParams } from "@solidjs/router";
 import "./Submissions.scss";
 import { trackDeep } from "@solid-primitives/deep";
+import { FaSolidCircleExclamation } from "solid-icons/fa";
 import { TbSortAscending, TbSortDescending } from "solid-icons/tb";
 import {
 	type Component,
@@ -19,6 +20,7 @@ import BackButton from "../../../components/BackButton";
 import ButtonArray from "../../../components/ButtonArray";
 import LottiePlayerMotion from "../../../components/LottiePlayerMotion";
 import { SVGSymbol } from "../../../components/SVG";
+import { toast } from "../../../components/Toast";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { TGS } from "../../../utils/animations";
 import { requestAPI } from "../../../utils/api";
@@ -141,6 +143,11 @@ const PageContestManageSubmissions: Component = () => {
 				return;
 			}
 		}
+
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.fetch"),
+		});
 
 		navigator.go(`/contest/${params.slug}`, {
 			params: {

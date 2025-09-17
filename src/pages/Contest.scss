@@ -426,6 +426,7 @@
 
 .container-result-entries {
    > div {
+      height: 3.5rem;
       padding-inline-end: 1rem;
 
       &:has(.prepend)::after {
@@ -437,7 +438,11 @@
 
          > div.avatar,
          > div.avatar-alias {
-            font-size: 2rem;
+            font-size: 2.5rem;
+
+            svg {
+               touch-action: auto;
+            }
          }
       }
 
@@ -520,10 +525,6 @@
    display: flex;
    flex-direction: column;
    gap: 1rem;
-   padding-bottom: calc(
-      max(var(--tg-viewport-safe-area-inset-bottom, 0px), 1rem) +
-         var(--tg-viewport-content-safe-area-inset-bottom, 0px)
-   );
 
    > div {
       display: flex;
@@ -532,6 +533,10 @@
       height: 100%;
       overflow: hidden;
       overflow-y: auto;
+      padding-bottom: calc(
+         max(var(--tg-viewport-safe-area-inset-bottom, 0px), 1rem) +
+            var(--tg-viewport-content-safe-area-inset-bottom, 0px)
+      );
    }
 }
 
@@ -569,17 +574,17 @@
 
       > div.placeholder {
          flex-shrink: 0;
+         padding-inline-start: 0.25rem;
 
          > ul {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
             height: 1rem;
+            gap: 0.25rem;
 
             > li {
                display: flex;
                align-items: center;
-               gap: 0.25rem;
                color: rgba(var(--text-color-rgb), 0.375);
 
                &.fill {
@@ -593,6 +598,8 @@
                > span {
                   font-size: 0.875rem;
                   font-weight: 500;
+                  width: 1.25rem;
+                  text-align: center;
                }
             }
          }

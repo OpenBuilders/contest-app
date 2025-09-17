@@ -2,6 +2,7 @@ import { type AnnotatedContest, setStore, store } from "../utils/store";
 import "./Home.scss";
 
 import dayjs from "dayjs";
+import { FaSolidCircleExclamation } from "solid-icons/fa";
 import {
 	type Component,
 	createEffect,
@@ -18,6 +19,7 @@ import CustomMainButton from "../components/CustomMainButton";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import { SVGSymbol } from "../components/SVG";
 import Tabbar from "../components/Tabbar";
+import { toast } from "../components/Toast";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
@@ -53,7 +55,14 @@ const PageHome: Component = () => {
 				my: result.contests,
 				gallery: result.gallery,
 			});
+
+			return;
 		}
+
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.fetch"),
+		});
 	};
 
 	const onClickButtonCreate = () => {
@@ -140,6 +149,14 @@ const PageHome: Component = () => {
 					contest.metadata.role === "owner" ||
 					contest.metadata.role === "participant",
 			);
+		});
+
+		const contestsYoursCreated = createMemo(() => {
+			return contestsYours().filter((i) => i.metadata.role === "owner");
+		});
+
+		const contestsYoursJoined = createMemo(() => {
+			return contestsYours().filter((i) => i.metadata.role === "participant");
 		});
 
 		const contestsSaved = createMemo(() => {
@@ -322,10 +339,18 @@ const PageHome: Component = () => {
 									<SectionHolder
 										sections={[
 											() => (
-												<Show when={contestsYours().length > 0}>
+												<Show when={contestsYoursCreated().length > 0}>
 													<SectionContests
-														title={t("pages.home.contests.topics.yours")}
-														contests={contestsYours()}
+														title={t("pages.home.contests.topics.created")}
+														contests={contestsYoursCreated()}
+													/>
+												</Show>
+											),
+											() => (
+												<Show when={contestsYoursJoined().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.joined")}
+														contests={contestsYoursJoined()}
 													/>
 												</Show>
 											),

@@ -1,5 +1,6 @@
 import { useParams } from "@solidjs/router";
 import "./Options.scss";
+import { FaSolidCircleExclamation } from "solid-icons/fa";
 import {
 	type Accessor,
 	type Component,
@@ -20,11 +21,13 @@ import {
 	SectionListInput,
 } from "../../../components/Section";
 import { SVGSymbol } from "../../../components/SVG";
+import { toast } from "../../../components/Toast";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { requestAPI } from "../../../utils/api";
 import { cloneObject, compareObjects } from "../../../utils/general";
 import { navigator } from "../../../utils/navigator";
 import { clamp, formatNumbersInString } from "../../../utils/number";
+import { popupManager } from "../../../utils/popup";
 import { setStore, store } from "../../../utils/store";
 import {
 	invokeHapticFeedbackImpact,
@@ -143,8 +146,14 @@ export const SectionContestManageOptions: Component<
 				setFormData(form);
 				setStore("contests", "my", undefined);
 				props.onBackButton();
+				return;
 			}
 		}
+
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.options.update"),
+		});
 		setProcessing(false);
 	};
 
@@ -163,6 +172,56 @@ export const SectionContestManageOptions: Component<
 		const feeDisplayValue = createMemo(() =>
 			form.fee > 0 ? form.fee.toString() : "",
 		);
+
+		const onClickDelete = async () => {
+			if (processing()) return;
+
+			invokeHapticFeedbackImpact("rigid");
+
+			const data = await popupManager.openPopup({
+				title: t("pages.contest.manage.delete.title"),
+				message: t("pages.contest.manage.delete.prompt"),
+				buttons: [
+					{
+						id: props.slug,
+						type: "destructive",
+						text: t("pages.contest.manage.delete.confirm"),
+					},
+					{
+						id: "cancel",
+						type: "cancel",
+					},
+				],
+			});
+
+			if (!data.button_id || data.button_id === "cancel") return;
+			setProcessing(true);
+
+			const request = await requestAPI(`/contest/${props.slug}/delete`);
+
+			if (request) {
+				const { status } = request;
+				if (status === "success") {
+					setProcessing(false);
+
+					invokeHapticFeedbackImpact("heavy");
+
+					setStore("contests", {
+						gallery: undefined,
+						my: undefined,
+					});
+
+					navigator.go("/");
+					return;
+				}
+			}
+
+			toast({
+				icon: FaSolidCircleExclamation,
+				text: t("errors.options.delete"),
+			});
+			setProcessing(false);
+		};
 
 		return (
 			<div id="container-contest-options">
@@ -224,6 +283,12 @@ export const SectionContestManageOptions: Component<
 						placeholder={t("pages.create.options.description.placeholder")}
 					/>
 				</Section>
+
+				<div id="container-page-contest-manage-options-delete">
+					<button type="button" class="clickable" onClick={onClickDelete}>
+						{t("pages.contest.manage.list.delete")}
+					</button>
+				</div>
 			</div>
 		);
 	};
@@ -288,8 +353,14 @@ export const SectionContestManageOptions: Component<
 					loaded: true,
 				});
 				setFormData(form);
+				return;
 			}
 		}
+
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.fetch"),
+		});
 	};
 
 	onMount(async () => {

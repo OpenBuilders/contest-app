@@ -27,6 +27,30 @@ const dict_de = {
 			prompt: "Möchten Sie {link} öffnen?",
 		},
 	},
+	errors: {
+		fetch: "Fehler beim Abrufen der Informationen.",
+		moderators: {
+			fetch: "Fehler beim Abrufen der Moderationsinformationen.",
+			join: "Fehler beim Beitritt zur Moderatorenliste.",
+			revoke: "Fehler beim Widerrufen des Einladungslinks.",
+			remove: "Fehler beim Entfernen des Moderators.",
+		},
+		participate: {
+			submit: "Fehler beim Einreichen des Beitrags.",
+		},
+		options: {
+			delete: "Fehler beim Löschen des Wettbewerbs.",
+			update: "Fehler beim Speichern der Einstellungen.",
+		},
+		placement: {
+			update: "Fehler beim Aktualisieren der Platzierung.",
+			add: "Fehler beim Hinzufügen der Platzierung.",
+			delete: "Fehler beim Löschen der Platzierung.",
+		},
+		results: {
+			announce: "Fehler beim Bekanntgeben der Ergebnisse.",
+		},
+	},
 	pages: {
 		error: {
 			title: "Fehler",
@@ -63,6 +87,8 @@ const dict_de = {
 					finished: "Abgeschlossen",
 					saved: "Gespeichert",
 					yours: "Deine",
+					created: "Erstellt",
+					joined: "Beigetreten",
 				},
 				items: {
 					reward: "Belohnung: {reward}",

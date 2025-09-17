@@ -49,6 +49,20 @@
    padding: 0 1rem;
    overflow: hidden;
 
+   > div {
+      > button {
+         display: flex;
+         align-items: center;
+         background-color: var(--section-bg-color);
+         padding: 0 1rem;
+         border-radius: 0.75rem;
+         width: 100%;
+         gap: 1rem;
+         color: var(--tg-theme-destructive-text-color);
+         height: 2.75rem;
+      }
+   }
+
    > section:nth-child(2) {
       flex-grow: 1;
       flex-shrink: unset;

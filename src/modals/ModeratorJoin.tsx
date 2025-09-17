@@ -1,4 +1,5 @@
 import "./ModeratorJoin.scss";
+import { FaSolidCircleExclamation } from "solid-icons/fa";
 import {
 	type Component,
 	createMemo,
@@ -11,6 +12,7 @@ import ContestThumbnail from "../components/ContestThumbnail";
 import CustomMainButton from "../components/CustomMainButton";
 import Modal from "../components/Modal";
 import { SVGSymbol } from "../components/SVG";
+import { toast } from "../components/Toast";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
 import { modals, setModals } from "../utils/modal";
@@ -66,12 +68,14 @@ const ModalModeratorJoin: Component = () => {
 				setData({
 					contest: result.contest,
 				});
-			} else {
-				onClose();
 			}
-		} else {
-			onClose();
 		}
+
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.moderators.fetch"),
+		});
+		onClose();
 	};
 
 	const onClose = () => {
@@ -109,9 +113,14 @@ const ModalModeratorJoin: Component = () => {
 						},
 					},
 				});
+				return;
 			}
 		}
 
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.moderators.join"),
+		});
 		setProcessing(false);
 	};
 

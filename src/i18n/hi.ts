@@ -27,6 +27,30 @@ const dict_hi = {
 			prompt: "क्या आप {link} पर जाना चाहते हैं?",
 		},
 	},
+	errors: {
+		fetch: "जानकारी प्राप्त करने में विफल।",
+		moderators: {
+			fetch: "मॉडरेशन जानकारी प्राप्त करने में विफल।",
+			join: "मॉडरेटर सूची में शामिल होने में विफल।",
+			revoke: "निमंत्रण लिंक रद्द करने में विफल।",
+			remove: "मॉडरेटर हटाने में विफल।",
+		},
+		participate: {
+			submit: "प्रविष्टि जमा करने में विफल।",
+		},
+		options: {
+			delete: "प्रतियोगिता हटाने में विफल।",
+			update: "सेटिंग्स सहेजने में विफल।",
+		},
+		placement: {
+			update: "स्थान अद्यतन करने में विफल।",
+			add: "स्थान जोड़ने में विफल।",
+			delete: "स्थान हटाने में विफल।",
+		},
+		results: {
+			announce: "परिणाम घोषित करने में विफल।",
+		},
+	},
 	pages: {
 		error: {
 			title: "त्रुटि",
@@ -62,6 +86,8 @@ const dict_hi = {
 					finished: "समाप्त",
 					saved: "सहेजी गई",
 					yours: "आपकी",
+					created: "बनाया गया",
+					joined: "शामिल हुआ",
 				},
 				items: { reward: "इनाम: {reward}", participants: "{count} प्रतिभागी" },
 				badges: { ended: "समाप्त", closed: "बंद", open: "खुला" },

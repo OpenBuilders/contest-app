@@ -27,6 +27,30 @@ const dict = {
 			prompt: "Do you wish to continue to {link}?",
 		},
 	},
+	errors: {
+		fetch: "Failed to retrieve information.",
+		moderators: {
+			fetch: "Failed to retrieve moderation information.",
+			join: "Failed to join the moderators list.",
+			revoke: "Failed to revoke invitation link.",
+			remove: "Failed to remove moderator.",
+		},
+		participate: {
+			submit: "Failed to submit entry.",
+		},
+		options: {
+			delete: "Failed to delete contest.",
+			update: "Failed to save settings.",
+		},
+		placement: {
+			update: "Failed to update placement.",
+			add: "Failed to add placement.",
+			delete: "Failed to delete placement.",
+		},
+		results: {
+			announce: "Failed to announce results.",
+		},
+	},
 	pages: {
 		error: {
 			title: "Error",
@@ -70,6 +94,8 @@ const dict = {
 					finished: "Finished",
 					saved: "Saved",
 					yours: "Yours",
+					created: "Created",
+					joined: "Joined",
 				},
 				items: {
 					reward: "Reward: {reward}",

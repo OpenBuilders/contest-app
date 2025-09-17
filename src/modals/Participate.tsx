@@ -1,4 +1,5 @@
 import "./Participate.scss";
+import { FaSolidCircleExclamation } from "solid-icons/fa";
 import {
 	batch,
 	type Component,
@@ -13,6 +14,7 @@ import CustomMainButton from "../components/CustomMainButton";
 import Editor from "../components/Editor";
 import Modal from "../components/Modal";
 import { Section } from "../components/Section";
+import { toast } from "../components/Toast";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
 import {
@@ -191,6 +193,10 @@ const ModalParticipate: Component = () => {
 			}
 		}
 
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.participate.submit"),
+		});
 		setProcessing(false);
 	};
 

@@ -1,5 +1,6 @@
 import { useParams } from "@solidjs/router";
 import "./Results.scss";
+import { FaSolidCircleExclamation } from "solid-icons/fa";
 import { IoAddCircle } from "solid-icons/io";
 import {
 	type Component,
@@ -19,6 +20,7 @@ import BackButton from "../../../components/BackButton";
 import CustomMainButton from "../../../components/CustomMainButton";
 import { Section } from "../../../components/Section";
 import { SVGSymbol } from "../../../components/SVG";
+import { toast } from "../../../components/Toast";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { requestAPI } from "../../../utils/api";
 import { initializeSortable } from "../../../utils/lazy";
@@ -115,8 +117,15 @@ const PageContestManageResults: Component = () => {
 					submissions: result.submissions,
 					announced: result.announced,
 				});
+
+				return;
 			}
 		}
+
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.fetch"),
+		});
 	};
 
 	const onClickButtonAdd = () => {
@@ -171,9 +180,14 @@ const PageContestManageResults: Component = () => {
 						},
 					},
 				});
+				return;
 			}
 		}
 
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.results.announce"),
+		});
 		setProcessing(false);
 	};
 

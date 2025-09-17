@@ -1,7 +1,10 @@
 import { useParams } from "@solidjs/router";
 import "./Settings.scss";
-import { FaSolidLink, FaSolidPlus } from "solid-icons/fa";
-import { RiSystemDeleteBin7Line } from "solid-icons/ri";
+import {
+	FaSolidCircleExclamation,
+	FaSolidLink,
+	FaSolidPlus,
+} from "solid-icons/fa";
 import {
 	type Component,
 	createEffect,
@@ -13,11 +16,12 @@ import { createStore } from "solid-js/store";
 import BackButton from "../../../components/BackButton";
 import ButtonArray from "../../../components/ButtonArray";
 import Tabbar, { type TabbarItem } from "../../../components/Tabbar";
+import { toast } from "../../../components/Toast";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { requestAPI } from "../../../utils/api";
 import { navigator } from "../../../utils/navigator";
 import { popupManager } from "../../../utils/popup";
-import { setStore, store } from "../../../utils/store";
+import { store } from "../../../utils/store";
 import {
 	invokeHapticFeedbackImpact,
 	isVersionAtLeast,
@@ -164,56 +168,15 @@ const PageContestManageSettings: Component = () => {
 			if (status === "success") {
 				invokeHapticFeedbackImpact("heavy");
 				setDataModerators("slug_moderator", result.slug_moderator);
-			}
-		}
-
-		setProcessingModerators(false);
-	};
-
-	const onClickDelete = async () => {
-		if (processingOptions()) return;
-
-		invokeHapticFeedbackImpact("rigid");
-
-		const data = await popupManager.openPopup({
-			title: t("pages.contest.manage.delete.title"),
-			message: t("pages.contest.manage.delete.prompt"),
-			buttons: [
-				{
-					id: params.slug,
-					type: "destructive",
-					text: t("pages.contest.manage.delete.confirm"),
-				},
-				{
-					id: "cancel",
-					type: "cancel",
-				},
-			],
-		});
-
-		if (!data.button_id || data.button_id === "cancel") return;
-		setProcessingOptions(true);
-
-		const request = await requestAPI(`/contest/${params.slug}/delete`);
-
-		if (request) {
-			const { status } = request;
-			if (status === "success") {
-				setProcessingOptions(false);
-
-				invokeHapticFeedbackImpact("heavy");
-
-				setStore("contests", {
-					gallery: undefined,
-					my: undefined,
-				});
-
-				navigator.go("/");
 				return;
 			}
 		}
 
-		setProcessingOptions(false);
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.moderators.revoke"),
+		});
+		setProcessingModerators(false);
 	};
 
 	return (
@@ -238,19 +201,6 @@ const PageContestManageSettings: Component = () => {
 											fontSize: "1.1875rem",
 											class: "clickable",
 											onClick: onClickButtonInvite,
-										},
-									]}
-								/>
-							</Match>
-
-							<Match when={tab() === "options" && formOptions.loaded}>
-								<ButtonArray
-									items={[
-										{
-											component: RiSystemDeleteBin7Line,
-											fontSize: "1.25rem",
-											class: "clickable destructive",
-											onClick: onClickDelete,
 										},
 									]}
 								/>

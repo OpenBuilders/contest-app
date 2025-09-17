@@ -1,7 +1,11 @@
 import { useParams } from "@solidjs/router";
 import BackButton from "../../../components/BackButton";
 import "./Moderators.scss";
-import { FaSolidLink, FaSolidPlus } from "solid-icons/fa";
+import {
+	FaSolidCircleExclamation,
+	FaSolidLink,
+	FaSolidPlus,
+} from "solid-icons/fa";
 import {
 	type Accessor,
 	type Component,
@@ -17,6 +21,7 @@ import ButtonArray from "../../../components/ButtonArray";
 import LottiePlayerMotion from "../../../components/LottiePlayerMotion";
 import { SectionList } from "../../../components/Section";
 import { SVGSymbol } from "../../../components/SVG";
+import { toast } from "../../../components/Toast";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { TGS } from "../../../utils/animations";
 import { requestAPI } from "../../../utils/api";
@@ -116,9 +121,14 @@ const PageContestManageModerators: Component = () => {
 			if (status === "success") {
 				invokeHapticFeedbackImpact("heavy");
 				setData("slug_moderator", result.slug_moderator);
+				return;
 			}
 		}
 
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.moderators.revoke"),
+		});
 		setProcessing(false);
 	};
 
@@ -205,8 +215,14 @@ export const SectionContestManageModerators: Component<
 					slug_moderator: result.slug_moderator,
 					moderators: result.moderators,
 				});
+				return;
 			}
 		}
+
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.moderators.fetch"),
+		});
 	};
 
 	onMount(async () => {
@@ -287,9 +303,14 @@ export const SectionContestManageModerators: Component<
 			if (status === "success") {
 				invokeHapticFeedbackImpact("heavy");
 				setData("moderators", result.moderators);
+				return;
 			}
 		}
 
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.moderators.remove"),
+		});
 		setProcessing(false);
 	};
 

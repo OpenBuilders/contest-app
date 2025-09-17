@@ -27,6 +27,30 @@ const dict_ar = {
 			prompt: "هل ترغب في المتابعة إلى {link}؟",
 		},
 	},
+	errors: {
+		fetch: "فشل في جلب المعلومات.",
+		moderators: {
+			fetch: "فشل في جلب معلومات الإشراف.",
+			join: "فشل في الانضمام إلى قائمة المشرفين.",
+			revoke: "فشل في إلغاء رابط الدعوة.",
+			remove: "فشل في إزالة المشرف.",
+		},
+		participate: {
+			submit: "فشل في إرسال المشاركة.",
+		},
+		options: {
+			delete: "فشل في حذف المسابقة.",
+			update: "فشل في حفظ الإعدادات.",
+		},
+		placement: {
+			update: "فشل في تحديث الترتيب.",
+			add: "فشل في إضافة الترتيب.",
+			delete: "فشل في حذف الترتيب.",
+		},
+		results: {
+			announce: "فشل في إعلان النتائج.",
+		},
+	},
 	pages: {
 		error: {
 			title: "خطأ",
@@ -62,6 +86,8 @@ const dict_ar = {
 					finished: "منتهية",
 					saved: "محفوظة",
 					yours: "الخاصة بك",
+					created: "تم الإنشاء",
+					joined: "تم الانضمام",
 				},
 				items: {
 					reward: "الجائزة: {reward}",

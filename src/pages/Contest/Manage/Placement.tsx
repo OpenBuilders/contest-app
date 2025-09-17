@@ -105,8 +105,14 @@ const PageContestManagePlacement: Component = () => {
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
 				onBackButton();
+				return;
 			}
 		}
+
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.placement.delete"),
+		});
 
 		setProcessing(false);
 	};
@@ -133,6 +139,10 @@ const PageContestManagePlacement: Component = () => {
 			if (compareObjects(form, placement)) {
 				return true;
 			}
+		}
+
+		if (form.submissions.length === 0) {
+			return true;
 		}
 
 		return false;
@@ -169,7 +179,9 @@ const PageContestManagePlacement: Component = () => {
 
 		toast({
 			icon: FaSolidCircleExclamation,
-			text: t("pages.contest.manage.placement.error.failed"),
+			text: isPlacement()
+				? t("errors.placement.update")
+				: t("errors.placement.add"),
 		});
 		setProcessing(false);
 	};

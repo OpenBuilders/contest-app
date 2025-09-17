@@ -1,6 +1,7 @@
 import "./Contest.scss";
 import { useParams } from "@solidjs/router";
 import dayjs from "dayjs";
+import { FaSolidCircleExclamation } from "solid-icons/fa";
 import { OcBookmark2, OcBookmarkfill3 } from "solid-icons/oc";
 import { TbSettings, TbShare3 } from "solid-icons/tb";
 import {
@@ -29,6 +30,7 @@ import RichText from "../components/RichText";
 import { Section, SectionList } from "../components/Section";
 import { SVGSymbol } from "../components/SVG";
 import Tabbar, { type TabbarItem } from "../components/Tabbar";
+import { toast } from "../components/Toast";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
 import { Color } from "../utils/colors";
@@ -179,9 +181,15 @@ const PageContest: Component = () => {
 				contest: result.contest,
 				metadata: result.metadata,
 			});
-		} else {
-			navigator.go("/");
+
+			return;
 		}
+
+		toast({
+			icon: FaSolidCircleExclamation,
+			text: t("errors.fetch"),
+		});
+		navigator.go("/");
 	};
 
 	const onBackButton = () => {
@@ -355,19 +363,19 @@ const PageContest: Component = () => {
 							layers={[
 								{
 									count: 6,
-									alpha: 0.425,
+									alpha: 0.325,
 									distance: patternSize.height! / 3.5,
 									size: patternSize.height! / 10,
 								},
 								{
 									count: 9,
-									alpha: 0.225,
+									alpha: 0.125,
 									distance: patternSize.height! / 2,
 									size: patternSize.height! / 15,
 								},
 								{
 									count: 14,
-									alpha: 0.1025,
+									alpha: 0.0625,
 									distance: patternSize.height! / 1.5,
 									size: patternSize.height! / 18,
 								},
@@ -613,6 +621,11 @@ const PageContest: Component = () => {
 						return;
 					}
 				}
+
+				toast({
+					icon: FaSolidCircleExclamation,
+					text: t("errors.fetch"),
+				});
 
 				navigator.go(`/contest/${params.slug}`, {
 					params: {
@@ -1053,130 +1066,6 @@ const PageContest: Component = () => {
 				</div>
 			);
 		};
-
-		// const ContestManage = () => {
-		// 	const [processing, setProcessing] = createSignal(false);
-
-		// 	const onClickDelete = async () => {
-		// 		if (processing()) return;
-
-		// 		invokeHapticFeedbackImpact("rigid");
-
-		// 		const data = await popupManager.openPopup({
-		// 			title: t("pages.contest.manage.delete.title"),
-		// 			message: t("pages.contest.manage.delete.prompt"),
-		// 			buttons: [
-		// 				{
-		// 					id: params.slug,
-		// 					type: "destructive",
-		// 					text: t("pages.contest.manage.delete.confirm"),
-		// 				},
-		// 				{
-		// 					id: "cancel",
-		// 					type: "cancel",
-		// 				},
-		// 			],
-		// 		});
-
-		// 		if (!data.button_id || data.button_id === "cancel") return;
-		// 		setProcessing(true);
-
-		// 		const request = await requestAPI(`/contest/${params.slug}/delete`);
-
-		// 		if (request) {
-		// 			const { status } = request;
-		// 			if (status === "success") {
-		// 				setProcessing(false);
-
-		// 				invokeHapticFeedbackImpact("heavy");
-
-		// 				setTimeout(() => {
-		// 					toggleSignal("fetchMyContests");
-		// 				});
-
-		// 				navigator.go("/");
-		// 				return;
-		// 			}
-		// 		}
-
-		// 		setProcessing(false);
-		// 	};
-
-		// 	return (
-		// 		<div id="container-contest-manage">
-		// 			<ContestMetadata />
-
-		// 			<SectionList
-		// 				title={t("pages.contest.footer.manage.text")}
-		// 				description={t("pages.contest.manage.delete.hint")}
-		// 				items={[
-		// 					{
-		// 						prepend: () => (
-		// 							<Icon component={FaSolidListUl} background="#3478f6" />
-		// 						),
-		// 						label: t("pages.contest.manage.list.submissions"),
-		// 						placeholder: () => contest.metadata?.submissions_count,
-		// 						clickable: true,
-		// 						onClick: () => {
-		// 							navigator.go(`/contest/${params.slug}/manage/submissions`);
-		// 						},
-		// 					},
-		// 					{
-		// 						prepend: () => (
-		// 							<Icon component={FaSolidUserShield} background="#ea445a" />
-		// 						),
-		// 						label: t("pages.contest.manage.list.moderators"),
-		// 						placeholder: () => contest.metadata?.moderators_count,
-		// 						clickable: true,
-		// 						onClick: () => {
-		// 							navigator.go(`/contest/${params.slug}/manage/moderators`);
-		// 						},
-		// 					},
-		// 					{
-		// 						prepend: () => (
-		// 							<Icon component={TbAwardFilled} background="#f19a37" />
-		// 						),
-		// 						label: t("pages.contest.manage.list.results"),
-		// 						clickable: true,
-		// 						onClick: () => {
-		// 							navigator.go(`/contest/${params.slug}/manage/results`);
-		// 						},
-		// 						placeholder: () => <SVGSymbol id="FaSolidChevronRight" />,
-		// 					},
-		// 					{
-		// 						prepend: () => (
-		// 							<Icon component={IoSettingsSharp} background="#8e8e93" />
-		// 						),
-
-		// 						label: t("pages.contest.manage.list.options"),
-		// 						clickable: true,
-		// 						onClick: () => {
-		// 							navigator.go(`/contest/${params.slug}/manage/options`);
-		// 						},
-		// 						placeholder: () => <SVGSymbol id="FaSolidChevronRight" />,
-		// 					},
-		// 					{
-		// 						prepend: () => (
-		// 							<Icon component={IoStatsChart} background="#a357d7" />
-		// 						),
-
-		// 						label: t("pages.contest.manage.list.statistics"),
-		// 						placeholder: () => <Badge label={t("general.soon")} />,
-		// 					},
-		// 					{
-		// 						prepend: () => (
-		// 							<Icon component={AiFillDelete} background="#eb4e3d" />
-		// 						),
-
-		// 						label: t("pages.contest.manage.list.delete"),
-		// 						clickable: true,
-		// 						onClick: onClickDelete,
-		// 					},
-		// 				]}
-		// 			/>
-		// 		</div>
-		// 	);
-		// };
 
 		return (
 			<div

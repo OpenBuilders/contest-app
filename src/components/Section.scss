@@ -54,8 +54,10 @@
       > span {
          font-size: 1rem;
          flex-grow: 1;
+         white-space: nowrap;
          overflow: hidden;
          text-overflow: ellipsis;
+         flex-shrink: 0;
       }
 
       > div.placeholder {
@@ -246,7 +248,8 @@
       width: auto;
       text-align: end;
       padding-inline-end: 1rem;
-      min-width: 8rem;
+      width: max(8rem, 100%);
+      max-width: 100%;
       font-size: 1rem;
       height: 100%;
 
