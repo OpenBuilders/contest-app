@@ -32,7 +32,7 @@
                max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
                   var(--tg-viewport-content-safe-area-inset-bottom)
             );
-         background-color: var(--tg-bottom-bar-color);
+         background-color: var(--bg-color);
       }
    }
 }
