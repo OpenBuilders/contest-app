@@ -1,5 +1,4 @@
 import "./Participate.scss";
-import { isTelegramUrl } from "@tonconnect/sdk";
 import {
 	batch,
 	type Component,
@@ -160,7 +159,7 @@ const ModalParticipate: Component = () => {
 		const request = await requestAPI(
 			`/contest/${modals.participate.contest!.slug}/submit`,
 			{
-				link: (isTelegramUrl(form.link)
+				link: (isValidTelegramUsername(form.link)
 					? normalizeTelegramUsernameToURL(form.link)
 					: normalizeURL(form.link))!,
 				description: form.description,
