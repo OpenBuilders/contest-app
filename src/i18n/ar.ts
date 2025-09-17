@@ -19,6 +19,7 @@ const dict_ar = {
 			participant: "المشارك",
 		},
 		ok: "موافق",
+		done: "تم",
 		continue: "متابعة",
 		soon: "قريباً",
 		confirmOpenLink: {

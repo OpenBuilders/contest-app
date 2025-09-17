@@ -22,11 +22,16 @@ export const requestAPI = async (
 
 		headers.locale = settings.language ?? "en";
 
+		const controller = new AbortController();
+		const timer = setTimeout(() => controller.abort(), 30_000);
+
 		const request = await fetch(import.meta.env.VITE_BACKEND_BASE_URL + path, {
 			method: method,
 			body: method === "POST" ? FD : undefined,
 			headers: headers,
+			signal: controller.signal,
 		});
+		clearTimeout(timer);
 
 		const result = await request.json();
 

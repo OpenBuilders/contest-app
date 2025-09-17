@@ -59,6 +59,7 @@ const ModalSettings: Component = () => {
 			class="modal-settings"
 			onClose={onClose}
 			portalParent={document.querySelector("#modals")!}
+			withCloseButton={true}
 		>
 			<div>
 				<SectionList

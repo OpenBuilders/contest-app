@@ -1,6 +1,7 @@
 import { Portal } from "solid-js/web";
 import "./Modal.scss";
 
+import { IoClose } from "solid-icons/io";
 import {
 	createSignal,
 	createUniqueId,
@@ -8,7 +9,9 @@ import {
 	onCleanup,
 	onMount,
 	type ParentComponent,
+	Show,
 } from "solid-js";
+import { invokeHapticFeedbackImpact } from "../utils/telegram";
 
 const DEFAULT_THRESHOLD = 64;
 
@@ -17,6 +20,7 @@ type ModalProps = {
 	containerClass?: string;
 	onClose: () => void;
 	portalParent?: Element;
+	withCloseButton?: boolean;
 };
 
 const Modal: ParentComponent<ModalProps> = (props) => {
@@ -164,6 +168,18 @@ const Modal: ParentComponent<ModalProps> = (props) => {
 						>
 							<div class="modal-handle" />
 						</div>
+						<Show when={props.withCloseButton}>
+							<button
+								type="button"
+								class="modal-close clickable"
+								onClick={() => {
+									invokeHapticFeedbackImpact("heavy");
+									setIsClosing(true);
+								}}
+							>
+								<IoClose />
+							</button>
+						</Show>
 						<div class={props.class}>{props.children}</div>
 					</div>
 				</div>

@@ -19,6 +19,7 @@ const dict_ru = {
 			participant: "Участник",
 		},
 		ok: "Ок",
+		done: "Готово",
 		continue: "Продолжить",
 		soon: "Скоро",
 		confirmOpenLink: {

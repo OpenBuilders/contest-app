@@ -43,3 +43,12 @@ export const normalizeURL = (str: string): string | null => {
 		}
 	}
 };
+
+export const isValidTelegramUsername = (username: string): boolean => {
+	const regex = /^@[a-zA-Z][a-zA-Z0-9_]{3,31}$/;
+	return regex.test(username);
+};
+
+export const normalizeTelegramUsernameToURL = (username: string) => {
+	return `https://t.me/${username.replace("@", "")}`;
+};

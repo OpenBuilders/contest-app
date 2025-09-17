@@ -123,8 +123,8 @@ const PageCreate: Component = () => {
 			const activeEl = document.activeElement as HTMLElement | null;
 			if (activeEl) {
 				setTimeout(() => {
-					activeEl.scrollIntoView({ behavior: "instant", block: "end" });
-				}, 350);
+					activeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+				}, 250);
 			}
 		}
 	};
@@ -302,6 +302,7 @@ const PageCreate: Component = () => {
 					icon: FaSolidCircleExclamation,
 					text: t("pages.create.error.create"),
 				});
+				setProcessing(false);
 			}
 		}
 	};
@@ -778,6 +779,7 @@ const PageCreate: Component = () => {
 							onClose={() => setModal(false)}
 							portalParent={document.querySelector("#portals")!}
 							class="modal-section-list-picker"
+							withCloseButton={true}
 						>
 							<p>{t("pages.create.options.duration.custom.label")}</p>
 
@@ -795,6 +797,11 @@ const PageCreate: Component = () => {
 								}))}
 								setValue={setDuration}
 								value={duration()}
+							/>
+
+							<CustomMainButton
+								text={t("general.done")}
+								onClick={() => setModal(false)}
 							/>
 						</Modal>
 					</Show>

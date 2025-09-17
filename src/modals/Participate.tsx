@@ -1,4 +1,5 @@
 import "./Participate.scss";
+import { isTelegramUrl } from "@tonconnect/sdk";
 import {
 	batch,
 	type Component,
@@ -15,7 +16,13 @@ import Modal from "../components/Modal";
 import { Section } from "../components/Section";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
-import { hideKeyboardOnEnter, isValidURL, normalizeURL } from "../utils/input";
+import {
+	hideKeyboardOnEnter,
+	isValidTelegramUsername,
+	isValidURL,
+	normalizeTelegramUsernameToURL,
+	normalizeURL,
+} from "../utils/input";
 import {
 	initializeTonConnect,
 	parseTONAddress,
@@ -85,7 +92,10 @@ const ModalParticipate: Component = () => {
 		}
 
 		return (
-			!isValidURL(form.link.trim()) ||
+			!(
+				isValidURL(form.link.trim()) ||
+				isValidTelegramUsername(form.link.trim())
+			) ||
 			form.link.trim().length < store.limits!.form.participate.link.minLength ||
 			form.link.trim().length > store.limits!.form.participate.link.maxLength
 		);
@@ -150,7 +160,9 @@ const ModalParticipate: Component = () => {
 		const request = await requestAPI(
 			`/contest/${modals.participate.contest!.slug}/submit`,
 			{
-				link: normalizeURL(form.link)!,
+				link: (isTelegramUrl(form.link)
+					? normalizeTelegramUsernameToURL(form.link)
+					: normalizeURL(form.link))!,
 				description: form.description,
 				boc: boc,
 			},
@@ -189,6 +201,7 @@ const ModalParticipate: Component = () => {
 			class="modal-participate"
 			onClose={onClose}
 			portalParent={document.querySelector("#modals")!}
+			withCloseButton={true}
 		>
 			<div>
 				<Section

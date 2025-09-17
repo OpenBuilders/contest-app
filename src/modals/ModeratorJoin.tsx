@@ -140,6 +140,7 @@ const ModalModeratorJoin: Component = () => {
 			class="modal-moderator-join"
 			onClose={onClose}
 			portalParent={document.querySelector("#modals")!}
+			withCloseButton={true}
 		>
 			<Show
 				when={data()}

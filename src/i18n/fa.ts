@@ -19,6 +19,7 @@ const dict_fa = {
 			participant: "شرکت‌کننده",
 		},
 		ok: "تأیید",
+		done: "انجام شد",
 		continue: "ادامه",
 		soon: "به‌زودی",
 		confirmOpenLink: {

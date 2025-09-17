@@ -19,6 +19,7 @@ const dict = {
 			participant: "Participant",
 		},
 		ok: "Ok",
+		done: "Done",
 		continue: "Continue",
 		soon: "Soon",
 		confirmOpenLink: {

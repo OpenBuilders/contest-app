@@ -25,6 +25,7 @@ const ModalAnonymous: Component = () => {
 			class="modal-anonymous"
 			onClose={onClose}
 			portalParent={document.querySelector("#modals")!}
+			withCloseButton={true}
 		>
 			<div>
 				<LottiePlayerMotion

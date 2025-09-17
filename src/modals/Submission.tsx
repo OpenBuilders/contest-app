@@ -217,6 +217,7 @@ const ModalSubmission: Component = () => {
 			class="modal-submission"
 			onClose={onClose}
 			portalParent={document.querySelector("#modals")!}
+			withCloseButton={true}
 		>
 			<div>
 				<Show

@@ -19,6 +19,7 @@ const dict_de = {
 			participant: "Teilnehmer",
 		},
 		ok: "Ok",
+		done: "Fertig",
 		continue: "Fortfahren",
 		soon: "Bald",
 		confirmOpenLink: {

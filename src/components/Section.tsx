@@ -245,6 +245,7 @@ export const SectionListPicker: Component<SectionListPickerProps> = (props) => {
 					onClose={() => setModal(false)}
 					portalParent={document.querySelector("#portals")!}
 					class="modal-section-list-picker"
+					withCloseButton={true}
 				>
 					<Show when={props.label}>
 						<p>{props.label}</p>

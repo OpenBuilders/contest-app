@@ -9,6 +9,7 @@
       flex-direction: column;
       gap: 0.875rem;
       overflow: hidden;
+      overflow-y: auto;
 
       &.theme {
          #container-page-create-section-header {
@@ -53,8 +54,8 @@
    display: flex;
    flex-direction: column;
    gap: 0.875rem;
-   overflow: hidden;
-   overflow-y: auto;
+   /* overflow: hidden;
+   overflow-y: auto; */
 }
 
 #container-page-create-section-header {
@@ -176,6 +177,7 @@
    flex-direction: column;
    overflow: hidden;
    flex-shrink: 0;
+   max-height: 15rem;
 
    > section {
       flex-grow: 1;
@@ -213,7 +215,7 @@
             flex-direction: column;
             flex-grow: 1;
             overflow: hidden;
-            min-height: 4.5rem;
+            min-height: 10rem;
 
             > div {
                > div#editor {

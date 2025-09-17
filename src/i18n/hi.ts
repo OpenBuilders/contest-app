@@ -19,6 +19,7 @@ const dict_hi = {
 			participant: "प्रतिभागी",
 		},
 		ok: "ठीक है",
+		done: "पूर्ण",
 		continue: "जारी रखें",
 		soon: "शीघ्र",
 		confirmOpenLink: {
