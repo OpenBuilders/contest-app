@@ -204,93 +204,97 @@ const ModalParticipate: Component = () => {
 			withCloseButton={true}
 		>
 			<div>
-				<Section
-					title={t("modals.participate.alias.title")}
-					description={
-						modals.participate.contest?.anonymous
-							? t("modals.participate.alias.hint_anonymous")
-							: t("modals.participate.alias.hint_normal")
-					}
-					class="container-participant-identity"
-				>
-					<Show
-						when={modals.participate.contest?.anonymous}
-						fallback={
-							<Avatar
-								src={lp?.tgWebAppData?.user?.photo_url}
-								peerId={lp?.tgWebAppData?.user?.id}
-								fullname={[
-									lp?.tgWebAppData?.user?.first_name,
-									lp?.tgWebAppData?.user?.last_name,
-								]
-									.filter(Boolean)
-									.join(" ")}
-							/>
+				<div>
+					<Section
+						title={t("modals.participate.alias.title")}
+						description={
+							modals.participate.contest?.anonymous
+								? t("modals.participate.alias.hint_anonymous")
+								: t("modals.participate.alias.hint_normal")
 						}
+						class="container-participant-identity"
 					>
-						<AvatarAlias
-							symbol={store.user?.anonymous_profile[2][0]!}
-							colorIndex={store.user?.anonymous_profile[0]!}
-						/>
-					</Show>
+						<Show
+							when={modals.participate.contest?.anonymous}
+							fallback={
+								<Avatar
+									src={lp?.tgWebAppData?.user?.photo_url}
+									peerId={lp?.tgWebAppData?.user?.id}
+									fullname={[
+										lp?.tgWebAppData?.user?.first_name,
+										lp?.tgWebAppData?.user?.last_name,
+									]
+										.filter(Boolean)
+										.join(" ")}
+								/>
+							}
+						>
+							<AvatarAlias
+								symbol={store.user?.anonymous_profile[2][0]!}
+								colorIndex={store.user?.anonymous_profile[0]!}
+							/>
+						</Show>
 
-					<Show
-						when={modals.participate.contest?.anonymous}
-						fallback={
+						<Show
+							when={modals.participate.contest?.anonymous}
+							fallback={
+								<span>
+									{[
+										lp?.tgWebAppData?.user?.first_name,
+										lp?.tgWebAppData?.user?.last_name,
+									]
+										.filter(Boolean)
+										.join(" ")}
+								</span>
+							}
+						>
 							<span>
 								{[
-									lp?.tgWebAppData?.user?.first_name,
-									lp?.tgWebAppData?.user?.last_name,
-								]
-									.filter(Boolean)
-									.join(" ")}
+									store.user?.anonymous_profile[1][1],
+									store.user?.anonymous_profile[2][1],
+								].join(" ")}
 							</span>
-						}
+						</Show>
+					</Section>
+
+					<Section
+						title={t("modals.participate.form.title")}
+						class="container-participant-form-title"
 					>
-						<span>
-							{[
-								store.user?.anonymous_profile[1][1],
-								store.user?.anonymous_profile[2][1],
-							].join(" ")}
-						</span>
-					</Show>
-				</Section>
+						<input
+							class="input"
+							type="text"
+							inputmode="url"
+							placeholder={t("modals.participate.form.link.placeholder")}
+							value={form.link}
+							onInput={(e) => setForm("link", e.currentTarget.value)}
+							onBlur={(e) => setForm("link", e.currentTarget.value.trim())}
+							onKeyDown={hideKeyboardOnEnter}
+							maxLength={store.limits!.form.participate.link.maxLength}
+						/>
+					</Section>
 
-				<Section
-					title={t("modals.participate.form.title")}
-					class="container-participant-form-title"
-				>
-					<input
-						class="input"
-						type="text"
-						inputmode="url"
-						placeholder={t("modals.participate.form.link.placeholder")}
-						value={form.link}
-						onInput={(e) => setForm("link", e.currentTarget.value)}
-						onBlur={(e) => setForm("link", e.currentTarget.value.trim())}
-						onKeyDown={hideKeyboardOnEnter}
-						maxLength={store.limits!.form.participate.link.maxLength}
+					<Section
+						description={t("modals.participate.form.description.hint")}
+						class="container-participant-form-description"
+					>
+						<Editor
+							value={form.description}
+							setValue={(data) => setForm("description", data)}
+							placeholder={t("modals.participate.form.description.placeholder")}
+							maxLength={store.limits!.form.participate.description.maxLength}
+						/>
+					</Section>
+				</div>
+
+				<footer>
+					<CustomMainButton
+						onClick={onClickButton}
+						text={t("modals.participate.form.button")}
+						disabled={buttonDisabled() || processing()}
+						loading={processing()}
 					/>
-				</Section>
-
-				<Section
-					description={t("modals.participate.form.description.hint")}
-					class="container-participant-form-description"
-				>
-					<Editor
-						value={form.description}
-						setValue={(data) => setForm("description", data)}
-						placeholder={t("modals.participate.form.description.placeholder")}
-						maxLength={store.limits!.form.participate.description.maxLength}
-					/>
-				</Section>
-
-				<CustomMainButton
-					onClick={onClickButton}
-					text={t("modals.participate.form.button")}
-					disabled={buttonDisabled() || processing()}
-					loading={processing()}
-				/>
+				</footer>
 			</div>
 		</Modal>
 	);
