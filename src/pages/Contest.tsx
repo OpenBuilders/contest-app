@@ -138,9 +138,9 @@ const PageContest: Component = () => {
 			);
 		} else {
 			const color = new Color(
-				getComputedStyle(
-					document.querySelector(":root") as HTMLElement,
-				).getPropertyValue("--bg-color"),
+				getComputedStyle(document.body as HTMLElement).getPropertyValue(
+					"--bg-color",
+				),
 			);
 
 			setHeaderColor(color.toHex() as any);
@@ -383,7 +383,7 @@ const PageContest: Component = () => {
 									when={theme()?.symbol}
 									fallback={
 										<div>
-											<SVGSymbol id="AiOutlineTrophy" />
+											<SVGSymbol id="AiOutlineTrophy" class="empty" />
 										</div>
 									}
 								>
