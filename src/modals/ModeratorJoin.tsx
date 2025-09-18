@@ -68,6 +68,7 @@ const ModalModeratorJoin: Component = () => {
 				setData({
 					contest: result.contest,
 				});
+				return;
 			}
 		}
 
