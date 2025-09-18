@@ -83,6 +83,7 @@ declare module "solid-js" {
 type FormCreateStore = {
 	title: string;
 	description: string;
+	instruction: string;
 	image?: HTMLCanvasElement;
 	prize: string;
 	date: {
@@ -162,6 +163,7 @@ const PageCreate: Component = () => {
 	const [form, setForm] = createStore<FormCreateStore>({
 		title: "",
 		description: "",
+		instruction: "",
 		prize: "",
 		date: {
 			end: Math.trunc((Date.now() + 7 * 86400 * 1000) / 86400) * 86400,
@@ -211,6 +213,15 @@ const PageCreate: Component = () => {
 			if (
 				(textContent?.length ?? 0) >
 				store.limits!.form.create.description.maxLength
+			) {
+				return true;
+			}
+		}
+
+		if (form.instruction) {
+			if (
+				(form.instruction?.length ?? 0) >
+				store.limits!.form.create.instruction.maxLength
 			) {
 				return true;
 			}
@@ -269,6 +280,7 @@ const PageCreate: Component = () => {
 				{
 					title: form.title,
 					description: form.description,
+					instruction: form.instruction,
 					prize: form.prize,
 					date: JSON.stringify(form.date),
 					theme: JSON.stringify(form.theme),
@@ -687,6 +699,27 @@ const PageCreate: Component = () => {
 			);
 		};
 
+		const SectionInstruction = () => {
+			return (
+				<div id="container-page-create-section-instruction">
+					<Section>
+						<textarea
+							id="input-instruction"
+							placeholder={t("pages.create.options.instruction.placeholder")}
+							value={form.instruction}
+							onInput={(e) => setForm("instruction", e.currentTarget.value)}
+							onChange={(e) => {
+								setForm("instruction", e.currentTarget.value.trim());
+							}}
+							onKeyUp={hideKeyboardOnEnter}
+							minLength={store.limits!.form.create.instruction.maxLength}
+							maxLength={store.limits!.form.create.instruction.maxLength}
+						/>
+					</Section>
+				</div>
+			);
+		};
+
 		const SectionOptions = () => {
 			const [duration, setDuration] = createSignal("7");
 			const [modal, setModal] = createSignal(false);
@@ -886,6 +919,8 @@ const PageCreate: Component = () => {
 					<SectionThemes />
 
 					<SectionInfo />
+
+					<SectionInstruction />
 
 					<SectionOptions />
 

@@ -18,6 +18,7 @@ export type Contest = {
 	moderators?: number[];
 	title: string;
 	description: string;
+	instruction?: string;
 	fee: number;
 	fee_wallet?: string;
 	prize?: string;
@@ -87,7 +88,6 @@ export type Submission = {
 	last_name?: User["last_name"];
 	profile_photo?: User["profile_photo"];
 	submission: {
-		link: string;
 		description?: string;
 	};
 	likes: number;

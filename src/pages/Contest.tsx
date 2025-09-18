@@ -46,7 +46,6 @@ import {
 	setStore,
 	store,
 } from "../utils/store";
-import { stripURLProtocol, truncateMiddle } from "../utils/string";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
 	invokeHapticFeedbackImpact,
@@ -365,7 +364,7 @@ const PageContest: Component = () => {
 									count: 6,
 									alpha: 0.325,
 									distance: patternSize.height! / 3.5,
-									size: patternSize.height! / 10,
+									size: patternSize.height! / 12,
 								},
 								{
 									count: 9,
@@ -682,7 +681,7 @@ const PageContest: Component = () => {
 												label: () => (
 													<>
 														<span class="shimmer"></span>
-														<span class="shimmer"></span>
+														{/*<span class="shimmer"></span>*/}
 													</>
 												),
 												prepend: () => <div class="shimmer"></div>,
@@ -721,7 +720,8 @@ const PageContest: Component = () => {
 				onMount(() => {
 					if (data.submissions && params.extra) {
 						const submission = data.submissions.find(
-							(item) => item.submission.id === Number.parseInt(params.extra),
+							(item) =>
+								item.submission.id === Number.parseInt(params.extra, 10),
 						);
 
 						if (submission) {
@@ -780,18 +780,7 @@ const PageContest: Component = () => {
 														onClickSubmission(item);
 													},
 													clickable: true,
-													label: () => (
-														<>
-															<span>{fullname}</span>
-															<span>
-																{truncateMiddle(
-																	stripURLProtocol(
-																		item.submission.submission.link,
-																	),
-																)}
-															</span>
-														</>
-													),
+													label: () => <span>{fullname}</span>,
 													prepend: () => (
 														<Show
 															when={item.submission.user_id}

@@ -1,5 +1,4 @@
-import { gsap } from "gsap/gsap-core";
-import { type Component, createEffect, onMount } from "solid-js";
+import { type Component, createEffect, onCleanup } from "solid-js";
 import { motionMultipler } from "../utils/motion";
 
 type CounterProps = {
@@ -8,37 +7,53 @@ type CounterProps = {
 	class?: string;
 	durationMs?: number;
 	splitDigits?: boolean;
-	snap?: number;
+	snap?: number; // smallest increment (e.g. 1, 0.1)
 };
 
 const Counter: Component<CounterProps> = (props) => {
 	let counter: HTMLSpanElement | undefined;
+	let frameId: number | null = null;
 
-	onMount(() => {
+	createEffect(() => {
 		if (!counter) return;
 
-		createEffect(() => {
-			gsap.fromTo(
-				counter,
-				{
-					innerText: counter.innerText.replace(",", ""),
-				},
-				{
-					innerText: props.value,
-					duration: ((props.durationMs ?? 1_000) / 1_000) * motionMultipler(),
-					snap: { innerText: props.snap ?? 1 },
-					stagger: {
-						onUpdate: function () {
-							if (props.splitDigits !== false) {
-								// @ts-expect-error
-								const el = this.targets()[0];
-								el.innerText = Number.parseInt(el.innerText).toLocaleString();
-							}
-						},
-					},
-				},
-			);
-		});
+		// Cancel any previous animation
+		if (frameId) cancelAnimationFrame(frameId);
+
+		const start =
+			parseFloat(counter.innerText.replace(/,/g, "")) ||
+			props.initialValue ||
+			0;
+		const end = props.value;
+		const duration =
+			((props.durationMs ?? 1000) / 1000) * motionMultipler() * 1000;
+		const snap = props.snap ?? 1;
+
+		const startTime = performance.now();
+
+		const animate = (now: number) => {
+			const elapsed = now - startTime;
+			const progress = Math.min(elapsed / duration, 1);
+			const current = start + (end - start) * progress;
+
+			const displayValue = Math.round(current / snap) * snap;
+
+			if (props.splitDigits !== false) {
+				counter!.innerText = displayValue.toLocaleString();
+			} else {
+				counter!.innerText = String(displayValue);
+			}
+
+			if (progress < 1) {
+				frameId = requestAnimationFrame(animate);
+			}
+		};
+
+		frameId = requestAnimationFrame(animate);
+	});
+
+	onCleanup(() => {
+		if (frameId) cancelAnimationFrame(frameId);
 	});
 
 	return (

@@ -102,8 +102,10 @@ const dict_de = {
 				image: { label: "Neues Bild setzen", crop: "Bild zuschneiden" },
 				name: { placeholder: "Wettbewerbsname" },
 				description: {
-					placeholder: "Beschreibung",
-					hint: "Sie können eine optionale Beschreibung für Ihren Wettbewerb angeben.",
+					placeholder: "Erzähl mehr über den Wettbewerb",
+				},
+				instruction: {
+					placeholder: "Was einzureichen ist — Links und Format",
 				},
 				duration: {
 					label: "Dauer",
@@ -293,19 +295,23 @@ const dict_de = {
 				"Teilnehmeridentitäten werden der Öffentlichkeit verborgen und durch lustige Aliasnamen ersetzt. Der Wettbewerbseigentümer kann weiterhin sehen, wer teilgenommen hat.",
 		},
 		participate: {
-			alias: {
-				title: "Sie nehmen teil als:",
-				hint_anonymous:
-					"Wettbewerbsorganisatoren können Ihr echtes Profil sehen.",
-				hint_normal: "Jeder kann Ihr echtes Profil sehen.",
+			title: "Am Wettbewerb teilnehmen",
+			instruction: {
+				title: "Was einreichen",
+				default:
+					"Bitte gib einen Link und eine kurze Beschreibung deiner Arbeit an",
 			},
 			form: {
 				title: "Einreichung",
-				link: { placeholder: "Link" },
 				description: {
-					placeholder: "Beschreibung",
-					hint: "Sie können eine optionale Beschreibung für Ihre Einreichung hinzufügen.",
+					placeholder: "Links zu deiner Arbeit und Beschreibung",
 				},
+				button: "Einreichen",
+			},
+			profile: "<b>{profile}</b> wird bei der Einreichung angezeigt",
+			confirm: {
+				title: "Einreichen",
+				prompt: "Möchtest du deinen Beitrag für diesen Wettbewerb einreichen?",
 				button: "Einreichen",
 			},
 		},

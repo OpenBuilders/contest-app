@@ -118,8 +118,10 @@ const dict = {
 					placeholder: "Contest Name",
 				},
 				description: {
-					placeholder: "Description",
-					hint: "You can provide an optional description for your contest.",
+					placeholder: "Tell more about contest",
+				},
+				instruction: {
+					placeholder: "What to submit — links and format",
 				},
 				duration: {
 					label: "Duration",
@@ -405,20 +407,22 @@ const dict = {
 				"Participant identities are hidden from the public and replaced with fun aliases. The contest owner can still see who joined.",
 		},
 		participate: {
-			alias: {
-				title: "You're participating as:",
-				hint_anonymous: "Contest organizers can see your real profile.",
-				hint_normal: "Everyone can see your real profile.",
+			title: "Join the contest",
+			instruction: {
+				title: "What to submit",
+				default: "Please provide a link and brief description of your work",
 			},
 			form: {
 				title: "submission",
-				link: {
-					placeholder: "Link",
-				},
 				description: {
-					placeholder: "Description",
-					hint: "You can provide an optional description for your submission.",
+					placeholder: "Links to your work and description",
 				},
+				button: "Submit",
+			},
+			profile: "<b>{profile}</b> shown on the submission",
+			confirm: {
+				title: "Submit",
+				prompt: "Do you want to submit your entry for this contest?",
 				button: "Submit",
 			},
 		},

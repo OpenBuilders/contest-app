@@ -1,6 +1,6 @@
 import { useTranslation } from "../contexts/TranslationContext";
 import { popupManager } from "../utils/popup";
-import { truncateMiddle } from "../utils/string";
+import { linkifyHtml, truncateMiddle } from "../utils/string";
 import { invokeHapticFeedbackImpact, postEvent } from "../utils/telegram";
 import "./RichText.scss";
 import { type Component, onCleanup, onMount } from "solid-js";
@@ -59,7 +59,13 @@ const RichText: Component<RichTextProps> = (props) => {
 		});
 	});
 
-	return <div ref={container} class="content" innerHTML={props.content}></div>;
+	return (
+		<div
+			ref={container}
+			class="content"
+			innerHTML={linkifyHtml(props.content)}
+		></div>
+	);
 };
 
 export default RichText;

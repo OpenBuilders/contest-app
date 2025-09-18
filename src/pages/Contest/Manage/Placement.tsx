@@ -17,7 +17,6 @@ import { navigator } from "../../../utils/navigator";
 import { formatNumbersInString } from "../../../utils/number";
 import { popupManager } from "../../../utils/popup";
 import { type Placement, store } from "../../../utils/store";
-import { stripURLProtocol, truncateMiddle } from "../../../utils/string";
 import {
 	invokeHapticFeedbackImpact,
 	invokeHapticFeedbackNotification,
@@ -322,13 +321,6 @@ const PageContestManagePlacement: Component = () => {
 
 											<div>
 												<span>{fullname}</span>
-												<span>
-													{truncateMiddle(
-														stripURLProtocol(
-															submission.submission.submission.link,
-														),
-													)}
-												</span>
 											</div>
 										</div>
 									),

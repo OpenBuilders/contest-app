@@ -7,6 +7,7 @@ import {
 	createMemo,
 	createSignal,
 	Match,
+	onCleanup,
 	onMount,
 	type Setter,
 	Switch,
@@ -25,6 +26,8 @@ import { toast } from "../../../components/Toast";
 import { useTranslation } from "../../../contexts/TranslationContext";
 import { requestAPI } from "../../../utils/api";
 import { cloneObject, compareObjects } from "../../../utils/general";
+import { hideKeyboardOnEnter } from "../../../utils/input";
+import { initializeDOMPurify } from "../../../utils/lazy";
 import { navigator } from "../../../utils/navigator";
 import { clamp, formatNumbersInString } from "../../../utils/number";
 import { popupManager } from "../../../utils/popup";
@@ -38,6 +41,7 @@ export type SectionContestManageOptionsForm = {
 	fee: number;
 	title: string;
 	description: string;
+	instruction: string;
 	prize: string;
 	loaded: boolean;
 };
@@ -74,6 +78,7 @@ const PageContestManageOptions: Component = () => {
 		fee: 0,
 		title: "",
 		description: "",
+		instruction: "",
 		prize: "",
 		loaded: false,
 	});
@@ -111,6 +116,7 @@ export const SectionContestManageOptions: Component<
 
 	const [processing, setProcessing] = props.processing;
 	const [form, setForm] = props.form;
+	const [formData, setFormData] = createStore(cloneObject(form));
 
 	const SectionOptionsLoading = () => {
 		return (
@@ -132,6 +138,7 @@ export const SectionContestManageOptions: Component<
 			{
 				title: form.title,
 				description: form.description,
+				instruction: form.instruction,
 				prize: form.prize,
 				fee: form.fee.toString(),
 			},
@@ -284,6 +291,21 @@ export const SectionContestManageOptions: Component<
 					/>
 				</Section>
 
+				<Section>
+					<textarea
+						id="input-instruction"
+						placeholder={t("pages.create.options.instruction.placeholder")}
+						value={form.instruction}
+						onInput={(e) => setForm("instruction", e.currentTarget.value)}
+						onChange={(e) => {
+							setForm("instruction", e.currentTarget.value.trim());
+						}}
+						onKeyUp={hideKeyboardOnEnter}
+						minLength={store.limits!.form.create.instruction.maxLength}
+						maxLength={store.limits!.form.create.instruction.maxLength}
+					/>
+				</Section>
+
 				<div id="container-page-contest-manage-options-delete">
 					<button type="button" class="clickable" onClick={onClickDelete}>
 						{t("pages.contest.manage.list.delete")}
@@ -347,6 +369,7 @@ export const SectionContestManageOptions: Component<
 
 				setForm({
 					description: result.contest.description ?? form.description,
+					instruction: result.contest.instruction ?? form.instruction,
 					fee: result.contest.fee ?? form.fee,
 					prize: result.contest.prize ?? form.prize,
 					title: result.contest.title ?? form.title,
@@ -363,13 +386,45 @@ export const SectionContestManageOptions: Component<
 		});
 	};
 
+	const initialHeight = window.visualViewport?.height || window.innerHeight;
+
+	const handleVisualViewport = () => {
+		const currentHeight = window.visualViewport?.height || window.innerHeight;
+		if (currentHeight < initialHeight) {
+			const activeEl = document.activeElement as HTMLElement | null;
+			if (activeEl) {
+				setTimeout(() => {
+					activeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+				}, 250);
+			}
+		}
+	};
+
 	onMount(async () => {
+		if (window.visualViewport) {
+			window.visualViewport.addEventListener("resize", handleVisualViewport, {
+				passive: true,
+			});
+		} else {
+			window.addEventListener("resize", handleVisualViewport, {
+				passive: true,
+			});
+		}
+
 		if (!form.loaded) {
 			await fetchData();
 		}
+
+		await initializeDOMPurify();
 	});
 
-	const [formData, setFormData] = createStore(cloneObject(form));
+	onCleanup(() => {
+		if (window.visualViewport) {
+			window.visualViewport.removeEventListener("resize", handleVisualViewport);
+		} else {
+			window.removeEventListener("resize", handleVisualViewport);
+		}
+	});
 
 	return (
 		<div id="container-page-contest-manage-options" class="page">

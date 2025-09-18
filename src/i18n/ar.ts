@@ -105,8 +105,10 @@ const dict_ar = {
 				image: { label: "تعيين صورة جديدة", crop: "قص الصورة" },
 				name: { placeholder: "اسم المسابقة" },
 				description: {
-					placeholder: "الوصف",
-					hint: "يمكنك إضافة وصف اختياري للمسابقة.",
+					placeholder: "أخبر المزيد عن المسابقة",
+				},
+				instruction: {
+					placeholder: "ما يجب تقديمه — الروابط والصيغة",
 				},
 				duration: {
 					label: "المدة",
@@ -282,18 +284,22 @@ const dict_ar = {
 				"يتم إخفاء هوية المشاركين عن الجمهور واستبدالها بأسماء مستعارة. لا يزال مالك المسابقة يستطيع رؤية من انضم.",
 		},
 		participate: {
-			alias: {
-				title: "أنت تشارك باسم:",
-				hint_anonymous: "يمكن لمنظمي المسابقة رؤية ملفك الحقيقي.",
-				hint_normal: "الجميع يمكنهم رؤية ملفك الحقيقي.",
+			title: "انضم إلى المسابقة",
+			instruction: {
+				title: "ماذا تقدم",
+				default: "يرجى تقديم رابط ووصف موجز لعملك",
 			},
 			form: {
-				title: "إرسال",
-				link: { placeholder: "الرابط" },
+				title: "المشاركة",
 				description: {
-					placeholder: "الوصف",
-					hint: "يمكنك تقديم وصف اختياري للإرسال.",
+					placeholder: "روابط عملك ووصف",
 				},
+				button: "إرسال",
+			},
+			profile: "<b>{profile}</b> يظهر في المشاركة",
+			confirm: {
+				title: "إرسال",
+				prompt: "هل تريد إرسال مشاركتك في هذه المسابقة؟",
 				button: "إرسال",
 			},
 		},

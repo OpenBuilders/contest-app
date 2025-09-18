@@ -233,6 +233,29 @@
    }
 }
 
+#container-page-create-section-instruction {
+   padding: 0 1rem;
+   flex-shrink: 0;
+
+   > section {
+      > div {
+         display: flex;
+         flex-direction: column;
+      }
+   }
+}
+
+textarea#input-instruction {
+   flex-grow: 1;
+   border-radius: 0.6875rem;
+   padding: 0.75rem 1rem;
+   min-height: 6rem;
+
+   &::placeholder {
+      color: rgba(var(--text-color-rgb), 0.5);
+   }
+}
+
 #container-page-create-section-options {
    padding: 0 1rem;
    flex-shrink: 0;

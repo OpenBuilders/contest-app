@@ -1,4 +1,5 @@
 import "./Participate.scss";
+import { BsQuestionCircleFill } from "solid-icons/bs";
 import { FaSolidCircleExclamation } from "solid-icons/fa";
 import {
 	batch,
@@ -17,19 +18,14 @@ import { Section } from "../components/Section";
 import { toast } from "../components/Toast";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
-import {
-	hideKeyboardOnEnter,
-	isValidTelegramUsername,
-	isValidURL,
-	normalizeTelegramUsernameToURL,
-	normalizeURL,
-} from "../utils/input";
+
 import {
 	initializeTonConnect,
 	parseTONAddress,
 	tonConnectUI,
 } from "../utils/lazy";
 import { modals, setModals } from "../utils/modal";
+import { popupManager } from "../utils/popup";
 import { toggleSignal } from "../utils/signals";
 import { store } from "../utils/store";
 import {
@@ -39,15 +35,13 @@ import {
 } from "../utils/telegram";
 
 type ParticipateFormStore = {
-	link: string;
 	description: string;
 };
 
 const ModalParticipate: Component = () => {
-	const { t } = useTranslation();
+	const { t, td } = useTranslation();
 
 	const [form, setForm] = createStore<ParticipateFormStore>({
-		link: "",
 		description: "",
 	});
 	const [processing, setProcessing] = createSignal(false);
@@ -79,27 +73,16 @@ const ModalParticipate: Component = () => {
 	};
 
 	const buttonDisabled = createMemo(() => {
-		if (form.description) {
-			const {
-				body: { textContent },
-			} = new DOMParser().parseFromString(form.description, "text/html");
+		const {
+			body: { textContent },
+		} = new DOMParser().parseFromString(form.description, "text/html");
 
-			if (
-				(textContent?.length ?? 0) >
-				store.limits!.form.participate.description.maxLength
-			) {
-				return true;
-			}
+		if (
+			(textContent?.length ?? 0) >
+			store.limits!.form.participate.description.maxLength
+		) {
+			return true;
 		}
-
-		return (
-			!(
-				isValidURL(form.link.trim()) ||
-				isValidTelegramUsername(form.link.trim())
-			) ||
-			form.link.trim().length < store.limits!.form.participate.link.minLength ||
-			form.link.trim().length > store.limits!.form.participate.link.maxLength
-		);
 	});
 
 	const handlePayment = async () => {
@@ -141,6 +124,25 @@ const ModalParticipate: Component = () => {
 
 	const onClickButton = async () => {
 		if (processing()) return;
+
+		const popup = await popupManager.openPopup({
+			title: t("modals.participate.confirm.title"),
+			message: t("modals.participate.confirm.prompt"),
+			buttons: [
+				{
+					id: "ok",
+					type: "destructive",
+					text: t("modals.participate.confirm.button"),
+				},
+				{
+					id: "cancel",
+					type: "cancel",
+				},
+			],
+		});
+
+		if (!popup.button_id || popup.button_id === "cancel") return;
+
 		setProcessing(true);
 
 		invokeHapticFeedbackImpact("soft");
@@ -161,9 +163,6 @@ const ModalParticipate: Component = () => {
 		const request = await requestAPI(
 			`/contest/${modals.participate.contest!.slug}/submit`,
 			{
-				link: (isValidTelegramUsername(form.link)
-					? normalizeTelegramUsernameToURL(form.link)
-					: normalizeURL(form.link))!,
 				description: form.description,
 				boc: boc,
 			},
@@ -200,6 +199,15 @@ const ModalParticipate: Component = () => {
 		setProcessing(false);
 	};
 
+	const fullname = modals.participate.contest?.anonymous
+		? [
+				store.user?.anonymous_profile[1][1],
+				store.user?.anonymous_profile[2][1],
+			].join(" ")
+		: [lp?.tgWebAppData?.user?.first_name, lp?.tgWebAppData?.user?.last_name]
+				.filter(Boolean)
+				.join(" ");
+
 	return (
 		<Modal
 			containerClass="container-modal-participate"
@@ -210,15 +218,30 @@ const ModalParticipate: Component = () => {
 		>
 			<div>
 				<div>
-					<Section
-						title={t("modals.participate.alias.title")}
-						description={
-							modals.participate.contest?.anonymous
-								? t("modals.participate.alias.hint_anonymous")
-								: t("modals.participate.alias.hint_normal")
-						}
-						class="container-participant-identity"
-					>
+					<h1>{t("modals.participate.title")}</h1>
+
+					<Section>
+						<div>
+							<BsQuestionCircleFill />
+							<span>{t("modals.participate.instruction.title")}</span>
+						</div>
+
+						<p>
+							{modals.participate.contest?.instruction ??
+								t("modals.participate.instruction.default")}
+						</p>
+					</Section>
+
+					<Section class="container-participant-form-description">
+						<Editor
+							value={form.description}
+							setValue={(data) => setForm("description", data)}
+							placeholder={t("modals.participate.form.description.placeholder")}
+							maxLength={store.limits!.form.participate.description.maxLength}
+						/>
+					</Section>
+
+					<footer>
 						<Show
 							when={modals.participate.contest?.anonymous}
 							fallback={
@@ -239,57 +262,12 @@ const ModalParticipate: Component = () => {
 								colorIndex={store.user?.anonymous_profile[0]!}
 							/>
 						</Show>
-
-						<Show
-							when={modals.participate.contest?.anonymous}
-							fallback={
-								<span>
-									{[
-										lp?.tgWebAppData?.user?.first_name,
-										lp?.tgWebAppData?.user?.last_name,
-									]
-										.filter(Boolean)
-										.join(" ")}
-								</span>
-							}
-						>
-							<span>
-								{[
-									store.user?.anonymous_profile[1][1],
-									store.user?.anonymous_profile[2][1],
-								].join(" ")}
-							</span>
-						</Show>
-					</Section>
-
-					<Section
-						title={t("modals.participate.form.title")}
-						class="container-participant-form-title"
-					>
-						<input
-							class="input"
-							type="text"
-							inputmode="url"
-							placeholder={t("modals.participate.form.link.placeholder")}
-							value={form.link}
-							onInput={(e) => setForm("link", e.currentTarget.value)}
-							onBlur={(e) => setForm("link", e.currentTarget.value.trim())}
-							onKeyDown={hideKeyboardOnEnter}
-							maxLength={store.limits!.form.participate.link.maxLength}
-						/>
-					</Section>
-
-					<Section
-						description={t("modals.participate.form.description.hint")}
-						class="container-participant-form-description"
-					>
-						<Editor
-							value={form.description}
-							setValue={(data) => setForm("description", data)}
-							placeholder={t("modals.participate.form.description.placeholder")}
-							maxLength={store.limits!.form.participate.description.maxLength}
-						/>
-					</Section>
+						<span
+							innerHTML={td("modals.participate.profile", {
+								profile: fullname,
+							})}
+						></span>
+					</footer>
 				</div>
 
 				<footer>

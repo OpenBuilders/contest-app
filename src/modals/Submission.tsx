@@ -4,7 +4,6 @@ import { type Component, createSignal, onMount, Show } from "solid-js";
 import { produce } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../components/Avatar";
 import Counter from "../components/Counter";
-import CustomMainButton from "../components/CustomMainButton";
 import Modal from "../components/Modal";
 import RichText from "../components/RichText";
 import { SVGSymbol } from "../components/SVG";
@@ -13,13 +12,9 @@ import { setData } from "../pages/Contest";
 import { requestAPI } from "../utils/api";
 import { cloneObject } from "../utils/general";
 import { modals, setModals } from "../utils/modal";
-import { popupManager } from "../utils/popup";
-import { truncateMiddle } from "../utils/string";
 import {
 	invokeHapticFeedbackImpact,
 	invokeHapticFeedbackNotification,
-	parseTelegramLink,
-	postEvent,
 } from "../utils/telegram";
 
 const ModalSubmission: Component = () => {
@@ -62,46 +57,46 @@ const ModalSubmission: Component = () => {
 				.filter(Boolean)
 				.join(" ");
 
-	const onClickButton = async () => {
-		const popup = await popupManager.openPopup({
-			title: t("general.confirmOpenLink.title"),
-			message: td("general.confirmOpenLink.prompt", {
-				link: truncateMiddle(
-					modals.submission.submission!.submission.submission.link,
-					64,
-					32,
-				),
-			}),
-			buttons: [
-				{
-					id: "ok",
-					type: "ok",
-				},
-				{
-					id: "cancel",
-					type: "cancel",
-				},
-			],
-		});
+	// const onClickButton = async () => {
+	// 	const popup = await popupManager.openPopup({
+	// 		title: t("general.confirmOpenLink.title"),
+	// 		message: td("general.confirmOpenLink.prompt", {
+	// 			link: truncateMiddle(
+	// 				modals.submission.submission!.submission.submission.link,
+	// 				64,
+	// 				32,
+	// 			),
+	// 		}),
+	// 		buttons: [
+	// 			{
+	// 				id: "ok",
+	// 				type: "ok",
+	// 			},
+	// 			{
+	// 				id: "cancel",
+	// 				type: "cancel",
+	// 			},
+	// 		],
+	// 	});
 
-		if (!popup.button_id || popup.button_id === "cancel") return;
+	// 	if (!popup.button_id || popup.button_id === "cancel") return;
 
-		const path = parseTelegramLink(
-			modals.submission.submission!.submission.submission.link,
-		);
+	// 	const path = parseTelegramLink(
+	// 		modals.submission.submission!.submission.submission.link,
+	// 	);
 
-		invokeHapticFeedbackImpact("light");
+	// 	invokeHapticFeedbackImpact("light");
 
-		if (path) {
-			postEvent("web_app_open_tg_link", {
-				path_full: path,
-			});
-		} else {
-			postEvent("web_app_open_link", {
-				url: modals.submission.submission!.submission.submission.link,
-			});
-		}
-	};
+	// 	if (path) {
+	// 		postEvent("web_app_open_tg_link", {
+	// 			path_full: path,
+	// 		});
+	// 	} else {
+	// 		postEvent("web_app_open_link", {
+	// 			url: modals.submission.submission!.submission.submission.link,
+	// 		});
+	// 	}
+	// };
 
 	const onClickAction = async (type: "like" | "dislike") => {
 		if (processing()) return;
@@ -265,7 +260,7 @@ const ModalSubmission: Component = () => {
 						</div>
 					</div>
 
-					<div>
+					{/*<div>
 						<span>{t("modals.submission.submission.link.label")}</span>
 
 						<div>
@@ -282,7 +277,7 @@ const ModalSubmission: Component = () => {
 								text={t("modals.submission.button")}
 							/>
 						</div>
-					</div>
+					</div>*/}
 				</section>
 
 				<ul>
@@ -306,13 +301,11 @@ const ModalSubmission: Component = () => {
 						/>
 						<span>{t("modals.submission.actions.dislike")}</span>
 						<div>
-							{"("}
 							<Counter
 								value={modals.submission.submission.submission.dislikes}
 								initialValue={0}
 								durationMs={250}
 							/>
-							{")"}
 						</div>
 					</li>
 
@@ -336,13 +329,11 @@ const ModalSubmission: Component = () => {
 						/>
 						<span>{t("modals.submission.actions.like")}</span>
 						<div>
-							{"("}
 							<Counter
 								value={modals.submission.submission.submission.likes}
 								initialValue={0}
 								durationMs={250}
 							/>
-							{")"}
 						</div>
 					</li>
 				</ul>
