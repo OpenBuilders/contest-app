@@ -34,6 +34,7 @@ const ModalSettings: Component = () => {
 			() => {
 				setLocale(form.lang);
 				setSettings("language", form.lang);
+				location.reload();
 			},
 			{
 				defer: true,
