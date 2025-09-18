@@ -436,7 +436,6 @@ const PageContest: Component = () => {
 					<Switch
 						fallback={
 							<li>
-								<span>{t("pages.contest.header.entry.title")}</span>
 								<div>
 									<Show
 										when={(contest.contest?.fee ?? 0) > 0}
@@ -444,53 +443,53 @@ const PageContest: Component = () => {
 											<span>{t("pages.contest.header.entry.free")}</span>
 										}
 									>
-										<span>{contest.contest!.fee?.toLocaleString()}</span>
-										<span>TON</span>
+										<span>{contest.contest!.fee?.toLocaleString()} TON</span>
 									</Show>
 								</div>
+								<span>{t("pages.contest.header.entry.title")}</span>
 							</li>
 						}
 					>
 						<Match when={contest.contest?.announced}>
 							<li>
-								<span>{t("pages.contest.header.results.label")}</span>
 								<div>
 									<span>{winnersCount()}</span>
-									<span>{t("pages.contest.header.results.winners")}</span>
 								</div>
+
+								<span>{t("pages.contest.header.results.winners")}</span>
 							</li>
 						</Match>
 
 						<Match when={Date.now() / 1000 >= contest.contest?.date_end!}>
 							<li>
-								<span>{t("pages.contest.header.status.label")}</span>
 								<div>
 									<span>{t("pages.contest.header.status.closed")}</span>
 								</div>
+
+								<span>{t("pages.contest.header.status.label")}</span>
 							</li>
 						</Match>
 					</Switch>
 
 					<li>
-						<span>{t("pages.contest.header.prize.title")}</span>
 						<Award
 							text={formatNumbersInString(
 								contest.contest?.prize ||
 									t("pages.contest.header.prize.unknown"),
 							)}
 						/>
+
+						<span>{t("pages.contest.header.prize.title")}</span>
 					</li>
 
 					<li>
-						<span>{t("pages.contest.header.deadline.title")}</span>
 						<div>
 							<span>
 								{dayjs.unix(contest.contest!.date_end!).format("MMM D")}
 							</span>
-							<span>
-								{dayjs.unix(contest.contest!.date_end!).format("YYYY")}
-							</span>
 						</div>
+
+						<span>{t("pages.contest.header.deadline.title")}</span>
 					</li>
 				</ul>
 			);

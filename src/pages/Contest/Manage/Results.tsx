@@ -1,6 +1,6 @@
 import { useParams } from "@solidjs/router";
 import "./Results.scss";
-import { FaSolidCircleExclamation } from "solid-icons/fa";
+import { FaSolidCircleExclamation, FaSolidFlagCheckered } from "solid-icons/fa";
 import { IoAddCircle } from "solid-icons/io";
 import {
 	type Component,
@@ -395,7 +395,7 @@ const PageContestManageResults: Component = () => {
 					</header>
 
 					<Switch>
-						<Match when={!placements.placements || false}>
+						<Match when={!placements.placements}>
 							<SectionResultsLoading />
 						</Match>
 
@@ -412,10 +412,17 @@ const PageContestManageResults: Component = () => {
 					>
 						<footer>
 							<CustomMainButton
+								text={t("general.done")}
+								onClick={onBackButton}
+								secondary={true}
+							/>
+
+							<CustomMainButton
 								text={t("pages.contest.manage.results.announce.button")}
 								onClick={onClickButtonAnnounce}
 								disabled={buttonDisabled() || processing()}
 								loading={processing()}
+								prepend={FaSolidFlagCheckered}
 							/>
 						</footer>
 					</Show>

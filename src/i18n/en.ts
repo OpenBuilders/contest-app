@@ -278,7 +278,7 @@ const dict = {
 						title: "Announce Results",
 						prompt:
 							"Are you sure you want to announce the results? All participants will be notified.",
-						button: "Announce Results",
+						button: "Announce",
 					},
 				},
 				placement: {

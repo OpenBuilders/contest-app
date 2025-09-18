@@ -113,6 +113,8 @@ const PageContestManageSettings: Component = () => {
 			skipHistory: true,
 			resolve: false,
 		});
+
+		(document.activeElement as HTMLElement)?.blur();
 	});
 
 	const onClickButtonInvite = () => {

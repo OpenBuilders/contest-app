@@ -1,6 +1,7 @@
 import "./CustomMainButton.scss";
 import { TbLoader2 } from "solid-icons/tb";
-import type { Component } from "solid-js";
+import { type Component, Show } from "solid-js";
+import { Dynamic } from "solid-js/web";
 
 type CustomMainButtonProps = {
 	onClick: () => void;
@@ -10,6 +11,8 @@ type CustomMainButtonProps = {
 	loading?: boolean;
 	backgroundColor?: string;
 	textColor?: string;
+	secondary?: boolean;
+	prepend?: Component;
 };
 
 const CustomMainButton: Component<CustomMainButtonProps> = (props) => {
@@ -19,7 +22,11 @@ const CustomMainButton: Component<CustomMainButtonProps> = (props) => {
 			class="main-button"
 			onClick={props.onClick}
 			disabled={props.disabled}
-			classList={{ disabled: props.disabled, progress: props.loading }}
+			classList={{
+				disabled: props.disabled,
+				progress: props.loading,
+				secondary: props.secondary,
+			}}
 			style={{
 				"--btn-bg-color":
 					props.backgroundColor ?? "var(--tg-theme-button-color)",
@@ -27,6 +34,11 @@ const CustomMainButton: Component<CustomMainButtonProps> = (props) => {
 					props.textColor ?? "var(--tg-theme-button-text-color)",
 			}}
 		>
+			<Show when={props.prepend}>
+				<div class="prepend">
+					<Dynamic component={props.prepend} />
+				</div>
+			</Show>
 			<span>{props.text}</span>
 			<TbLoader2 />
 		</button>

@@ -213,7 +213,7 @@ const dict_de = {
 						title: "Ergebnisse ankündigen",
 						prompt:
 							"Sind Sie sicher, dass Sie die Ergebnisse ankündigen möchten? Alle Teilnehmer werden benachrichtigt.",
-						button: "Ergebnisse ankündigen",
+						button: "Ankündigen",
 					},
 				},
 				placement: {
