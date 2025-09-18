@@ -425,6 +425,10 @@ const dict = {
 				prompt: "Do you want to submit your entry for this contest?",
 				button: "Submit",
 			},
+			done: {
+				title: "We’ve received your entry",
+				description: "Now cross your fingers and wait for the results",
+			},
 		},
 		submission: {
 			description: {

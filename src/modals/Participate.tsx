@@ -6,19 +6,23 @@ import {
 	type Component,
 	createMemo,
 	createSignal,
+	Match,
 	onMount,
 	Show,
+	Switch,
 } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../components/Avatar";
 import CustomMainButton from "../components/CustomMainButton";
 import Editor from "../components/Editor";
+import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import Modal from "../components/Modal";
 import { Section } from "../components/Section";
 import { toast } from "../components/Toast";
 import { useTranslation } from "../contexts/TranslationContext";
+import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
-
+import { playConfetti } from "../utils/confetti";
 import {
 	initializeTonConnect,
 	parseTONAddress,
@@ -40,6 +44,8 @@ type ParticipateFormStore = {
 
 const ModalParticipate: Component = () => {
 	const { t, td } = useTranslation();
+
+	const [state, setState] = createSignal<"form" | "done">("form");
 
 	const [form, setForm] = createStore<ParticipateFormStore>({
 		description: "",
@@ -174,17 +180,12 @@ const ModalParticipate: Component = () => {
 
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
+				playConfetti({
+					emojis: ["🎉"],
+				});
 
 				batch(() => {
-					setModals(
-						"participate",
-						produce((data) => {
-							data.contest = undefined;
-							data.metadata = undefined;
-							data.open = false;
-						}),
-					);
-
+					setState("done");
 					toggleSignal("fetchContest");
 				});
 
@@ -216,69 +217,97 @@ const ModalParticipate: Component = () => {
 			portalParent={document.querySelector("#modals")!}
 			withCloseButton={true}
 		>
-			<div>
-				<div>
-					<h1>{t("modals.participate.title")}</h1>
+			<Switch>
+				<Match when={state() === "form"}>
+					<div>
+						<div id="container-modal-participate-form">
+							<h1>{t("modals.participate.title")}</h1>
 
-					<Section>
-						<div>
-							<BsQuestionCircleFill />
-							<span>{t("modals.participate.instruction.title")}</span>
+							<Section>
+								<div>
+									<BsQuestionCircleFill />
+									<span>{t("modals.participate.instruction.title")}</span>
+								</div>
+
+								<p>
+									{modals.participate.contest?.instruction ??
+										t("modals.participate.instruction.default")}
+								</p>
+							</Section>
+
+							<Section class="container-participant-form-description">
+								<Editor
+									value={form.description}
+									setValue={(data) => setForm("description", data)}
+									placeholder={t(
+										"modals.participate.form.description.placeholder",
+									)}
+									maxLength={
+										store.limits!.form.participate.description.maxLength
+									}
+								/>
+							</Section>
+
+							<footer>
+								<Show
+									when={modals.participate.contest?.anonymous}
+									fallback={
+										<Avatar
+											src={lp?.tgWebAppData?.user?.photo_url}
+											peerId={lp?.tgWebAppData?.user?.id}
+											fullname={[
+												lp?.tgWebAppData?.user?.first_name,
+												lp?.tgWebAppData?.user?.last_name,
+											]
+												.filter(Boolean)
+												.join(" ")}
+										/>
+									}
+								>
+									<AvatarAlias
+										symbol={store.user?.anonymous_profile[2][0]!}
+										colorIndex={store.user?.anonymous_profile[0]!}
+									/>
+								</Show>
+								<span
+									innerHTML={td("modals.participate.profile", {
+										profile: fullname,
+									})}
+								></span>
+							</footer>
 						</div>
 
-						<p>
-							{modals.participate.contest?.instruction ??
-								t("modals.participate.instruction.default")}
-						</p>
-					</Section>
-
-					<Section class="container-participant-form-description">
-						<Editor
-							value={form.description}
-							setValue={(data) => setForm("description", data)}
-							placeholder={t("modals.participate.form.description.placeholder")}
-							maxLength={store.limits!.form.participate.description.maxLength}
-						/>
-					</Section>
-
-					<footer>
-						<Show
-							when={modals.participate.contest?.anonymous}
-							fallback={
-								<Avatar
-									src={lp?.tgWebAppData?.user?.photo_url}
-									peerId={lp?.tgWebAppData?.user?.id}
-									fullname={[
-										lp?.tgWebAppData?.user?.first_name,
-										lp?.tgWebAppData?.user?.last_name,
-									]
-										.filter(Boolean)
-										.join(" ")}
-								/>
-							}
-						>
-							<AvatarAlias
-								symbol={store.user?.anonymous_profile[2][0]!}
-								colorIndex={store.user?.anonymous_profile[0]!}
+						<footer>
+							<CustomMainButton
+								onClick={onClickButton}
+								text={t("modals.participate.form.button")}
+								disabled={buttonDisabled() || processing()}
+								loading={processing()}
 							/>
-						</Show>
-						<span
-							innerHTML={td("modals.participate.profile", {
-								profile: fullname,
-							})}
-						></span>
-					</footer>
-				</div>
+						</footer>
+					</div>
+				</Match>
 
-				<footer>
-					<CustomMainButton
-						onClick={onClickButton}
-						text={t("modals.participate.form.button")}
-						disabled={buttonDisabled() || processing()}
-						loading={processing()}
-					/>
-				</footer>
-			</div>
+				<Match when={state() === "done"}>
+					<div>
+						<div id="container-modal-participate-done">
+							<LottiePlayerMotion
+								src={TGS.confetti.url}
+								outline={TGS.confetti.outline}
+								autoplay
+								playOnClick
+							/>
+
+							<h1>{t("modals.participate.done.title")}</h1>
+							<p>{t("modals.participate.done.description")}</p>
+						</div>
+
+						<footer>
+							<CustomMainButton onClick={onClose} text={t("general.done")} />
+						</footer>
+					</div>
+				</Match>
+			</Switch>
 		</Modal>
 	);
 };

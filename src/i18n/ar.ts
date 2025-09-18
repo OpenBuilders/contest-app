@@ -302,6 +302,10 @@ const dict_ar = {
 				prompt: "هل تريد إرسال مشاركتك في هذه المسابقة؟",
 				button: "إرسال",
 			},
+			done: {
+				title: "لقد استلمنا مشاركتك",
+				description: "الآن فلتتمنى الحظ وانتظر النتائج",
+			},
 		},
 		submission: {
 			description: { title: "الوصف", empty: "لم يتم توفير وصف" },

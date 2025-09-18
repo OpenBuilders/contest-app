@@ -29,7 +29,7 @@
       gap: 1rem;
       overflow: hidden;
 
-      > div {
+      > div#container-modal-participate-form {
          display: flex;
          flex-direction: column;
          flex-grow: 1;
@@ -116,6 +116,33 @@
             > span {
                font-size: 0.875rem;
             }
+         }
+      }
+
+      > div#container-modal-participate-done {
+         display: flex;
+         flex-direction: column;
+         flex-grow: 1;
+         align-items: center;
+         justify-content: center;
+         gap: 0.5rem;
+         padding: 0 1rem;
+         overflow: hidden;
+         overflow-y: auto;
+
+         > div.lottie-animation {
+            width: 10rem;
+         }
+
+         > h1 {
+            padding-top: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+         }
+
+         > p {
+            font-size: 1rem;
+            color: rgba(var(--text-color-rgb), 0.5);
          }
       }
 

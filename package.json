@@ -24,6 +24,7 @@
 		"dayjs": "^1.11.18",
 		"dompurify": "^3.2.7",
 		"gsap": "^3.13.0",
+		"js-confetti": "^0.13.1",
 		"pako": "^2.1.0",
 		"pell": "^1.0.6",
 		"plausible-tracker": "^0.3.9",

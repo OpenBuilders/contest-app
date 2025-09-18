@@ -314,6 +314,10 @@ const dict_de = {
 				prompt: "Möchtest du deinen Beitrag für diesen Wettbewerb einreichen?",
 				button: "Einreichen",
 			},
+			done: {
+				title: "Wir haben deinen Beitrag erhalten",
+				description: "Jetzt drücke die Daumen und warte auf die Ergebnisse",
+			},
 		},
 		submission: {
 			description: {

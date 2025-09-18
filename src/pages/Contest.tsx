@@ -34,6 +34,7 @@ import { toast } from "../components/Toast";
 import { useTranslation } from "../contexts/TranslationContext";
 import { requestAPI } from "../utils/api";
 import { Color } from "../utils/colors";
+import { playConfetti } from "../utils/confetti";
 import { initializeSortable } from "../utils/lazy";
 import { setModals } from "../utils/modal";
 import { navigator } from "../utils/navigator";
@@ -180,6 +181,17 @@ const PageContest: Component = () => {
 				contest: result.contest,
 				metadata: result.metadata,
 			});
+
+			if (
+				contest.contest?.results?.some((i) => i.submissions.some((i) => i.self))
+			) {
+				setTimeout(() => {
+					playConfetti({
+						emojis: ["🎉"],
+					});
+					invokeHapticFeedbackNotification("success");
+				}, 1e3);
+			}
 
 			return;
 		}

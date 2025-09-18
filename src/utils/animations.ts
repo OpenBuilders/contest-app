@@ -1,8 +1,9 @@
 import OutlineBag from "../assets/outlines/bag-outline.svg?raw";
+import OutlineConfetti from "../assets/outlines/confetti-outline.svg?raw";
 import OutlineDuckCommentate from "../assets/outlines/duck-commentate-outline.svg?raw";
 import OutlineDuckConfetti from "../assets/outlines/duck-confetti-outline.svg?raw";
 import OutlineDuckCraft from "../assets/outlines/duck-craft-outline.svg?raw";
-import OutlineDuckCry from "../assets/outlines/duck-cry-outline.svg?raw";
+// import OutlineDuckCry from "../assets/outlines/duck-cry-outline.svg?raw";
 import OutlineCustomize from "../assets/outlines/duck-customize-outline.svg?raw";
 import OutlineDuckEgg from "../assets/outlines/duck-egg-outline.svg?raw";
 // import OutlineDuckEnter from "../assets/outlines/duck-enter-outline.svg?raw";
@@ -14,6 +15,10 @@ export const TGS = {
 	bag: {
 		url: "/assets/tgs/bag.tgs",
 		outline: OutlineBag,
+	},
+	confetti: {
+		url: "/assets/tgs/confetti.tgs",
+		outline: OutlineConfetti,
 	},
 	duckEgg: {
 		url: "/assets/tgs/duck-egg.tgs",
@@ -47,10 +52,10 @@ export const TGS = {
 		url: "/assets/tgs/duck-craft.tgs",
 		outline: OutlineDuckCraft,
 	},
-	duckCry: {
-		url: "/assets/tgs/duck-cry.tgs",
-		outline: OutlineDuckCry,
-	},
+	// duckCry: {
+	// 	url: "/assets/tgs/duck-cry.tgs",
+	// 	outline: OutlineDuckCry,
+	// },
 	duckCommentate: {
 		url: "/assets/tgs/duck-commentate.tgs",
 		outline: OutlineDuckCommentate,
