@@ -626,7 +626,8 @@ const PageCreate: Component = () => {
 								space-between={8}
 								initial-slide={activeSlideIndex()}
 								dir={isRTL() ? "rtl" : "ltr"}
-								free-mode="true"
+								resistance-ratio="0.25"
+								long-swipes-ratio="0.25"
 							>
 								<swiper-slide>
 									<div
