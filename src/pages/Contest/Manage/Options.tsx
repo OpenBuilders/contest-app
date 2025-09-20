@@ -43,6 +43,7 @@ export type SectionContestManageOptionsForm = {
 	description: string;
 	instruction: string;
 	prize: string;
+	fee_wallet?: string;
 	loaded: boolean;
 };
 
@@ -79,6 +80,7 @@ const PageContestManageOptions: Component = () => {
 		title: "",
 		description: "",
 		instruction: "",
+		fee_wallet: "",
 		prize: "",
 		loaded: false,
 	});
@@ -230,57 +232,60 @@ export const SectionContestManageOptions: Component<
 			setProcessing(false);
 		};
 
+		const items = [
+			{
+				label: t("pages.contest.manage.options.form.name.label"),
+				placeholder: () => (
+					<SectionListInput
+						type="text"
+						placeholder={t(
+							"pages.contest.manage.options.form.name.placeholder",
+						)}
+						value={form.title}
+						setValue={(value) => setForm("title", value)}
+						maxLength={store.limits!.form.create.title.maxLength}
+					/>
+				),
+			},
+			{
+				label: t("pages.create.options.prize.label"),
+				placeholder: () => (
+					<SectionListInput
+						type="text"
+						placeholder="$10,000 USDT"
+						value={form.prize}
+						setValue={(value) => setForm("prize", value)}
+						maxLength={store.limits!.form.create.prize.maxLength}
+						onBlur={() => {
+							setForm("prize", formatNumbersInString(form.prize));
+						}}
+					/>
+				),
+			},
+		];
+
+		if (form.fee_wallet) {
+			items.push({
+				label: t("pages.create.options.fee.label"),
+				placeholder: () => (
+					<SectionListInput
+						class="input-fee"
+						type="number"
+						inputmode="decimal"
+						placeholder={t("pages.create.options.fee.free")}
+						value={feeDisplayValue()}
+						setValue={updateFeeValue}
+						min={store.limits!.form.create.fee.min}
+						max={store.limits!.form.create.fee.max}
+						append={() => <SVGSymbol id="TON" />}
+					/>
+				),
+			});
+		}
+
 		return (
 			<div id="container-contest-options">
-				<SectionList
-					items={[
-						{
-							label: t("pages.contest.manage.options.form.name.label"),
-							placeholder: () => (
-								<SectionListInput
-									type="text"
-									placeholder={t(
-										"pages.contest.manage.options.form.name.placeholder",
-									)}
-									value={form.title}
-									setValue={(value) => setForm("title", value)}
-									maxLength={store.limits!.form.create.title.maxLength}
-								/>
-							),
-						},
-						{
-							label: t("pages.create.options.prize.label"),
-							placeholder: () => (
-								<SectionListInput
-									type="text"
-									placeholder="$10,000 USDT"
-									value={form.prize}
-									setValue={(value) => setForm("prize", value)}
-									maxLength={store.limits!.form.create.prize.maxLength}
-									onBlur={() => {
-										setForm("prize", formatNumbersInString(form.prize));
-									}}
-								/>
-							),
-						},
-						{
-							label: t("pages.create.options.fee.label"),
-							placeholder: () => (
-								<SectionListInput
-									class="input-fee"
-									type="number"
-									inputmode="decimal"
-									placeholder={t("pages.create.options.fee.free")}
-									value={feeDisplayValue()}
-									setValue={updateFeeValue}
-									min={store.limits!.form.create.fee.min}
-									max={store.limits!.form.create.fee.max}
-									append={() => <SVGSymbol id="TON" />}
-								/>
-							),
-						},
-					]}
-				/>
+				<SectionList items={items} />
 
 				<Section title={t("pages.contest.description.title")}>
 					<Editor
@@ -373,6 +378,7 @@ export const SectionContestManageOptions: Component<
 					fee: result.contest.fee ?? form.fee,
 					prize: result.contest.prize ?? form.prize,
 					title: result.contest.title ?? form.title,
+					fee_wallet: result.contest.fee_wallet ?? "",
 					loaded: true,
 				});
 				setFormData(form);

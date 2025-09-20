@@ -62,6 +62,7 @@ const PageContestManageSettings: Component = () => {
 		title: "",
 		description: "",
 		instruction: "",
+		fee_wallet: "",
 		prize: "",
 		loaded: false,
 	});
