@@ -22,11 +22,9 @@ export type Contest = {
 	fee: number;
 	fee_wallet?: string;
 	prize?: string;
-	public: boolean;
 	anonymous: boolean;
 	verified?: boolean;
 	announced?: boolean;
-	category?: string;
 	image?: string;
 	theme?: {
 		backdrop?: number;
@@ -136,7 +134,6 @@ export type GalleryItem = GallerySlider | GallerySection;
 
 export type Store = {
 	token?: string;
-	categories?: { [key: string]: string };
 	limits?: { [key: string]: any };
 	contests: {
 		my?: AnnotatedContest[];

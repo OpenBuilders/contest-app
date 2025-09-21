@@ -93,10 +93,8 @@ type FormCreateStore = {
 		backdrop?: number;
 		symbol?: string;
 	};
-	category: string;
 	fee: number;
 	fee_wallet?: string;
-	public: boolean;
 	anonymous: boolean;
 	slug?: string;
 };
@@ -169,9 +167,7 @@ const PageCreate: Component = () => {
 			end: Math.trunc((Date.now() + 7 * 86400 * 1000) / 86400) * 86400,
 		},
 		theme: {},
-		category: "none",
 		fee: 0,
-		public: false,
 		anonymous: false,
 	});
 
@@ -284,10 +280,8 @@ const PageCreate: Component = () => {
 					prize: form.prize,
 					date: JSON.stringify(form.date),
 					theme: JSON.stringify(form.theme),
-					category: form.category,
 					fee: form.fee.toString(),
 					fee_wallet: form.fee_wallet,
-					public: form.public ? "true" : "false",
 					anonymous: form.anonymous ? "true" : "false",
 					image: form.image
 						? ((await canvasToBlob(form.image, "image/webp", 0.95)) ??

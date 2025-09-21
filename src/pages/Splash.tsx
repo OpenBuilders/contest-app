@@ -28,7 +28,6 @@ const PageSplash: Component = () => {
 				token: result.token,
 				user: result.user,
 				limits: result.limits,
-				categories: result.categories,
 				version: result.version,
 			});
 
