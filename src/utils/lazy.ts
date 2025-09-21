@@ -42,6 +42,12 @@ export const initializeTonConnect = async () => {
 			uiPreferences: {
 				theme: darkMode ? THEME.DARK : THEME.LIGHT,
 			},
+			restoreConnection: false,
+			walletsRequiredFeatures: {
+				sendTransaction: {
+					minMessages: 2,
+				},
+			},
 		});
 
 		return true;

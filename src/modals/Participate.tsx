@@ -1,4 +1,5 @@
 import "./Participate.scss";
+import type { SendTransactionResponse } from "@tonconnect/sdk";
 import { BsQuestionCircleFill } from "solid-icons/bs";
 import { FaSolidCircleExclamation } from "solid-icons/fa";
 import {
@@ -97,35 +98,70 @@ const ModalParticipate: Component = () => {
 			return handlePayment();
 		}
 
-		await tonConnectUI?.connectionRestored;
+		await tonConnectUI?.openModal();
 
-		if (!tonConnectUI?.connected) {
-			await tonConnectUI?.openModal();
-		}
+		return new Promise<false | SendTransactionResponse>((resolve) => {
+			const disposeOnStatusChange = tonConnectUI?.onStatusChange(async () => {
+				disposeOnModalStateChange?.();
+				disposeOnStatusChange?.();
 
-		try {
-			const result = await tonConnectUI?.sendTransaction({
-				validUntil: Math.floor(Date.now() / 1000) + 600,
-				messages: [
-					{
-						address: parseTONAddress(
-							modals.participate.contest?.fee_wallet ?? "",
-						),
-						amount: (0.95 * modals.participate.contest!.fee! * 1e9).toString(),
-						payload: `contest-${modals.participate.contest?.slug}-${store.user?.user_id}`,
-					},
-					{
-						address: import.meta.env.VITE_MASTER_WALLET,
-						amount: (0.05 * modals.participate.contest!.fee! * 1e9).toString(),
-						payload: `fee-${modals.participate.contest?.slug}-${store.user?.user_id}`,
-					},
-				],
+				const request = await requestAPI(
+					`/contest/${modals.participate.contest?.slug}/transaction/create`,
+					{},
+					"POST",
+				);
+
+				if (request) {
+					const {
+						result: {
+							payload: { master: payload_master, target: payload_target },
+						},
+					} = request;
+
+					tonConnectUI
+						?.sendTransaction({
+							validUntil: Math.floor(Date.now() / 1000) + 300,
+							messages: [
+								{
+									address: parseTONAddress(
+										modals.participate.contest?.fee_wallet ?? "",
+									),
+									amount: (
+										0.95 *
+										modals.participate.contest!.fee! *
+										1e9
+									).toString(),
+									payload: payload_target,
+								},
+								{
+									address: import.meta.env.VITE_MASTER_WALLET,
+									amount: (
+										0.05 *
+										modals.participate.contest!.fee! *
+										1e9
+									).toString(),
+									payload: payload_master,
+								},
+							],
+						})
+						.then(resolve)
+						.catch((e) => {
+							console.error(e);
+							resolve(false);
+						});
+				}
 			});
 
-			return result.boc;
-		} catch (_) {}
+			const disposeOnModalStateChange = tonConnectUI?.onModalStateChange(
+				(state) => {
+					if (state.status === "closed") {
+						resolve(false);
+					}
 
-		return false;
+					disposeOnModalStateChange?.();
+				},
+			);
+		});
 	};
 
 	const onClickButton = async () => {
@@ -159,7 +195,7 @@ const ModalParticipate: Component = () => {
 			const result = await handlePayment();
 
 			if (result) {
-				boc = result;
+				boc = result.boc;
 			} else {
 				setProcessing(false);
 				return;
