@@ -57,47 +57,6 @@ const ModalSubmission: Component = () => {
 				.filter(Boolean)
 				.join(" ");
 
-	// const onClickButton = async () => {
-	// 	const popup = await popupManager.openPopup({
-	// 		title: t("general.confirmOpenLink.title"),
-	// 		message: td("general.confirmOpenLink.prompt", {
-	// 			link: truncateMiddle(
-	// 				modals.submission.submission!.submission.submission.link,
-	// 				64,
-	// 				32,
-	// 			),
-	// 		}),
-	// 		buttons: [
-	// 			{
-	// 				id: "ok",
-	// 				type: "ok",
-	// 			},
-	// 			{
-	// 				id: "cancel",
-	// 				type: "cancel",
-	// 			},
-	// 		],
-	// 	});
-
-	// 	if (!popup.button_id || popup.button_id === "cancel") return;
-
-	// 	const path = parseTelegramLink(
-	// 		modals.submission.submission!.submission.submission.link,
-	// 	);
-
-	// 	invokeHapticFeedbackImpact("light");
-
-	// 	if (path) {
-	// 		postEvent("web_app_open_tg_link", {
-	// 			path_full: path,
-	// 		});
-	// 	} else {
-	// 		postEvent("web_app_open_link", {
-	// 			url: modals.submission.submission!.submission.submission.link,
-	// 		});
-	// 	}
-	// };
-
 	const onClickAction = async (type: "like" | "dislike") => {
 		if (processing()) return;
 		setProcessing(type);
@@ -259,25 +218,6 @@ const ModalSubmission: Component = () => {
 							/>
 						</div>
 					</div>
-
-					{/*<div>
-						<span>{t("modals.submission.submission.link.label")}</span>
-
-						<div>
-							<p class="clickable" onClick={onClickButton}>
-								{modals.submission.submission.submission.submission.link}
-							</p>
-						</div>
-					</div>
-
-					<div>
-						<div>
-							<CustomMainButton
-								onClick={onClickButton}
-								text={t("modals.submission.button")}
-							/>
-						</div>
-					</div>*/}
 				</section>
 
 				<ul>

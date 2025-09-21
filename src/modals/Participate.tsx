@@ -84,8 +84,8 @@ const ModalParticipate: Component = () => {
 		} = new DOMParser().parseFromString(form.description, "text/html");
 
 		if (
-			(textContent?.length ?? 0) >
-			store.limits!.form.participate.description.maxLength
+			textContent.length === 0 ||
+			textContent.length > store.limits!.form.participate.description.maxLength
 		) {
 			return true;
 		}
