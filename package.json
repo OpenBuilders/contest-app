@@ -45,11 +45,11 @@
 		"autoprefixer": "^10.4.21",
 		"postcss": "^8.5.6",
 		"postcss-reporter": "^7.1.0",
-		"sass": "^1.93.0",
+		"sass": "^1.93.1",
 		"solid-devtools": "^0.34.3",
 		"tailwindcss": "^4.1.13",
 		"typescript": "~5.9.2",
-		"vite": "^7.1.6",
+		"vite": "^7.1.7",
 		"vite-plugin-purgecss": "^0.2.13",
 		"vite-plugin-solid": "^2.11.8",
 		"vite-plugin-solid-svg": "^0.8.1"
