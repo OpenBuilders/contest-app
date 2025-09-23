@@ -1,5 +1,6 @@
 import "./ContestThumbnail.scss";
 import { type Component, Match, Switch } from "solid-js";
+import { cloneObject } from "../utils/general";
 import type { ContestThemeBackdrop, ContestThemeSymbol } from "../utils/themes";
 import ImageLoader from "./ImageLoader";
 import { SVGSymbol } from "./SVG";
@@ -13,6 +14,14 @@ type ContestThumbnailProps = {
 };
 
 const ContestThumbnail: Component<ContestThumbnailProps> = (props) => {
+	const backdrop: ContestThemeBackdrop = cloneObject(
+		props.backdrop ?? ({} as any),
+	);
+
+	if (`colors` in backdrop) {
+		backdrop.colors.pattern = backdrop.colors.text;
+	}
+
 	return (
 		<div class="contest-thumbnail">
 			<Switch
@@ -30,7 +39,7 @@ const ContestThumbnail: Component<ContestThumbnailProps> = (props) => {
 
 				<Match when={props.backdrop && props.symbol}>
 					<ThemePreview
-						backdrop={props.backdrop!}
+						backdrop={backdrop}
 						symbol={props.symbol!}
 						layers={[
 							{
