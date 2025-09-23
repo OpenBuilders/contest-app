@@ -51,7 +51,10 @@ export const Avatar: Component<AvatarProps> = (props) => {
 			<Show
 				when={props.src}
 				fallback={
-					<span>{props.rawText ?? getNameInitials(props.fullname ?? "")}</span>
+					<span>
+						{props.rawText ??
+							getNameInitials(props.fullname ?? "").toUpperCase()}
+					</span>
 				}
 			>
 				<ImageLoader src={props.src!} />
