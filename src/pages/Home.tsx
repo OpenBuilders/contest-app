@@ -219,9 +219,11 @@ const PageHome: Component = () => {
 						</span>
 
 						<span>
-							{td("pages.home.contests.items.participants", {
-								count: props.contest.metadata.submissions_count ?? 0,
-							})}
+							{props.contest.metadata.submissions_count
+								? td("pages.home.contests.items.participants", {
+										count: props.contest.metadata.submissions_count ?? 0,
+									})
+								: "‎"}
 						</span>
 
 						<span>
