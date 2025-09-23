@@ -124,9 +124,9 @@ const PageHome: Component = () => {
 		);
 
 		const contestsAll = createMemo(() => {
-			return store.contests.gallery!.find(
+			return (store.contests.gallery!.find(
 				(i) => i.type === "section" && i.id === "public",
-			)!.items as AnnotatedContest[];
+			)?.items ?? []) as AnnotatedContest[];
 		});
 
 		const now = Date.now() / 1000;
