@@ -993,13 +993,30 @@ const PageContest: Component = () => {
 
 		const ContestResults = () => {
 			const ContestResultEntry: Component<{ placement: Result }> = (props) => {
+				const submissions = createMemo(() =>
+					props.placement.submissions.map((submission) => {
+						if (submission.first_name || submission.anonymous_profile) {
+							return submission;
+						}
+
+						return {
+							user_id: -1,
+							first_name: (submission as any).name ?? "",
+							last_name: "",
+							anonymous_profile: [],
+							self: false,
+							profile_photo: (submission as any).image ?? undefined,
+						};
+					}),
+				);
+
 				return (
 					<SectionList
 						title={props.placement.name}
 						class="container-result-entries"
 						items={
-							props.placement.submissions.length > 0
-								? props.placement.submissions.map((entry) => {
+							submissions().length > 0
+								? submissions().map((entry) => {
 										const fullname = entry.user_id
 											? [entry.first_name, entry.last_name]
 													.filter(Boolean)

@@ -732,7 +732,7 @@ const PageCreate: Component = () => {
 					setForm(
 						"date",
 						"end",
-						Math.trunc(Date.now() / 86400) * 86400 +
+						Math.trunc(Date.now() / 86400_000) * 86400_000 +
 							Number.parseInt(duration(), 10) * 86400_000,
 					);
 				}),

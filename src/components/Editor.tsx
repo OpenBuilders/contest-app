@@ -104,12 +104,8 @@ const Editor: Component<EditorProps> = (props) => {
 					ALLOW_ARIA_ATTR: false,
 					ALLOW_DATA_ATTR: false,
 					KEEP_CONTENT: true,
+					IN_PLACE: true,
 				},
-			)
-			.replace(/(?:<div>(?:\s|&nbsp;|\u00A0|<br\s*\/?>)*<\/div>)+/gi, "\n")
-			.replace(
-				/^(?:\s|&nbsp;|\u00A0|<br\s*\/?>|\n|\r)+|(?:\s|&nbsp;|\u00A0|<br\s*\/?>|\n|\r)+$/gi,
-				"",
 			)
 			.trim();
 	};
