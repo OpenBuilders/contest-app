@@ -1,5 +1,5 @@
-// @ts-ignore
-import Module from "../thorvg/thorvg-wasm.js";
+// @ts-expect-error
+import Module from "../thorvg/thorvg.js";
 import type {
 	LottixConfig,
 	PlayerEvent,

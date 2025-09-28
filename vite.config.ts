@@ -44,11 +44,11 @@ export default defineConfig((config) => {
 		},
 		envDir: "./",
 		optimizeDeps: {
-			exclude: ["./src/thorvg/thorvg-wasm.js"],
+			exclude: ["./src/thorvg/thorvg.js"],
 		},
 		build: {
 			rollupOptions: {
-				external: ["./src/thorvg/thorvg-wasm.js"],
+				external: ["./src/thorvg/thorvg.js"],
 				output: {
 					manualChunks: {
 						svgAssets: [
