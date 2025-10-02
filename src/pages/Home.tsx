@@ -7,7 +7,7 @@ import {
 	type Component,
 	createEffect,
 	createMemo,
-	createSignal,
+	// createSignal,
 	For,
 	on,
 	onMount,
@@ -18,14 +18,14 @@ import ContestThumbnail from "../components/ContestThumbnail";
 import CustomMainButton from "../components/CustomMainButton";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import { SVGSymbol } from "../components/SVG";
-import Tabbar from "../components/Tabbar";
+// import Tabbar from "../components/Tabbar";
 import { toast } from "../components/Toast";
 import { useTranslation } from "../contexts/TranslationContext";
 import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
 import { navigator } from "../utils/navigator";
 import { formatNumbersInString } from "../utils/number";
-import { setSettings, settings } from "../utils/settings";
+// import { setSettings, settings } from "../utils/settings";
 import { signals } from "../utils/signals";
 import { getSymbolSVGString } from "../utils/symbols";
 import {
@@ -113,15 +113,15 @@ const PageHome: Component = () => {
 	};
 
 	const SectionContests = () => {
-		const [tabbar, setTabbar] = createSignal(
-			settings.tabs.home.contests ?? "all",
-		);
+		// const [tabbar, setTabbar] = createSignal(
+		// 	settings.tabs.home.contests ?? "all",
+		// );
 
-		createEffect(
-			on(tabbar, () => {
-				setSettings("tabs", "home", "contests", tabbar());
-			}),
-		);
+		// createEffect(
+		// 	on(tabbar, () => {
+		// 		setSettings("tabs", "home", "contests", tabbar());
+		// 	}),
+		// );
 
 		const contestsAll = createMemo(() => {
 			return (store.contests.gallery!.find(
@@ -300,7 +300,69 @@ const PageHome: Component = () => {
 
 		return (
 			<div id="container-home-contests">
-				<Tabbar
+				<Show
+					fallback={<SectionContestsEmpty />}
+					when={
+						contestsAll().length > 0 ||
+						contestsYours().length > 0 ||
+						contestsSaved().length > 0
+					}
+				>
+					<SectionHolder
+						sections={[
+							() => (
+								<Show when={contestsAllOpen().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.open")}
+										contests={contestsAllOpen()}
+									/>
+								</Show>
+							),
+							() => (
+								<Show when={contestsAllFinished().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.finished")}
+										contests={contestsAllFinished()}
+									/>
+								</Show>
+							),
+							() => (
+								<Show when={contestsYoursCreated().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.created")}
+										contests={contestsYoursCreated()}
+									/>
+								</Show>
+							),
+							() => (
+								<Show when={contestsYoursJoined().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.joined")}
+										contests={contestsYoursJoined()}
+									/>
+								</Show>
+							),
+							() => (
+								<Show when={contestsYoursModerator().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.moderator")}
+										contests={contestsYoursModerator()}
+									/>
+								</Show>
+							),
+							() => (
+								<Show when={contestsSaved().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.saved")}
+										contests={contestsSaved()}
+									/>
+								</Show>
+							),
+						]}
+					/>
+				</Show>
+
+				{/*<Tabbar
 					mode="segmented"
 					gap={16}
 					items={[
@@ -310,7 +372,11 @@ const PageHome: Component = () => {
 							component: () => (
 								<Show
 									fallback={<SectionContestsEmpty />}
-									when={contestsAll().length > 0 || contestsYours().length > 0}
+									when={
+										contestsAll().length > 0 ||
+										contestsYours().length > 0 ||
+										contestsSaved().length > 0
+									}
 								>
 									<SectionHolder
 										sections={[
@@ -343,6 +409,22 @@ const PageHome: Component = () => {
 													<SectionContests
 														title={t("pages.home.contests.topics.joined")}
 														contests={contestsYoursJoined()}
+													/>
+												</Show>
+											),
+											() => (
+												<Show when={contestsYoursModerator().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.moderator")}
+														contests={contestsYoursModerator()}
+													/>
+												</Show>
+											),
+											() => (
+												<Show when={contestsSaved().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.saved")}
+														contests={contestsSaved()}
 													/>
 												</Show>
 											),
@@ -416,7 +498,7 @@ const PageHome: Component = () => {
 					]}
 					value={tabbar()}
 					setValue={setTabbar}
-				/>
+				/>*/}
 			</div>
 		);
 	};

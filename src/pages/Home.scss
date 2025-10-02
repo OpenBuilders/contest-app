@@ -1,5 +1,6 @@
 #container-page-home {
    overflow: hidden;
+   padding-top: 0;
 
    > div:first-child {
       flex-grow: 1;
@@ -7,12 +8,12 @@
       flex-direction: column;
       overflow: hidden;
 
-      > div {
+      /* > div {
          display: flex;
          flex-direction: column;
          flex-grow: 1;
-         padding: 1rem 0 0;
-         overflow: hidden;
+         padding: 1rem 0 0; */
+      /* overflow: hidden;
 
          > div {
             gap: 0.75rem;
@@ -22,7 +23,7 @@
                margin: 0 1rem;
             }
          }
-      }
+      } */
 
       > footer {
          border-top: 1px solid rgba(var(--text-color-rgb), 0.125);
@@ -249,5 +250,22 @@
             }
          }
       }
+   }
+}
+
+#container-home-contests {
+   display: flex;
+   flex-direction: column;
+   overflow: hidden;
+   flex-grow: 1;
+
+   > div.container-home-contests-holder {
+      height: 100%;
+      overflow: hidden;
+      overflow-y: auto;
+      padding-top: calc(
+         var(--tg-viewport-safe-area-inset-top) +
+            var(--tg-viewport-content-safe-area-inset-top)
+      );
    }
 }

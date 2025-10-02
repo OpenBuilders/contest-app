@@ -706,7 +706,6 @@ const PageCreate: Component = () => {
 							onChange={(e) => {
 								setForm("instruction", e.currentTarget.value.trim());
 							}}
-							onKeyUp={hideKeyboardOnEnter}
 							minLength={store.limits!.form.create.instruction.maxLength}
 							maxLength={store.limits!.form.create.instruction.maxLength}
 						/>

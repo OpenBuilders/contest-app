@@ -260,15 +260,17 @@ const ModalParticipate: Component = () => {
 							<h1>{t("modals.participate.title")}</h1>
 
 							<Section>
-								<div>
+								<header>
 									<BsQuestionCircleFill />
 									<span>{t("modals.participate.instruction.title")}</span>
-								</div>
+								</header>
 
-								<p>
-									{modals.participate.contest?.instruction ??
-										t("modals.participate.instruction.default")}
-								</p>
+								<div
+									innerHTML={(
+										modals.participate.contest?.instruction ??
+										t("modals.participate.instruction.default")
+									).replace(/\n/g, "<br>")}
+								></div>
 							</Section>
 
 							<Section class="container-participant-form-description">
