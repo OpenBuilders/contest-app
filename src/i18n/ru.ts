@@ -89,6 +89,7 @@ const dict_ru = {
 					yours: "Ваши",
 					created: "Созданные",
 					joined: "Участвуете",
+					moderator: "Модерация",
 				},
 				items: { reward: "Приз: {reward}", participants: "{count} участников" },
 				badges: { ended: "Завершено", closed: "Закрыто", open: "Открыто" },

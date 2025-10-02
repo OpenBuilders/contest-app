@@ -88,6 +88,7 @@ const dict_hi = {
 					yours: "आपकी",
 					created: "बनाया गया",
 					joined: "शामिल हुआ",
+					moderator: "संचालन",
 				},
 				items: { reward: "इनाम: {reward}", participants: "{count} प्रतिभागी" },
 				badges: { ended: "समाप्त", closed: "बंद", open: "खुला" },

@@ -96,6 +96,7 @@ const dict = {
 					yours: "Yours",
 					created: "Created",
 					joined: "Joined",
+					moderator: "Moderating",
 				},
 				items: {
 					reward: "Reward: {reward}",

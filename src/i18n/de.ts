@@ -89,6 +89,7 @@ const dict_de = {
 					yours: "Deine",
 					created: "Erstellt",
 					joined: "Beigetreten",
+					moderator: "Moderieren",
 				},
 				items: {
 					reward: "Belohnung: {reward}",

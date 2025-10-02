@@ -88,6 +88,7 @@ const dict_ar = {
 					yours: "الخاصة بك",
 					created: "تم الإنشاء",
 					joined: "تم الانضمام",
+					moderator: "الإشراف",
 				},
 				items: {
 					reward: "الجائزة: {reward}",

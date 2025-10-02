@@ -90,6 +90,7 @@ const dict_fa = {
 					yours: "مال شما",
 					created: "ساخته‌شده",
 					joined: "پیوسته",
+					moderator: "مدیریت",
 				},
 				items: {
 					reward: "جایزه: {reward}",
