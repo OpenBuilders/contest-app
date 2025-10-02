@@ -80,7 +80,7 @@ const PageHome: Component = () => {
 	const SectionContestsLoading = () => {
 		return (
 			<div id="container-home-contests-loading">
-				<span class="shimmer"></span>
+				{/*<span class="shimmer"></span>*/}
 
 				<div>
 					<For each={Array.from(new Array(3))}>
@@ -523,7 +523,7 @@ const PageHome: Component = () => {
 		<div id="container-page-home" class="page">
 			<div>
 				<Show
-					when={store.contests.my && store.contests.gallery && true}
+					when={store.contests.my && store.contests.gallery}
 					fallback={<SectionContestsLoading />}
 				>
 					<SectionContests />

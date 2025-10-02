@@ -171,6 +171,10 @@
    display: flex;
    flex-direction: column;
    gap: 0.75rem;
+   padding-top: calc(
+      var(--tg-viewport-safe-area-inset-top) +
+         var(--tg-viewport-content-safe-area-inset-top)
+   );
 
    > span {
       height: 2.375rem;
