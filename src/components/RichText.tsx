@@ -63,7 +63,12 @@ const RichText: Component<RichTextProps> = (props) => {
 		<div
 			ref={container}
 			class="content"
-			innerHTML={linkifyHtml(props.content)}
+			innerHTML={linkifyHtml(
+				props.content.replace(
+					/@([a-zA-Z0-9_]+)/g,
+					'<a href="https://t.me/$1" target="_blank">@$1</a>',
+				),
+			)}
 		></div>
 	);
 };

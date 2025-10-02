@@ -225,34 +225,6 @@ const ModalSubmission: Component = () => {
 						class="clickable"
 						classList={{
 							fill:
-								modals.submission.submission.metadata.disliked_by_viewer ||
-								processing() === "dislike",
-							empty: !modals.submission.submission.metadata.disliked_by_viewer,
-						}}
-						onClick={() => onClickAction("dislike")}
-					>
-						<SVGSymbol
-							id={
-								modals.submission.submission.metadata.disliked_by_viewer ||
-								processing() === "dislike"
-									? "HiSolidHandThumbDown"
-									: "HiOutlineHandThumbDown"
-							}
-						/>
-						<span>{t("modals.submission.actions.dislike")}</span>
-						<div>
-							<Counter
-								value={modals.submission.submission.submission.dislikes}
-								initialValue={0}
-								durationMs={250}
-							/>
-						</div>
-					</li>
-
-					<li
-						class="clickable"
-						classList={{
-							fill:
 								modals.submission.submission.metadata.liked_by_viewer ||
 								processing() === "like",
 							empty: !modals.submission.submission.metadata.liked_by_viewer,
@@ -271,6 +243,34 @@ const ModalSubmission: Component = () => {
 						<div>
 							<Counter
 								value={modals.submission.submission.submission.likes}
+								initialValue={0}
+								durationMs={250}
+							/>
+						</div>
+					</li>
+
+					<li
+						class="clickable"
+						classList={{
+							fill:
+								modals.submission.submission.metadata.disliked_by_viewer ||
+								processing() === "dislike",
+							empty: !modals.submission.submission.metadata.disliked_by_viewer,
+						}}
+						onClick={() => onClickAction("dislike")}
+					>
+						<SVGSymbol
+							id={
+								modals.submission.submission.metadata.disliked_by_viewer ||
+								processing() === "dislike"
+									? "HiSolidHandThumbDown"
+									: "HiOutlineHandThumbDown"
+							}
+						/>
+						<span>{t("modals.submission.actions.dislike")}</span>
+						<div>
+							<Counter
+								value={modals.submission.submission.submission.dislikes}
 								initialValue={0}
 								durationMs={250}
 							/>

@@ -147,6 +147,7 @@ const PageHome: Component = () => {
 			return store.contests.my!.filter(
 				(contest) =>
 					contest.metadata.role === "owner" ||
+					contest.metadata.role === "moderator" ||
 					contest.metadata.role === "participant",
 			);
 		});
@@ -157,6 +158,10 @@ const PageHome: Component = () => {
 
 		const contestsYoursJoined = createMemo(() => {
 			return contestsYours().filter((i) => i.metadata.role === "participant");
+		});
+
+		const contestsYoursModerator = createMemo(() => {
+			return contestsYours().filter((i) => i.metadata.role === "moderator");
 		});
 
 		const contestsSaved = createMemo(() => {
@@ -305,7 +310,7 @@ const PageHome: Component = () => {
 							component: () => (
 								<Show
 									fallback={<SectionContestsEmpty />}
-									when={contestsAll().length > 0}
+									when={contestsAll().length > 0 || contestsYours().length > 0}
 								>
 									<SectionHolder
 										sections={[
@@ -322,6 +327,22 @@ const PageHome: Component = () => {
 													<SectionContests
 														title={t("pages.home.contests.topics.finished")}
 														contests={contestsAllFinished()}
+													/>
+												</Show>
+											),
+											() => (
+												<Show when={contestsYoursCreated().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.created")}
+														contests={contestsYoursCreated()}
+													/>
+												</Show>
+											),
+											() => (
+												<Show when={contestsYoursJoined().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.joined")}
+														contests={contestsYoursJoined()}
 													/>
 												</Show>
 											),
@@ -353,6 +374,14 @@ const PageHome: Component = () => {
 													<SectionContests
 														title={t("pages.home.contests.topics.joined")}
 														contests={contestsYoursJoined()}
+													/>
+												</Show>
+											),
+											() => (
+												<Show when={contestsYoursModerator().length > 0}>
+													<SectionContests
+														title={t("pages.home.contests.topics.moderator")}
+														contests={contestsYoursModerator()}
 													/>
 												</Show>
 											),
