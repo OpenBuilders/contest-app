@@ -330,6 +330,10 @@ const dict_de = {
 				description: { label: "Beschreibung" },
 				link: { label: "Geteilter Link" },
 			},
+			voters: {
+				title: "Abgestimmt haben",
+				empty: "Noch niemand hat abgestimmt.",
+			},
 			date: "{date} um {time}",
 			button: "Link öffnen",
 		},

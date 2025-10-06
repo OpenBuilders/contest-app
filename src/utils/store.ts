@@ -90,6 +90,16 @@ export type Submission = {
 	};
 	likes: number;
 	dislikes: number;
+	liked_by: SubmissionVoter[];
+	disliked_by: SubmissionVoter[];
+	created_at?: string;
+};
+
+export type SubmissionVoter = {
+	first_name: User["first_name"];
+	last_name?: User["last_name"];
+	profile_photo?: User["profile_photo"];
+	user_id: User["user_id"];
 	created_at?: string;
 };
 

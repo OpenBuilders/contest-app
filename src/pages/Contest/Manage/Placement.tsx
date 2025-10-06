@@ -344,7 +344,7 @@ const PageContestManagePlacement: Component = () => {
 													empty: !submission.metadata.liked_by_viewer,
 												}}
 											>
-												<SVGSymbol id="HiSolidHandThumbUp" />
+												<SVGSymbol id="thumb-up" />
 												<span>{submission.submission.likes}</span>
 											</li>
 
@@ -354,7 +354,7 @@ const PageContestManagePlacement: Component = () => {
 													empty: !submission.metadata.disliked_by_viewer,
 												}}
 											>
-												<SVGSymbol id="HiSolidHandThumbDown" />
+												<SVGSymbol id="thumb-down" />
 												<span>{submission.submission.dislikes}</span>
 											</li>
 										</ul>

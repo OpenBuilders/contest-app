@@ -100,8 +100,33 @@ class Navigator {
 
 	public back(options?: NavigationOptions) {
 		if (this.isBackable()) {
-			this.go(this.history[this.history.length - 2].path, options);
+			const current = this.history[this.history.length - 1];
+			const previous = this.history[this.history.length - 2];
+
+			if (current.path === "modal") {
+				this.history.pop();
+				current.options?.params.onBack();
+			} else {
+				this.go(previous.path, options);
+			}
 		}
+	}
+
+	public modal(onBack: () => void) {
+		const navigationId = randomLong();
+
+		this.history.push({
+			id: navigationId,
+			path: "modal",
+			options: {
+				backable: true,
+				resolve: false,
+				skipHistory: true,
+				params: {
+					onBack,
+				},
+			},
+		});
 	}
 }
 

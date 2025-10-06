@@ -315,6 +315,10 @@ const dict_ru = {
 				description: { label: "Описание" },
 				link: { label: "Ссылка для поделиться" },
 			},
+			voters: {
+				title: "Проголосовавшие",
+				empty: "Ещё никто не проголосовал.",
+			},
 			date: "{date} в {time}",
 			button: "Открыть ссылку",
 		},

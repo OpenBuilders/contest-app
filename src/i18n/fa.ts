@@ -317,6 +317,10 @@ const dict_fa = {
 				description: { label: "توضیحات" },
 				link: { label: "لینک به اشتراک‌گذاری" },
 			},
+			voters: {
+				title: "رأی‌دهندگان",
+				empty: "هنوز کسی رأی نداده است.",
+			},
 			date: "{date} در {time}",
 			button: "باز کردن لینک",
 		},

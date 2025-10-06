@@ -448,6 +448,10 @@ const dict = {
 					label: "Shared Link",
 				},
 			},
+			voters: {
+				title: "Already Voted",
+				empty: "No one has voted yet.",
+			},
 			date: "{date} at {time}",
 			button: "Open Link",
 		},

@@ -26,12 +26,14 @@ import ButtonArray, { type ButtonArrayItem } from "../components/ButtonArray";
 import CircularIconPattern from "../components/CircularIconPattern";
 import CustomMainButton from "../components/CustomMainButton";
 import ImageLoader from "../components/ImageLoader";
+import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import RichText from "../components/RichText";
 import { Section, SectionList } from "../components/Section";
 import { SVGSymbol } from "../components/SVG";
 import Tabbar, { type TabbarItem } from "../components/Tabbar";
 import { toast } from "../components/Toast";
 import { useTranslation } from "../contexts/TranslationContext";
+import { TGS } from "../utils/animations";
 import { requestAPI } from "../utils/api";
 import { Color } from "../utils/colors";
 import { playConfetti } from "../utils/confetti";
@@ -60,7 +62,25 @@ import {
 	type ContestThemeSymbol,
 	disableThemeSync,
 } from "../utils/themes";
-import { SectionSubmissionsEmpty } from "./Contest/Manage/Submissions";
+
+const SectionSubmissionsEmpty = () => {
+	const { t } = useTranslation();
+
+	return (
+		<div id="container-contest-submissions-empty">
+			<LottiePlayerMotion
+				src={TGS.duckCraft.url}
+				outline={TGS.duckCraft.outline}
+				autoplay
+				playOnClick
+			/>
+
+			<span class="text-secondary">
+				{t("pages.contest.manage.submissions.empty.text")}
+			</span>
+		</div>
+	);
+};
 
 export const [data, setData] = createStore<{
 	submissions?: AnnotatedSubmission[];
@@ -822,7 +842,7 @@ const PageContest: Component = () => {
 																	empty: !item.metadata.liked_by_viewer,
 																}}
 															>
-																<SVGSymbol id="HiSolidHandThumbUp" />
+																<SVGSymbol id="thumb-up" />
 																<span>{item.submission.likes}</span>
 															</li>
 
@@ -832,7 +852,7 @@ const PageContest: Component = () => {
 																	empty: !item.metadata.disliked_by_viewer,
 																}}
 															>
-																<SVGSymbol id="HiSolidHandThumbDown" />
+																<SVGSymbol id="thumb-down" />
 																<span>{item.submission.dislikes}</span>
 															</li>
 														</ul>

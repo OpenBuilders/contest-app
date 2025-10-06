@@ -1,17 +1,25 @@
 import "./Submission.scss";
 import dayjs from "dayjs";
-import { type Component, createSignal, onMount, Show } from "solid-js";
-import { produce } from "solid-js/store";
+import {
+	type Component,
+	createMemo,
+	createSignal,
+	onMount,
+	Show,
+} from "solid-js";
+import { produce, reconcile } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../components/Avatar";
 import Counter from "../components/Counter";
 import Modal from "../components/Modal";
 import RichText from "../components/RichText";
+import { SectionList } from "../components/Section";
 import { SVGSymbol } from "../components/SVG";
 import { useTranslation } from "../contexts/TranslationContext";
 import { setData } from "../pages/Contest";
 import { requestAPI } from "../utils/api";
 import { cloneObject } from "../utils/general";
 import { modals, setModals } from "../utils/modal";
+import { navigator } from "../utils/navigator";
 import {
 	invokeHapticFeedbackImpact,
 	invokeHapticFeedbackNotification,
@@ -41,6 +49,11 @@ const ModalSubmission: Component = () => {
 
 	onMount(() => {
 		invokeHapticFeedbackImpact("soft");
+
+		navigator.modal(() => {
+			invokeHapticFeedbackImpact("soft");
+			onClose();
+		});
 	});
 
 	const fullname = modals.submission.submission.submission.user_id
@@ -118,23 +131,7 @@ const ModalSubmission: Component = () => {
 			if (status === "success") {
 				invokeHapticFeedbackNotification("success");
 
-				setData(
-					"submissions",
-					produce((data) => {
-						const item = data?.find(
-							(item) =>
-								item.submission.id ===
-								modals.submission.submission?.submission.id,
-						);
-
-						if (item) {
-							item.submission.likes = result.likes;
-							item.submission.dislikes = result.dislikes;
-							item.metadata.liked_by_viewer = result.liked_by_viewer;
-							item.metadata.disliked_by_viewer = result.disliked_by_viewer;
-						}
-					}),
-				);
+				setData("submissions", reconcile(result.submissions));
 			}
 		} else {
 			setData(
@@ -165,6 +162,22 @@ const ModalSubmission: Component = () => {
 		modals.submission.submission.submission.created_at!,
 	);
 
+	const votes = createMemo(() => {
+		return [
+			...modals.submission.submission!.submission.liked_by.map((i) => ({
+				...i,
+				type: "like",
+			})),
+			...modals.submission.submission!.submission.disliked_by.map((i) => ({
+				...i,
+				type: "dislike",
+			})),
+		].sort(
+			(a, b) =>
+				new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime(),
+		);
+	});
+
 	return (
 		<Modal
 			containerClass="container-modal-submission"
@@ -172,111 +185,147 @@ const ModalSubmission: Component = () => {
 			onClose={onClose}
 			portalParent={document.querySelector("#modals")!}
 			withCloseButton={true}
+			fullscreen={true}
 		>
 			<div>
-				<Show
-					when={modals.submission.submission.submission.user_id}
-					fallback={
-						<AvatarAlias
-							colorIndex={
-								modals.submission.submission.submission.anonymous_profile[0]
-							}
-							symbol={
-								modals.submission.submission.submission.anonymous_profile[2][0]
-							}
-						/>
-					}
-				>
-					<Avatar
-						fullname={fullname}
-						peerId={modals.submission.submission.submission.user_id}
-						src={modals.submission.submission.submission.profile_photo}
-					/>
-				</Show>
-
-				<header>
-					<h1>{fullname}</h1>
-
-					<span>
-						{td("modals.submission.date", {
-							date: dayjs(created_at).format("MMM D"),
-							time: dayjs(created_at).format("HH:mm"),
-						})}
-					</span>
-				</header>
-
-				<section>
-					<div>
-						<span>{t("modals.submission.submission.description.label")}</span>
-
-						<div>
-							<RichText
-								content={
-									modals.submission.submission.submission.submission
-										.description || t("modals.submission.description.empty")
+				<div>
+					<Show
+						when={modals.submission.submission.submission.user_id}
+						fallback={
+							<AvatarAlias
+								colorIndex={
+									modals.submission.submission.submission.anonymous_profile[0]
+								}
+								symbol={
+									modals.submission.submission.submission
+										.anonymous_profile[2][0]
 								}
 							/>
-						</div>
+						}
+					>
+						<Avatar
+							fullname={fullname}
+							peerId={modals.submission.submission.submission.user_id}
+							src={modals.submission.submission.submission.profile_photo}
+						/>
+					</Show>
+
+					<header>
+						<h1>{fullname}</h1>
+
+						<span>
+							{td("modals.submission.date", {
+								date: dayjs(created_at).format("MMM D"),
+								time: dayjs(created_at).format("HH:mm"),
+							})}
+						</span>
+					</header>
+
+					<div>
+						<section>
+							<div>
+								<span>
+									{t("modals.submission.submission.description.label")}
+								</span>
+
+								<div>
+									<RichText
+										content={
+											modals.submission.submission.submission.submission
+												.description || t("modals.submission.description.empty")
+										}
+									/>
+								</div>
+							</div>
+						</section>
+
+						<Show when={votes().length > 0}>
+							<SectionList
+								class="container-list-voted"
+								title={t("modals.submission.voters.title")}
+								items={votes().map((vote) => {
+									const fullname = [vote.first_name, vote.last_name]
+										.filter(Boolean)
+										.join(" ");
+
+									const created_at = new Date(vote.created_at!);
+
+									return {
+										class: "item-list-voted",
+										label: () => (
+											<>
+												<Avatar
+													fullname={fullname}
+													peerId={vote.user_id}
+													src={vote.profile_photo}
+												/>
+												<span>{fullname}</span>
+												<span>
+													{td("modals.submission.date", {
+														date: dayjs(created_at).format("MMM D"),
+														time: dayjs(created_at).format("HH:mm"),
+													})}
+												</span>
+											</>
+										),
+										prepend: () => (
+											<SVGSymbol
+												id={vote.type === "like" ? "thumb-up" : "thumb-down"}
+											/>
+										),
+									};
+								})}
+							/>
+						</Show>
 					</div>
-				</section>
+				</div>
 
-				<ul>
-					<li
-						class="clickable"
-						classList={{
-							fill:
-								modals.submission.submission.metadata.liked_by_viewer ||
-								processing() === "like",
-							empty: !modals.submission.submission.metadata.liked_by_viewer,
-						}}
-						onClick={() => onClickAction("like")}
-					>
-						<SVGSymbol
-							id={
-								modals.submission.submission.metadata.liked_by_viewer ||
-								processing() === "like"
-									? "HiSolidHandThumbUp"
-									: "HiOutlineHandThumbUp"
-							}
-						/>
-						<span>{t("modals.submission.actions.like")}</span>
-						<div>
-							<Counter
-								value={modals.submission.submission.submission.likes}
-								initialValue={0}
-								durationMs={250}
-							/>
-						</div>
-					</li>
+				<footer>
+					<ul>
+						<li
+							class="clickable"
+							classList={{
+								fill:
+									modals.submission.submission.metadata.liked_by_viewer ||
+									processing() === "like",
+								empty: !modals.submission.submission.metadata.liked_by_viewer,
+							}}
+							onClick={() => onClickAction("like")}
+						>
+							<SVGSymbol id="thumb-up" />
+							<span>{t("modals.submission.actions.like")}</span>
+							<div>
+								<Counter
+									value={modals.submission.submission.submission.likes}
+									initialValue={0}
+									durationMs={250}
+								/>
+							</div>
+						</li>
 
-					<li
-						class="clickable"
-						classList={{
-							fill:
-								modals.submission.submission.metadata.disliked_by_viewer ||
-								processing() === "dislike",
-							empty: !modals.submission.submission.metadata.disliked_by_viewer,
-						}}
-						onClick={() => onClickAction("dislike")}
-					>
-						<SVGSymbol
-							id={
-								modals.submission.submission.metadata.disliked_by_viewer ||
-								processing() === "dislike"
-									? "HiSolidHandThumbDown"
-									: "HiOutlineHandThumbDown"
-							}
-						/>
-						<span>{t("modals.submission.actions.dislike")}</span>
-						<div>
-							<Counter
-								value={modals.submission.submission.submission.dislikes}
-								initialValue={0}
-								durationMs={250}
-							/>
-						</div>
-					</li>
-				</ul>
+						<li
+							class="clickable"
+							classList={{
+								fill:
+									modals.submission.submission.metadata.disliked_by_viewer ||
+									processing() === "dislike",
+								empty:
+									!modals.submission.submission.metadata.disliked_by_viewer,
+							}}
+							onClick={() => onClickAction("dislike")}
+						>
+							<SVGSymbol id="thumb-down" />
+							<span>{t("modals.submission.actions.dislike")}</span>
+							<div>
+								<Counter
+									value={modals.submission.submission.submission.dislikes}
+									initialValue={0}
+									durationMs={250}
+								/>
+							</div>
+						</li>
+					</ul>
+				</footer>
 			</div>
 		</Modal>
 	);

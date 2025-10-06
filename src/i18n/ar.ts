@@ -315,6 +315,10 @@ const dict_ar = {
 				description: { label: "الوصف" },
 				link: { label: "رابط المشاركة" },
 			},
+			voters: {
+				title: "المصوتون",
+				empty: "لم يصوت أحد بعد.",
+			},
 			date: "{date} في {time}",
 			button: "فتح الرابط",
 		},

@@ -316,6 +316,10 @@ const dict_hi = {
 				description: { label: "विवरण" },
 				link: { label: "साझा लिंक" },
 			},
+			voters: {
+				title: "वोट करने वाले",
+				empty: "अभी तक किसी ने वोट नहीं किया है।",
+			},
 			date: "{date} को {time}",
 			button: "लिंक खोलें",
 		},

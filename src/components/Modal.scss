@@ -73,3 +73,31 @@
       transform: translateY(100%);
    }
 }
+
+.modal.fullscreen {
+   .modal-close {
+      display: none;
+   }
+
+   .modal-handle-container {
+      display: none;
+   }
+
+   .modal-content {
+      border-radius: 0;
+   }
+
+   > div {
+      > div {
+         height: 100%;
+         padding-top: calc(
+            var(--tg-viewport-safe-area-inset-top) +
+               var(--tg-viewport-content-safe-area-inset-top)
+         );
+
+         > div:last-child {
+            height: 100%;
+         }
+      }
+   }
+}

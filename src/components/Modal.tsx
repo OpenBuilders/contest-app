@@ -21,6 +21,7 @@ type ModalProps = {
 	onClose: () => void;
 	portalParent?: Element;
 	withCloseButton?: boolean;
+	fullscreen?: boolean;
 };
 
 const Modal: ParentComponent<ModalProps> = (props) => {
@@ -127,7 +128,10 @@ const Modal: ParentComponent<ModalProps> = (props) => {
 
 	return (
 		<Portal mount={props.portalParent ?? document.body}>
-			<div class={props.containerClass}>
+			<div
+				class={props.containerClass}
+				classList={{ fullscreen: props.fullscreen, modal: true }}
+			>
 				<div class="modal-overlay" id={id} onClick={onOverlayClick}>
 					<div
 						classList={{
