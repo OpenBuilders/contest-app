@@ -27,6 +27,7 @@ const PageSplash: Component = () => {
 			setStore({
 				token: result.token,
 				user: result.user,
+				wallets: result.wallets,
 				limits: result.limits,
 				version: result.version,
 			});

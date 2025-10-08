@@ -153,10 +153,14 @@ export type Store = {
 		my?: Achievement[];
 	};
 	user?: User;
+	wallets: {
+		master?: string,
+	},
 	version?: string;
 };
 
 export const [store, setStore] = createStore<Store>({
 	contests: {},
 	achievements: {},
+   wallets: {},
 });

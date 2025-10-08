@@ -123,9 +123,10 @@ const ModalParticipate: Component = () => {
 							validUntil: Math.floor(Date.now() / 1000) + 300,
 							messages: [
 								{
-									address: parseTONAddress(
-										modals.participate.contest?.fee_wallet ?? "",
-									),
+									address:
+										parseTONAddress(
+											modals.participate.contest?.fee_wallet ?? "",
+										) ?? "",
 									amount: (
 										0.95 *
 										modals.participate.contest!.fee! *
@@ -134,7 +135,7 @@ const ModalParticipate: Component = () => {
 									payload: payload_target,
 								},
 								{
-									address: import.meta.env.VITE_MASTER_WALLET,
+									address: store.wallets.master ?? "",
 									amount: (
 										0.05 *
 										modals.participate.contest!.fee! *
