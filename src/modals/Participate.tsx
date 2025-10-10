@@ -262,6 +262,7 @@ const ModalParticipate: Component = () => {
 			{
 				description: form.description,
 				boc: boc,
+				wallet: formWallet.wallet,
 			},
 			"POST",
 		);
