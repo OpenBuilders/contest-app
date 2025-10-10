@@ -48,6 +48,9 @@ export const initializeTonConnect = async () => {
 					minMessages: 2,
 				},
 			},
+			actionsConfiguration: {
+				twaReturnUrl: `https://t.me/${import.meta.env.VITE_BOT_USERNAME}/${import.meta.env.VITE_MINIAPP_SLUG}`,
+			},
 		});
 
 		return true;

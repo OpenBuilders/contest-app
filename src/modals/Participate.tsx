@@ -1,5 +1,8 @@
 import "./Participate.scss";
-import type { SendTransactionResponse } from "@tonconnect/sdk";
+import type {
+	SendTransactionResponse,
+	TonProofItemReply,
+} from "@tonconnect/sdk";
 import { BsQuestionCircleFill } from "solid-icons/bs";
 import { FaSolidCircleExclamation } from "solid-icons/fa";
 import {
@@ -43,6 +46,12 @@ type ParticipateFormStore = {
 	description: string;
 };
 
+type WalletFormStore = {
+	wallet?: string;
+	wallet_initState?: string;
+	ton_proof?: TonProofItemReply;
+};
+
 const ModalParticipate: Component = () => {
 	const { t, td } = useTranslation();
 
@@ -51,6 +60,7 @@ const ModalParticipate: Component = () => {
 	const [form, setForm] = createStore<ParticipateFormStore>({
 		description: "",
 	});
+	const [formWallet, setFormWallet] = createStore<WalletFormStore>({});
 	const [processing, setProcessing] = createSignal(false);
 
 	const [dependencies, setDependencies] = createStore({
@@ -98,60 +108,104 @@ const ModalParticipate: Component = () => {
 			return handlePayment();
 		}
 
+		tonConnectUI?.setConnectRequestParameters({
+			state: "loading",
+		});
+
+		const request = await requestAPI(
+			"/transaction/payload/create",
+			undefined,
+			"GET",
+		);
+
+		if (!request) return;
+
+		const {
+			result: { payload },
+		} = request;
+
+		tonConnectUI?.setConnectRequestParameters({
+			state: "ready",
+			value: {
+				tonProof: payload,
+			},
+		});
+
 		await tonConnectUI?.openModal();
 
 		return new Promise<false | SendTransactionResponse>((resolve) => {
-			const disposeOnStatusChange = tonConnectUI?.onStatusChange(async () => {
-				disposeOnModalStateChange?.();
-				disposeOnStatusChange?.();
+			const disposeOnStatusChange = tonConnectUI?.onStatusChange(
+				async (wallet) => {
+					disposeOnModalStateChange?.();
+					disposeOnStatusChange?.();
 
-				const request = await requestAPI(
-					`/contest/${modals.participate.contest?.slug}/transaction/create`,
-					{},
-					"POST",
-				);
+					setFormWallet(
+						produce((store) => {
+							if (wallet) {
+								store.wallet = wallet?.account.address;
+								store.wallet_initState = wallet.account.walletStateInit;
+							}
 
-				if (request) {
-					const {
-						result: {
-							payload: { master: payload_master, target: payload_target },
+							if (wallet?.connectItems?.tonProof) {
+								store.ton_proof = wallet?.connectItems?.tonProof;
+							}
+						}),
+					);
+
+					const request = await requestAPI(
+						`/contest/${modals.participate.contest?.slug}/transaction/create`,
+						{
+							wallet: formWallet.wallet,
+							wallet_initState: formWallet.wallet_initState,
+							ton_proof: formWallet.ton_proof
+								? JSON.stringify(formWallet.ton_proof)
+								: undefined,
 						},
-					} = request;
+						"POST",
+					);
 
-					tonConnectUI
-						?.sendTransaction({
-							validUntil: Math.floor(Date.now() / 1000) + 300,
-							messages: [
-								{
-									address:
-										parseTONAddress(
-											modals.participate.contest?.fee_wallet ?? "",
-										) ?? "",
-									amount: (
-										0.95 *
-										modals.participate.contest!.fee! *
-										1e9
-									).toString(),
-									payload: payload_target,
-								},
-								{
-									address: store.wallets.master ?? "",
-									amount: (
-										0.05 *
-										modals.participate.contest!.fee! *
-										1e9
-									).toString(),
-									payload: payload_master,
-								},
-							],
-						})
-						.then(resolve)
-						.catch((e) => {
-							console.error(e);
-							resolve(false);
-						});
-				}
-			});
+					if (request) {
+						const {
+							result: {
+								payload: { master: payload_master, target: payload_target },
+							},
+						} = request;
+
+						tonConnectUI
+							?.sendTransaction({
+								validUntil: Math.floor(Date.now() / 1000) + 300,
+								messages: [
+									{
+										address:
+											parseTONAddress(
+												modals.participate.contest?.fee_wallet ?? "",
+											) ?? "",
+										amount: (
+											0.95 *
+											modals.participate.contest!.fee! *
+											1e9
+										).toString(),
+										payload: payload_target,
+									},
+									{
+										address: store.wallets.master ?? "",
+										amount: (
+											0.05 *
+											modals.participate.contest!.fee! *
+											1e9
+										).toString(),
+										payload: payload_master,
+									},
+								],
+							})
+							.then(resolve)
+							.catch((e) => {
+								console.error(e);
+								resolve(false);
+							});
+					}
+				},
+			);
 
 			const disposeOnModalStateChange = tonConnectUI?.onModalStateChange(
 				(state) => {

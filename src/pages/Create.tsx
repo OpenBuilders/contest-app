@@ -1,10 +1,11 @@
-import { createStore } from "solid-js/store";
+import { createStore, produce } from "solid-js/store";
 import BackButton from "../components/BackButton";
 import MainButton from "../components/MainButton";
 import { useTranslation } from "../contexts/TranslationContext";
 import { navigator } from "../utils/navigator";
 import { setStore, store } from "../utils/store";
 import "./Create.scss";
+import type { TonProofItemReply } from "@tonconnect/sdk";
 import { FaSolidCircleExclamation } from "solid-icons/fa";
 import { FiInfo } from "solid-icons/fi";
 import { HiSolidPlus } from "solid-icons/hi";
@@ -95,6 +96,8 @@ type FormCreateStore = {
 	};
 	fee: number;
 	fee_wallet?: string;
+	fee_wallet_initState?: string;
+	ton_proof?: TonProofItemReply;
 	anonymous: boolean;
 	slug?: string;
 };
@@ -286,6 +289,10 @@ const PageCreate: Component = () => {
 					image: form.image
 						? ((await canvasToBlob(form.image, "image/webp", 0.95)) ??
 							undefined)
+						: undefined,
+					fee_wallet_initState: form.fee_wallet_initState,
+					ton_proof: form.ton_proof
+						? JSON.stringify(form.ton_proof)
 						: undefined,
 				},
 				"POST",
@@ -932,7 +939,18 @@ const PageCreate: Component = () => {
 		);
 
 		const disposeOnStatusChange = tonConnectUI?.onStatusChange((wallet) => {
-			setForm("fee_wallet", wallet?.account.address);
+			setForm(
+				produce((store) => {
+					if (wallet) {
+						store.fee_wallet = wallet?.account.address;
+						store.fee_wallet_initState = wallet.account.walletStateInit;
+					}
+
+					if (wallet?.connectItems?.tonProof) {
+						store.ton_proof = wallet?.connectItems?.tonProof;
+					}
+				}),
+			);
 		});
 
 		const onClickButtonConnect = async () => {
@@ -948,6 +966,29 @@ const PageCreate: Component = () => {
 			if (tonConnectUI?.connected) {
 				await tonConnectUI?.disconnect();
 			}
+
+			tonConnectUI?.setConnectRequestParameters({
+				state: "loading",
+			});
+
+			const request = await requestAPI(
+				"/transaction/payload/create",
+				undefined,
+				"GET",
+			);
+
+			if (!request) return;
+
+			const {
+				result: { payload },
+			} = request;
+
+			tonConnectUI?.setConnectRequestParameters({
+				state: "ready",
+				value: {
+					tonProof: payload,
+				},
+			});
 			await tonConnectUI?.openModal();
 
 			setProcessing(false);
@@ -968,7 +1009,19 @@ const PageCreate: Component = () => {
 			setProcessing(false);
 
 			if (tonConnectUI?.wallet) {
-				setForm("fee_wallet", tonConnectUI.wallet.account.address);
+				setForm(
+					produce((store) => {
+						if (tonConnectUI?.wallet) {
+							store.fee_wallet = tonConnectUI.wallet.account.address;
+							store.fee_wallet_initState =
+								tonConnectUI.wallet.account.walletStateInit;
+						}
+
+						if (tonConnectUI?.wallet?.connectItems?.tonProof) {
+							store.ton_proof = tonConnectUI?.wallet?.connectItems?.tonProof;
+						}
+					}),
+				);
 			}
 		});
 
