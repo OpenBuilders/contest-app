@@ -297,6 +297,8 @@ export const SectionContestManageModerators: Component<
 			"POST",
 		);
 
+		setProcessing(false);
+
 		if (request) {
 			const { status, result } = request;
 
@@ -311,7 +313,6 @@ export const SectionContestManageModerators: Component<
 			icon: FaSolidCircleExclamation,
 			text: t("errors.moderators.remove"),
 		});
-		setProcessing(false);
 	};
 
 	const SectionModerators = () => {

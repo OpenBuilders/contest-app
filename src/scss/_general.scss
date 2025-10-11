@@ -185,3 +185,13 @@ input[type="number"] {
 textarea {
    resize: none;
 }
+
+select {
+   background-color: var(--section-bg-color);
+   color: var(--text-color);
+
+   > option {
+      background-color: var(--section-bg-color);
+      color: var(--text-color);
+   }
+}

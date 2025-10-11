@@ -203,6 +203,11 @@ const ModalParticipate: Component = () => {
 								console.error(e);
 								resolve(false);
 							});
+					} else {
+						toast({
+							icon: FaSolidCircleExclamation,
+							text: t("errors.fetch"),
+						});
 					}
 				},
 			);

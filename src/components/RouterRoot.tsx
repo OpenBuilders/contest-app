@@ -76,33 +76,35 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 	);
 
 	onMount(() => {
-		if (lp?.tgWebAppStartParam) {
-			if (lp.tgWebAppStartParam.match(/^contest-[a-f0-9]{32}$/i)) {
-				navigator.go(`/splash`, {
-					params: {
-						from: `/contest/${lp.tgWebAppStartParam.replace("contest-", "")}`,
-						fromParams: {
-							theme: {
-								header: false,
+		if (!sessionStorage.getItem("launched")) {
+			if (lp?.tgWebAppStartParam) {
+				if (lp.tgWebAppStartParam.match(/^contest-[a-f0-9]{32}$/i)) {
+					navigator.go(`/splash`, {
+						params: {
+							from: `/contest/${lp.tgWebAppStartParam.replace("contest-", "")}`,
+							fromParams: {
+								theme: {
+									header: false,
+								},
 							},
 						},
-					},
-				});
-			}
+					});
+				}
 
-			if (lp.tgWebAppStartParam.match(/^submission-[a-f0-9]{32}-\d+$/i)) {
-				const chunks = lp.tgWebAppStartParam.split("-");
+				if (lp.tgWebAppStartParam.match(/^submission-[a-f0-9]{32}-\d+$/i)) {
+					const chunks = lp.tgWebAppStartParam.split("-");
 
-				navigator.go(`/splash`, {
-					params: {
-						from: `/contest/${chunks[1]}/submissions/${chunks[2]}`,
-						fromParams: {
-							theme: {
-								header: false,
+					navigator.go(`/splash`, {
+						params: {
+							from: `/contest/${chunks[1]}/submissions/${chunks[2]}`,
+							fromParams: {
+								theme: {
+									header: false,
+								},
 							},
 						},
-					},
-				});
+					});
+				}
 			}
 		}
 	});

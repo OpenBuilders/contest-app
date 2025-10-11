@@ -26,12 +26,9 @@
          flex-direction: column;
          flex-grow: 1;
          align-items: center;
-         padding: max(
-               calc(
-                  var(--tg-viewport-safe-area-inset-top) +
-                     var(--tg-viewport-content-safe-area-inset-top)
-               ),
-               1rem
+         padding: calc(
+               var(--tg-viewport-safe-area-inset-top) +
+                  var(--tg-viewport-content-safe-area-inset-top)
             )
             0 1rem;
          overflow: hidden;
@@ -40,6 +37,7 @@
 
          > div.avatar,
          > div.avatar-alias {
+            margin-top: 1rem;
             width: 7.5rem;
             height: 7.5rem;
             flex-shrink: 0;

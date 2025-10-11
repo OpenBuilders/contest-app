@@ -45,18 +45,20 @@ const PageSplash: Component = () => {
 
 		Promise.all(promises).then((result) => {
 			if (result.filter(Boolean).length === promises.length) {
-				if (lp?.tgWebAppStartParam) {
-					if (lp.tgWebAppStartParam.startsWith("moderator-join-")) {
-						setModals(
-							"moderatorJoin",
-							produce((data) => {
-								data.slug_moderator = lp!.tgWebAppStartParam?.replace(
-									"moderator-join-",
-									"",
-								);
-								data.open = true;
-							}),
-						);
+				if (!sessionStorage.getItem("launched")) {
+					if (lp?.tgWebAppStartParam) {
+						if (lp.tgWebAppStartParam.startsWith("moderator-join-")) {
+							setModals(
+								"moderatorJoin",
+								produce((data) => {
+									data.slug_moderator = lp!.tgWebAppStartParam?.replace(
+										"moderator-join-",
+										"",
+									);
+									data.open = true;
+								}),
+							);
+						}
 					}
 				}
 
@@ -84,6 +86,8 @@ const PageSplash: Component = () => {
 			} else {
 				postEvent("web_app_close");
 			}
+
+			sessionStorage.setItem("launched", "true");
 		});
 	});
 
