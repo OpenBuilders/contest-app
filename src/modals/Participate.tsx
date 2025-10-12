@@ -108,6 +108,10 @@ const ModalParticipate: Component = () => {
 			return handlePayment();
 		}
 
+		if (tonConnectUI?.connected) {
+			await tonConnectUI?.disconnect();
+		}
+
 		tonConnectUI?.setConnectRequestParameters({
 			state: "loading",
 		});
