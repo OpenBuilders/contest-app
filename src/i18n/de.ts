@@ -138,7 +138,7 @@ const dict_de = {
 				title: "Wallet verbinden",
 				description:
 					"Verbinden Sie ein TON-Wallet, um Teilnahmegebühren von Teilnehmern zu erhalten.",
-				hint: "Auf jede Teilnahme fällt eine Servicegebühr von 5 % an.",
+				hint: "Auf jede Teilnahme fällt eine Servicegebühr von {commission} % an.",
 				button: { text: "Wallet verbinden" },
 			},
 			done: {

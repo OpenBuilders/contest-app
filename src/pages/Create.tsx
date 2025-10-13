@@ -100,6 +100,7 @@ type FormCreateStore = {
 	ton_proof?: TonProofItemReply;
 	anonymous: boolean;
 	slug?: string;
+	boc?: string;
 };
 
 export const DEFAULT_SYMBOL = "symbol-55";
@@ -170,7 +171,7 @@ const PageCreate: Component = () => {
 			end: Math.trunc((Date.now() + 7 * 86400 * 1000) / 86400) * 86400,
 		},
 		theme: {},
-		fee: 0,
+		fee: 1.0,
 		anonymous: false,
 	});
 
@@ -235,8 +236,9 @@ const PageCreate: Component = () => {
 		}
 
 		if (
-			form.fee < store.limits!.form.create.fee.min ||
-			form.fee > store.limits!.form.create.fee.max
+			form.fee &&
+			(form.fee < store.limits!.form.create.fee.min ||
+				form.fee > store.limits!.form.create.fee.max)
 		) {
 			return true;
 		}
@@ -267,15 +269,15 @@ const PageCreate: Component = () => {
 
 	const onClickButton = async () => {
 		if (processing()) return;
-		setProcessing(true);
-
 		invokeHapticFeedbackImpact("soft");
 
-		if (form.fee && step() === "information") {
+		if (step() === "information") {
 			setStep("wallet");
 		} else {
+			setProcessing(true);
+
 			const request = await requestAPI(
-				"/contest/create",
+				`/contest/transaction/create`,
 				{
 					title: form.title,
 					description: form.description,
@@ -286,10 +288,6 @@ const PageCreate: Component = () => {
 					fee: form.fee.toString(),
 					fee_wallet: form.fee_wallet,
 					anonymous: form.anonymous ? "true" : "false",
-					image: form.image
-						? ((await canvasToBlob(form.image, "image/webp", 0.95)) ??
-							undefined)
-						: undefined,
 					fee_wallet_initState: form.fee_wallet_initState,
 					ton_proof: form.ton_proof
 						? JSON.stringify(form.ton_proof)
@@ -299,23 +297,79 @@ const PageCreate: Component = () => {
 			);
 
 			if (request) {
-				const { result } = request;
+				const {
+					result: {
+						payload: { master: payload_master },
+					},
+				} = request;
 
-				batch(() => {
-					setForm("slug", result.slug);
-					setStep("done");
-					setStore("contests", {
-						gallery: undefined,
-						my: undefined,
-					});
+				const transaction = await tonConnectUI?.sendTransaction({
+					validUntil: Math.floor(Date.now() / 1000) + 300,
+					messages: [
+						{
+							address: store.payments.master ?? "",
+							amount: ((store.payments.fee ?? 0) * 1e9).toString(),
+							payload: payload_master,
+						},
+					],
 				});
+
+				if (transaction?.boc) {
+					setForm("boc", transaction.boc);
+					const request = await requestAPI(
+						"/contest/create",
+						{
+							title: form.title,
+							description: form.description,
+							instruction: form.instruction,
+							prize: form.prize,
+							date: JSON.stringify(form.date),
+							theme: JSON.stringify(form.theme),
+							fee: form.fee.toString(),
+							fee_wallet: form.fee_wallet,
+							anonymous: form.anonymous ? "true" : "false",
+							image: form.image
+								? ((await canvasToBlob(form.image, "image/webp", 0.95)) ??
+									undefined)
+								: undefined,
+							fee_wallet_initState: form.fee_wallet_initState,
+							ton_proof: form.ton_proof
+								? JSON.stringify(form.ton_proof)
+								: undefined,
+							boc: form.boc,
+						},
+						"POST",
+					);
+
+					if (request) {
+						const { result } = request;
+
+						batch(() => {
+							setForm("slug", result.slug);
+							setStep("done");
+							setStore("contests", {
+								gallery: undefined,
+								my: undefined,
+							});
+						});
+					} else {
+						invokeHapticFeedbackNotification("error");
+						toast({
+							icon: FaSolidCircleExclamation,
+							text: t("pages.create.error.create"),
+						});
+						setProcessing(false);
+					}
+				} else {
+					setProcessing(false);
+				}
 			} else {
-				invokeHapticFeedbackNotification("error");
+				setProcessing(false);
+
 				toast({
 					icon: FaSolidCircleExclamation,
-					text: t("pages.create.error.create"),
+					text: t("errors.fetch"),
 				});
-				setProcessing(false);
 			}
 		}
 	};
@@ -938,20 +992,22 @@ const PageCreate: Component = () => {
 			() => {},
 		);
 
-		const disposeOnStatusChange = tonConnectUI?.onStatusChange((wallet) => {
-			setForm(
-				produce((store) => {
-					if (wallet) {
-						store.fee_wallet = wallet?.account.address;
-						store.fee_wallet_initState = wallet.account.walletStateInit;
-					}
+		const disposeOnStatusChange = tonConnectUI?.onStatusChange(
+			async (wallet) => {
+				setForm(
+					produce((store) => {
+						if (wallet) {
+							store.fee_wallet = wallet?.account.address;
+							store.fee_wallet_initState = wallet.account.walletStateInit;
+						}
 
-					if (wallet?.connectItems?.tonProof) {
-						store.ton_proof = wallet?.connectItems?.tonProof;
-					}
-				}),
-			);
-		});
+						if (wallet?.connectItems?.tonProof) {
+							store.ton_proof = wallet?.connectItems?.tonProof;
+						}
+					}),
+				);
+			},
+		);
 
 		const onClickButtonConnect = async () => {
 			if (!dependencies.tonconnect && tonConnectUI) {
@@ -1059,7 +1115,11 @@ const PageCreate: Component = () => {
 					</div>
 				</div>
 
-				<span class="text-hint">{t("pages.create.wallet.hint")}</span>
+				<span class="text-hint">
+					{td("pages.create.wallet.hint", {
+						commission: ((store.payments.commission ?? 0) * 100).toString(),
+					})}
+				</span>
 			</div>
 		);
 	};

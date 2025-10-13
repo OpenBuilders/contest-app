@@ -169,7 +169,7 @@ const dict = {
 				title: "Connect Wallet",
 				description:
 					"Connect a TON wallet to receive entry fees from participants.",
-				hint: "5% service fee applies to each entry.",
+				hint: "{commission}% service fee applies to each entry.",
 				button: {
 					text: "Connect Wallet",
 				},

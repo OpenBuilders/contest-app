@@ -192,9 +192,9 @@ const ModalParticipate: Component = () => {
 										payload: payload_target,
 									},
 									{
-										address: store.wallets.master ?? "",
+										address: store.payments.master ?? "",
 										amount: (
-											0.05 *
+											(store.payments.commission ?? 0) *
 											modals.participate.contest!.fee! *
 											1e9
 										).toString(),
