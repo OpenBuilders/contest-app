@@ -297,70 +297,74 @@ const PageCreate: Component = () => {
 			);
 
 			if (request) {
-				const {
-					result: {
-						payload: { master: payload_master },
-					},
-				} = request;
-
-				const transaction = await tonConnectUI?.sendTransaction({
-					validUntil: Math.floor(Date.now() / 1000) + 300,
-					messages: [
-						{
-							address: store.payments.master ?? "",
-							amount: ((store.payments.fee ?? 0) * 1e9).toString(),
-							payload: payload_master,
+				try {
+					const {
+						result: {
+							payload: { master: payload_master },
 						},
-					],
-				});
+					} = request;
 
-				if (transaction?.boc) {
-					setForm("boc", transaction.boc);
-					const request = await requestAPI(
-						"/contest/create",
-						{
-							title: form.title,
-							description: form.description,
-							instruction: form.instruction,
-							prize: form.prize,
-							date: JSON.stringify(form.date),
-							theme: JSON.stringify(form.theme),
-							fee: form.fee.toString(),
-							fee_wallet: form.fee_wallet,
-							anonymous: form.anonymous ? "true" : "false",
-							image: form.image
-								? ((await canvasToBlob(form.image, "image/webp", 0.95)) ??
-									undefined)
-								: undefined,
-							fee_wallet_initState: form.fee_wallet_initState,
-							ton_proof: form.ton_proof
-								? JSON.stringify(form.ton_proof)
-								: undefined,
-							boc: form.boc,
-						},
-						"POST",
-					);
+					const transaction = await tonConnectUI?.sendTransaction({
+						validUntil: Math.floor(Date.now() / 1000) + 300,
+						messages: [
+							{
+								address: store.payments.master ?? "",
+								amount: ((store.payments.fee ?? 0) * 1e9).toString(),
+								payload: payload_master,
+							},
+						],
+					});
 
-					if (request) {
-						const { result } = request;
+					if (transaction?.boc) {
+						setForm("boc", transaction.boc);
+						const request = await requestAPI(
+							"/contest/create",
+							{
+								title: form.title,
+								description: form.description,
+								instruction: form.instruction,
+								prize: form.prize,
+								date: JSON.stringify(form.date),
+								theme: JSON.stringify(form.theme),
+								fee: form.fee.toString(),
+								fee_wallet: form.fee_wallet,
+								anonymous: form.anonymous ? "true" : "false",
+								image: form.image
+									? ((await canvasToBlob(form.image, "image/webp", 0.95)) ??
+										undefined)
+									: undefined,
+								fee_wallet_initState: form.fee_wallet_initState,
+								ton_proof: form.ton_proof
+									? JSON.stringify(form.ton_proof)
+									: undefined,
+								boc: form.boc,
+							},
+							"POST",
+						);
 
-						batch(() => {
-							setForm("slug", result.slug);
-							setStep("done");
-							setStore("contests", {
-								gallery: undefined,
-								my: undefined,
+						if (request) {
+							const { result } = request;
+
+							batch(() => {
+								setForm("slug", result.slug);
+								setStep("done");
+								setStore("contests", {
+									gallery: undefined,
+									my: undefined,
+								});
 							});
-						});
+						} else {
+							invokeHapticFeedbackNotification("error");
+							toast({
+								icon: FaSolidCircleExclamation,
+								text: t("pages.create.error.create"),
+							});
+							setProcessing(false);
+						}
 					} else {
-						invokeHapticFeedbackNotification("error");
-						toast({
-							icon: FaSolidCircleExclamation,
-							text: t("pages.create.error.create"),
-						});
 						setProcessing(false);
 					}
-				} else {
+				} catch (_) {
 					setProcessing(false);
 				}
 			} else {
