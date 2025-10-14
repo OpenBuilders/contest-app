@@ -149,7 +149,7 @@ const dict_ar = {
 					"يمكنك الآن عرض مسابقتك، دعوة المشرفين، أو مشاركتها مع الآخرين.",
 				buttons: { view: "عرض المسابقة" },
 			},
-			button: { create: { text: "إنشاء" } },
+			button: { create: { text: "إنشاء", for: "إنشاء مقابل {amount} TON" } },
 			error: { create: "فشل إنشاء المسابقة." },
 		},
 		contest: {

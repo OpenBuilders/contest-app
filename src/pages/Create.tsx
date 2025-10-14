@@ -1186,10 +1186,21 @@ const PageCreate: Component = () => {
 
 				<footer>
 					<Switch>
-						<Match when={step() === "information" || step() === "wallet"}>
+						<Match when={step() === "information"}>
 							<CustomMainButton
 								onClick={onClickButton}
 								text={t("pages.create.button.create.text")}
+								disabled={buttonDisabled() || processing()}
+								loading={processing()}
+							/>
+						</Match>
+
+						<Match when={step() === "wallet"}>
+							<CustomMainButton
+								onClick={onClickButton}
+								text={td("pages.create.button.create.for", {
+									amount: store.payments.fee ?? 0,
+								})}
 								disabled={buttonDisabled() || processing()}
 								loading={processing()}
 							/>

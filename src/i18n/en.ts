@@ -185,6 +185,7 @@ const dict = {
 			button: {
 				create: {
 					text: "Create",
+					for: "Create for {amount} TON",
 				},
 			},
 			error: {

@@ -152,7 +152,7 @@ const dict_fa = {
 					"اکنون می‌توانید مسابقه خود را مشاهده، مدیران را دعوت یا با دیگران به اشتراک بگذارید.",
 				buttons: { view: "مشاهده مسابقه" },
 			},
-			button: { create: { text: "ایجاد" } },
+			button: { create: { text: "ایجاد", for: "ایجاد با {amount} TON" } },
 			error: { create: "ایجاد مسابقه ناموفق بود." },
 		},
 		contest: {

@@ -147,7 +147,9 @@ const dict_de = {
 					"Sie können nun Ihren Wettbewerb ansehen, Moderatoren einladen oder mit anderen teilen.",
 				buttons: { view: "Wettbewerb ansehen" },
 			},
-			button: { create: { text: "Erstellen" } },
+			button: {
+				create: { text: "Erstellen", for: "Erstellen für {amount} TON" },
+			},
 			error: { create: "Erstellen des Wettbewerbs fehlgeschlagen." },
 		},
 		contest: {
