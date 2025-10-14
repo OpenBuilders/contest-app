@@ -1,6 +1,6 @@
 # 🏆 Contests Tool Frontend
 
-![](https://raw.githubusercontent.com/OpenBuilders/contest-tool/master/docs/Demo.gif)
+![](https://raw.githubusercontent.com/OpenBuilders/contest-tool/refs/heads/master/docs/Demo.gif)
 
 Frontend of Contests Tool, built with **SolidJS + TypeScript** for a Telegram Mini App experience.
 
