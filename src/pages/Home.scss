@@ -57,7 +57,7 @@
    gap: 0.75rem;
 
    > span {
-      padding-inline-start: 1rem;
+      /* padding-inline-start: 1rem; */
       font-size: 1.625rem;
       font-weight: 600;
    }
@@ -198,10 +198,10 @@
          gap: 0.75rem;
 
          > span {
-            margin-inline-start: 1rem;
+            /* margin-inline-start: 1rem; */
             height: 2rem;
             width: 10rem;
-            border-radius: 0.25rem;
+            border-radius: 0.5rem;
          }
 
          > div {
