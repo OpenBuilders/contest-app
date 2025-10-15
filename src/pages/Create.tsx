@@ -648,6 +648,10 @@ const PageCreate: Component = () => {
 				),
 			);
 
+			const selectableContestThemeBackdrops = createMemo(() =>
+				ContestThemeBackdrops.filter((i) => i.id !== 0),
+			);
+
 			return (
 				<div id="container-page-create-section-themes">
 					<section class="container-section">
@@ -699,7 +703,7 @@ const PageCreate: Component = () => {
 									></div>
 								</swiper-slide>
 
-								<For each={ContestThemeBackdrops}>
+								<For each={selectableContestThemeBackdrops()}>
 									{(theme) => (
 										<swiper-slide>
 											<ThemePreview

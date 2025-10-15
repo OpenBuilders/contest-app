@@ -18,16 +18,16 @@ export type ContestThemeSymbol = {
 };
 
 export const ContestThemeBackdrops: ContestThemeBackdrop[] = [
-	// {
-	// 	id: 0,
-	// 	name: "Black",
-	// 	colors: {
-	// 		center: "#363738",
-	// 		edge: "#0e0f0f",
-	// 		pattern: "#6c6868",
-	// 		text: "#8c8f91",
-	// 	},
-	// },
+	{
+		id: 0,
+		name: "Black",
+		colors: {
+			center: "#363738",
+			edge: "#0e0f0f",
+			pattern: "#6c6868",
+			text: "#8c8f91",
+		},
+	},
 	{
 		id: 1,
 		name: "Electric Purple",
