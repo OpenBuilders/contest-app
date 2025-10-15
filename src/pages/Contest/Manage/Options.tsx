@@ -346,8 +346,9 @@ export const SectionContestManageOptions: Component<
 		}
 
 		if (
-			form.fee < store.limits!.form.create.fee.min ||
-			form.fee > store.limits!.form.create.fee.max
+			form.fee &&
+			(form.fee < store.limits!.form.create.fee.min ||
+				form.fee > store.limits!.form.create.fee.max)
 		) {
 			return true;
 		}
