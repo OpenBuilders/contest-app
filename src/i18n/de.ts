@@ -204,7 +204,9 @@ const dict_de = {
 				submissions: {
 					title: "Einreichungen",
 					empty: {
-						text: "Noch keine Einreichungen. Verbreiten Sie die Nachricht!",
+						title: "Noch keine Einsendungen.",
+						subtitle: "Erzähle es weiter!",
+						share: "Wettbewerb teilen",
 					},
 				},
 				results: {
@@ -268,6 +270,7 @@ const dict_de = {
 				placements: {
 					announced: "Ergebnisse verwalten",
 					unannounced: "Gewinner festlegen",
+					moderators: "Moderatoren hinzufügen",
 				},
 			},
 			admin: {

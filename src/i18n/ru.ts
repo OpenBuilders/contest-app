@@ -196,7 +196,11 @@ const dict_ru = {
 				},
 				submissions: {
 					title: "Заявки",
-					empty: { text: "Пока нет заявок. Расскажите о конкурсе!" },
+					empty: {
+						title: "Пока нет заявок.",
+						subtitle: "Расскажите всем!",
+						share: "Поделиться",
+					},
 				},
 				results: {
 					title: "Результаты",
@@ -255,6 +259,7 @@ const dict_ru = {
 				placements: {
 					announced: "Управление результатами",
 					unannounced: "Назначить победителей",
+					moderators: "Добавить модераторов",
 				},
 			},
 			admin: {

@@ -261,7 +261,9 @@ const dict = {
 				submissions: {
 					title: "Submissions",
 					empty: {
-						text: "No submissions yet. Spread the word!",
+						title: "No submissions yet.",
+						subtitle: "Spread the word!",
+						share: "Share contest",
 					},
 				},
 				results: {
@@ -363,6 +365,7 @@ const dict = {
 				placements: {
 					announced: "Manage Results",
 					unannounced: "Set Winners",
+					moderators: "Add Moderators",
 				},
 			},
 			admin: {

@@ -63,8 +63,24 @@ import {
 	disableThemeSync,
 } from "../utils/themes";
 
-const SectionSubmissionsEmpty = () => {
-	const { t } = useTranslation();
+const SectionSubmissionsEmpty: Component<{ contest: AnnotatedContest }> = (
+	props,
+) => {
+	const { t, td } = useTranslation();
+
+	const onClickShare = () => {
+		invokeHapticFeedbackImpact("light");
+
+		if (isVersionAtLeast("6.1")) {
+			postEvent("web_app_open_tg_link", {
+				path_full: `/share/url?url=https://t.me/${import.meta.env.VITE_BOT_USERNAME}/${import.meta.env.VITE_MINIAPP_SLUG}?startapp=contest-${props.contest.contest.slug}&text=${encodeURI(
+					td("pages.contest.header.share.text", {
+						name: props.contest.contest!.title,
+					}),
+				)}`,
+			});
+		}
+	};
 
 	return (
 		<div id="container-contest-submissions-empty">
@@ -75,9 +91,15 @@ const SectionSubmissionsEmpty = () => {
 				playOnClick
 			/>
 
+			<span>{t("pages.contest.manage.submissions.empty.title")}</span>
+
 			<span class="text-secondary">
-				{t("pages.contest.manage.submissions.empty.text")}
+				{t("pages.contest.manage.submissions.empty.subtitle")}
 			</span>
+
+			<button type="button" class="clickable" onClick={onClickShare}>
+				{t("pages.contest.manage.submissions.empty.share")}
+			</button>
 		</div>
 	);
 };
@@ -869,6 +891,16 @@ const PageContest: Component = () => {
 							<Match when={contest.metadata?.role === "owner"}>
 								<footer>
 									<CustomMainButton
+										text={t("pages.contest.footer.placements.moderators")}
+										onClick={() => {
+											navigator.go(
+												`/contest/${params.slug}/manage/settings/moderators`,
+											);
+										}}
+										secondary={true}
+									/>
+
+									<CustomMainButton
 										text={
 											contest.contest?.announced
 												? t("pages.contest.footer.placements.announced")
@@ -877,7 +909,6 @@ const PageContest: Component = () => {
 										onClick={() => {
 											navigator.go(`/contest/${params.slug}/manage/results`);
 										}}
-										backgroundColor="var(--theme-bg-edge)"
 									/>
 								</footer>
 							</Match>
@@ -894,13 +925,27 @@ const PageContest: Component = () => {
 						</Match>
 
 						<Match when={data.submissions?.length === 0}>
-							<SectionSubmissionsEmpty />
+							<SectionSubmissionsEmpty contest={contest as any} />
 						</Match>
 
 						<Match when={(data.submissions?.length ?? 0) > 0}>
 							<SectionSubmissions />
 						</Match>
 					</Switch>
+
+					<Show when={contest.metadata?.submissions_count === 0}>
+						<footer>
+							<CustomMainButton
+								text={t("pages.contest.footer.placements.moderators")}
+								onClick={() => {
+									navigator.go(
+										`/contest/${params.slug}/manage/settings/moderators`,
+									);
+								}}
+								secondary={true}
+							/>
+						</footer>
+					</Show>
 				</div>
 			);
 		};

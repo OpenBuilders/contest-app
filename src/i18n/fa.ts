@@ -203,7 +203,11 @@ const dict_fa = {
 				},
 				submissions: {
 					title: "ارسال‌ها",
-					empty: { text: "هنوز ارسالی وجود ندارد. اطلاع‌رسانی کنید!" },
+					empty: {
+						title: "هنوز هیچ ارسالی وجود ندارد.",
+						subtitle: "خبر را پخش کنید!",
+						share: "اشتراک‌گذاری مسابقه",
+					},
 				},
 				results: {
 					title: "نتایج",
@@ -257,7 +261,11 @@ const dict_fa = {
 				closed: { text: "ارسال‌ها بسته شده‌اند." },
 				submitted: { text: "شما قبلاً یک ارسال ثبت کرده‌اید." },
 				ended: { text: "این مسابقه به پایان رسیده است." },
-				placements: { announced: "مدیریت نتایج", unannounced: "تنظیم برندگان" },
+				placements: {
+					announced: "مدیریت نتایج",
+					unannounced: "تنظیم برندگان",
+					moderators: "افزودن مدیران",
+				},
 			},
 			admin: {
 				results: { title: "نتایج" },

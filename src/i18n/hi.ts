@@ -197,7 +197,11 @@ const dict_hi = {
 				},
 				submissions: {
 					title: "सबमिशन",
-					empty: { text: "अभी कोई सबमिशन नहीं है। प्रचार करें!" },
+					empty: {
+						title: "अभी तक कोई सबमिशन नहीं।",
+						subtitle: "खबर फैलाएं!",
+						share: "प्रतियोगिता साझा करें",
+					},
 				},
 				results: {
 					title: "परिणाम",
@@ -256,6 +260,7 @@ const dict_hi = {
 				placements: {
 					announced: "परिणाम प्रबंधित करें",
 					unannounced: "विजेताओं को सेट करें",
+					moderators: "मॉडरेटर जोड़ें",
 				},
 			},
 			admin: {

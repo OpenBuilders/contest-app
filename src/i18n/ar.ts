@@ -199,7 +199,11 @@ const dict_ar = {
 				},
 				submissions: {
 					title: "الإرسالات",
-					empty: { text: "لا توجد إرسالات بعد. انشر الخبر!" },
+					empty: {
+						title: "لا توجد مشاركات بعد.",
+						subtitle: "انشر الكلمة!",
+						share: "شارك المسابقة",
+					},
 				},
 				results: {
 					title: "النتائج",
@@ -255,6 +259,7 @@ const dict_ar = {
 				placements: {
 					announced: "إدارة النتائج",
 					unannounced: "تحديد الفائزين",
+					moderators: "إضافة المشرفين",
 				},
 			},
 			admin: {
