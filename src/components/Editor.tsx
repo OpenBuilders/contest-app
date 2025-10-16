@@ -86,41 +86,44 @@ const Editor: Component<EditorProps> = (props) => {
 		}
 	});
 
-	const normalizeLineBreaks = (text: string) => {
-		return (
-			text
-				// Normalize <br /> variants
-				.replace(/<br\s*\/?>/gi, "<br>")
+	const normalizeLineBreaks = (html: string) => {
+		html = html
+			.replace(/<br\s*\/?>/gi, "<br>")
+			.replace(/<(b|i|u|strike|strong|em)><br><\/\1>/gi, "<br>")
+			.replace(/<(b|i|u|strike|strong|em)>\s*<\/\1>/gi, "");
 
-				// Remove <br> wrapped in <b>, <i>, <strike>, etc. (bold empty lines)
-				.replace(/<(b|i|u|strike|strong|em)><br><\/\1>/gi, "<br>")
+		// Split by block tags so we can handle spacing manually
+		const blocks = html
+			.replace(/<\/?(div|p)>/gi, "\n")
+			.split(/\n+/)
+			.map((b) => b.trim())
+			.filter(Boolean);
 
-				// Remove empty bold tags entirely (like <b></b>)
-				.replace(/<(b|i|u|strike|strong|em)>\s*<\/\1>/gi, "")
+		let result = "";
+		for (let i = 0; i < blocks.length; i++) {
+			const curr = blocks[i];
+			const prev = blocks[i - 1] || "";
 
-				// Convert closing block followed by new block to paragraph break
-				.replace(/<\/(div|p)>\s*<(div|p)>/gi, "<br><br>")
+			// Add double break if previous block ended with </b> (like a section title)
+			if (prev.match(/<\/b>$/i)) {
+				result += "<br><br>";
+			}
+			// Add double break if this block starts with <b> (like a new section)
+			else if (curr.match(/^<b>/i) && i !== 0) {
+				result += "<br><br>";
+			}
+			// Otherwise single break between normal blocks
+			else if (i > 0) {
+				result += "<br>";
+			}
 
-				// Replace div/p start following text with 2 breaks
-				.replace(/([^>])\s*<(div|p)>/gi, "$1<br><br>")
+			result += curr;
+		}
 
-				// Replace remaining block openings with 1 break
-				.replace(/<(div|p)>/gi, "<br>")
-
-				// Remove closing tags
-				.replace(/<\/(div|p)>/gi, "")
-
-				// Collapse multiple <br> to max two
-				.replace(/(<br>\s*){3,}/g, "<br><br>")
-
-				// Normalize &nbsp; spacing
-				.replace(/\s*&nbsp;\s*/g, " ")
-
-				// Trim stray leading/trailing <br>
-				.replace(/^(<br>\s*)+/, "")
-				.replace(/(<br>\s*)+$/, "")
-				.trim()
-		);
+		return result
+			.replace(/(<br>\s*){3,}/g, "<br><br>") // collapse redundant breaks
+			.replace(/\s*&nbsp;\s*/g, " ")
+			.trim();
 	};
 
 	const sanitizeText = (text: string) => {
