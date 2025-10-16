@@ -86,18 +86,57 @@ const Editor: Component<EditorProps> = (props) => {
 		}
 	});
 
+	const normalizeLineBreaks = (text: string) => {
+		return (
+			text
+				// Normalize <br /> variants
+				.replace(/<br\s*\/?>/gi, "<br>")
+
+				// Remove <br> wrapped in <b>, <i>, <strike>, etc. (bold empty lines)
+				.replace(/<(b|i|u|strike|strong|em)><br><\/\1>/gi, "<br>")
+
+				// Remove empty bold tags entirely (like <b></b>)
+				.replace(/<(b|i|u|strike|strong|em)>\s*<\/\1>/gi, "")
+
+				// Convert closing block followed by new block to paragraph break
+				.replace(/<\/(div|p)>\s*<(div|p)>/gi, "<br><br>")
+
+				// Replace div/p start following text with 2 breaks
+				.replace(/([^>])\s*<(div|p)>/gi, "$1<br><br>")
+
+				// Replace remaining block openings with 1 break
+				.replace(/<(div|p)>/gi, "<br>")
+
+				// Remove closing tags
+				.replace(/<\/(div|p)>/gi, "")
+
+				// Collapse multiple <br> to max two
+				.replace(/(<br>\s*){3,}/g, "<br><br>")
+
+				// Normalize &nbsp; spacing
+				.replace(/\s*&nbsp;\s*/g, " ")
+
+				// Trim stray leading/trailing <br>
+				.replace(/^(<br>\s*)+/, "")
+				.replace(/(<br>\s*)+$/, "")
+				.trim()
+		);
+	};
+
 	const sanitizeText = (text: string) => {
 		if (!domPurify) return "";
 
 		return domPurify
 			.sanitize(
-				text
-					.replace(/<strong>/g, "<b>")
-					.replace(/<\/strong>/g, "</b>")
-					.replace(/<em>/g, "<i>")
-					.replace(/<\/em>/g, "</i>")
-					.replace(/<s>/g, "<strike>")
-					.replace(/<\/s>/g, "</strike>"),
+				normalizeLineBreaks(
+					text
+						.replace(/<strong>/g, "<b>")
+						.replace(/<\/strong>/g, "</b>")
+						.replace(/<em>/g, "<i>")
+						.replace(/<\/em>/g, "</i>")
+						.replace(/<s>/g, "<strike>")
+						.replace(/<\/s>/g, "</strike>"),
+				),
 				{
 					ALLOWED_TAGS: store.limits!.form.create.description.allowedTags,
 					ALLOWED_ATTR: store.limits!.form.create.description.allowedAttrs,
