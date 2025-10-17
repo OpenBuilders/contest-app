@@ -110,6 +110,7 @@
          gap: 0.25rem;
          font-size: 1.0625rem;
          font-weight: 600;
+         white-space: unset !important;
 
          > svg {
             color: var(--accent);

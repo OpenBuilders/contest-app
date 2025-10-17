@@ -203,7 +203,7 @@ const PageHome: Component = () => {
 						image={props.contest.contest.image}
 						backdrop={ContestThemeBackdrops.find((i) => i.id === backdrop)!}
 						symbol={symbol as ContestThemeSymbol}
-						symbolSize={64}
+						symbolSize={36}
 					/>
 
 					<div>

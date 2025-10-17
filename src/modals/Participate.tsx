@@ -185,7 +185,7 @@ const ModalParticipate: Component = () => {
 												modals.participate.contest?.fee_wallet ?? "",
 											) ?? "",
 										amount: (
-											0.95 *
+											(1 - (store.payments.commission ?? 0)) *
 											modals.participate.contest!.fee! *
 											1e9
 										).toString(),

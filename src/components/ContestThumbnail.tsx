@@ -26,7 +26,10 @@ const ContestThumbnail: Component<ContestThumbnailProps> = (props) => {
 		<div class="contest-thumbnail">
 			<Switch
 				fallback={
-					<div class="empty" style={{ "font-size": `${props.symbolSize}px` }}>
+					<div
+						class="empty"
+						style={{ "font-size": `${(props.symbolSize ?? 24) * 1.125}px` }}
+					>
 						<SVGSymbol id="AiOutlineTrophy" />
 					</div>
 				}

@@ -23,6 +23,7 @@
 
 .modal-handle-container {
    .modal-handle {
+      display: none;
       width: 4rem;
       background-color: var(--text-color) !important;
       border-radius: 1rem;
@@ -58,7 +59,8 @@
 }
 
 .modal-handle-container {
-   padding: 1rem 0;
+   /* padding: 1rem 0; */
+   height: 1.5rem;
    margin: 0 auto;
 }
 
