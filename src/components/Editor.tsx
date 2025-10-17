@@ -1,7 +1,7 @@
 import pell from "pell";
 import "./Editor.scss";
 import type { DOMPurify } from "dompurify";
-import snarkdown from "snarkdown";
+// import snarkdown from "snarkdown";
 import {
 	AiOutlineBold,
 	AiOutlineItalic,
@@ -158,16 +158,16 @@ const Editor: Component<EditorProps> = (props) => {
 		const clipboardData = e.clipboardData;
 		if (!clipboardData) return;
 
-		let rawHtml =
+		const rawHtml =
 			clipboardData.getData("text/html") || clipboardData.getData("text/plain");
 
-		const {
-			body: { textContent },
-		} = new DOMParser().parseFromString(rawHtml, "text/html");
+		// const {
+		// 	body: { textContent },
+		// } = new DOMParser().parseFromString(rawHtml, "text/html");
 
-		if (rawHtml === textContent) {
-			rawHtml = snarkdown(rawHtml);
-		}
+		// if (rawHtml === textContent) {
+		// 	rawHtml = snarkdown(rawHtml);
+		// }
 
 		const cleanHtml = sanitizeText(rawHtml);
 

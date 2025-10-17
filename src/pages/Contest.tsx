@@ -605,6 +605,7 @@ const PageContest: Component = () => {
 									})}
 									onClick={onClickParticipate}
 									backgroundColor="var(--theme-bg-edge)"
+									textColor="white"
 								/>
 							</Match>
 
