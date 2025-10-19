@@ -340,6 +340,7 @@ const PageCreate: Component = () => {
 								boc: form.boc,
 							},
 							"POST",
+							120_000,
 						);
 
 						if (request) {

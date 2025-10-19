@@ -159,6 +159,7 @@ const ModalParticipate: Component = () => {
 					const request = await requestAPI(
 						`/contest/${modals.participate.contest?.slug}/transaction/create`,
 						{
+							description: form.description,
 							wallet: formWallet.wallet,
 							wallet_initState: formWallet.wallet_initState,
 							ton_proof: formWallet.ton_proof
@@ -274,6 +275,7 @@ const ModalParticipate: Component = () => {
 				wallet: formWallet.wallet,
 			},
 			"POST",
+			120_000,
 		);
 
 		if (request) {

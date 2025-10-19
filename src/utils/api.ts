@@ -5,6 +5,7 @@ export const requestAPI = async (
 	path = "/",
 	params: { [key: string]: string | Blob | undefined } = {},
 	method: "GET" | "POST" = "POST",
+	timeoutMs = 30_000,
 ): Promise<any> => {
 	try {
 		const headers: { [key: string]: string } = {};
@@ -23,7 +24,7 @@ export const requestAPI = async (
 		headers.locale = settings.language ?? "en";
 
 		const controller = new AbortController();
-		const timer = setTimeout(() => controller.abort(), 30_000);
+		const timer = setTimeout(() => controller.abort(), timeoutMs);
 
 		const request = await fetch(import.meta.env.VITE_BACKEND_BASE_URL + path, {
 			method: method,
