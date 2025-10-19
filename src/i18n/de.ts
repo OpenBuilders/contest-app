@@ -142,10 +142,9 @@ const dict_de = {
 				button: { text: "Wallet verbinden" },
 			},
 			done: {
-				title: "Fertig!",
+				title: "Wir bereiten alles vor...",
 				description:
-					"Sie können nun Ihren Wettbewerb ansehen, Moderatoren einladen oder mit anderen teilen.",
-				buttons: { view: "Wettbewerb ansehen" },
+					"Wir bereiten deinen Wettbewerb vor und benachrichtigen dich, sobald deine Zahlung verarbeitet wurde.",
 			},
 			button: {
 				create: { text: "Erstellen", for: "Erstellen für {amount} TON" },

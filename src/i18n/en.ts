@@ -175,12 +175,9 @@ const dict = {
 				},
 			},
 			done: {
-				title: "Done!",
+				title: "Getting Ready...",
 				description:
-					"You can now view your contest, invite moderators, or share it with others.",
-				buttons: {
-					view: "View Contest",
-				},
+					"We are preparing your contest and you'll be notified as soon as we process your payment.",
 			},
 			button: {
 				create: {

@@ -344,10 +344,10 @@ const PageCreate: Component = () => {
 						);
 
 						if (request) {
-							const { result } = request;
+							// const { result } = request;
 
 							batch(() => {
-								setForm("slug", result.slug);
+								// setForm("slug", result.slug);
 								setStep("done");
 								setStore("contests", {
 									gallery: undefined,
@@ -379,14 +379,16 @@ const PageCreate: Component = () => {
 		}
 	};
 
-	const onClickButtonView = () => {
-		navigator.go(`/contest/${form.slug}`, {
-			params: {
-				theme: {
-					header: false,
-				},
-			},
-		});
+	const onClickButtonOk = () => {
+		// navigator.go(`/contest/${form.slug}`, {
+		// 	params: {
+		// 		theme: {
+		// 			header: false,
+		// 		},
+		// 	},
+		// });
+
+		navigator.go("/");
 	};
 
 	const SectionInformation = () => {
@@ -1217,8 +1219,8 @@ const PageCreate: Component = () => {
 
 						<Match when={step() === "done"}>
 							<CustomMainButton
-								onClick={onClickButtonView}
-								text={t("pages.create.done.buttons.view")}
+								onClick={onClickButtonOk}
+								text={t("general.ok")}
 							/>
 						</Match>
 					</Switch>
