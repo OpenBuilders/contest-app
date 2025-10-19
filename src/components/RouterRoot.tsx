@@ -7,7 +7,7 @@ import {
 	onMount,
 	Show,
 } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import { Dynamic, Portal } from "solid-js/web";
 import { Toaster } from "solid-toast";
 import { Color } from "../utils/colors";
 import { modals, setModals } from "../utils/modal";
@@ -129,13 +129,15 @@ const RouterRoot: Component<RouteSectionProps<unknown>> = (props) => {
 
 			<PlausibleTracker />
 
-			<Toaster
-				containerStyle={{
-					top: "calc(var(--tg-viewport-safe-area-inset-top) + var(--tg-viewport-content-safe-area-inset-top))",
-					bottom:
-						"calc(var(--tg-viewport-safe-area-inset-bottom) + var(--tg-viewport-content-safe-area-inset-bottom))",
-				}}
-			/>
+			<Portal mount={document.body}>
+				<Toaster
+					containerStyle={{
+						top: "max(calc(var(--tg-viewport-safe-area-inset-top) + var(--tg-viewport-content-safe-area-inset-top)), 1rem)",
+						bottom:
+							"max(calc(var(--tg-viewport-safe-area-inset-bottom) + var(--tg-viewport-content-safe-area-inset-bottom)), 1rem)",
+					}}
+				/>
+			</Portal>
 		</>
 	);
 };
