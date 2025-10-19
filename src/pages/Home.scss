@@ -105,15 +105,17 @@
       }
 
       > span:nth-child(1) {
-         display: flex;
-         align-items: center;
-         gap: 0.25rem;
+         display: inline;
          font-size: 1.0625rem;
          font-weight: 600;
          white-space: unset !important;
 
          > svg {
+            display: inline-flex;
             color: var(--accent);
+            flex-shrink: 0;
+            margin-inline-start: 0.25rem;
+            transform: translateY(-0.125rem);
          }
       }
 
