@@ -152,7 +152,7 @@ select {
 
 .clickable {
    cursor: pointer;
-   touch-action: none;
+   touch-action: manipulation;
 
    &:not(.disabled) {
       &:focus,

@@ -13,7 +13,7 @@
    cursor: pointer;
    border: none;
    outline: none;
-   touch-action: none;
+   touch-action: manipulation;
    flex-shrink: 0;
    position: relative;
    z-index: 0;
