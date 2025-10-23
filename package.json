@@ -40,7 +40,7 @@
 		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.2.6",
+		"@biomejs/biome": "^2.2.7",
 		"@tailwindcss/vite": "^4.1.15",
 		"@types/pako": "^2.0.4",
 		"autoprefixer": "^10.4.21",
