@@ -910,6 +910,10 @@ const PageCreate: Component = () => {
 
 		const SectionParticipants = () => {
 			const updateFeeValue = (input: string) => {
+				if (input === "" || input === "0") {
+					setForm("fee", 0);
+					return;
+				}
 				const value = clamp(
 					Number.isNaN(Number.parseFloat(input))
 						? store.limits!.form.create.fee.min
