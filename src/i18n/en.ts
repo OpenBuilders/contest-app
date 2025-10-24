@@ -235,9 +235,13 @@ const dict = {
 				},
 				moderators: {
 					title: "Moderators",
+					description: "Can view and vote on submissions.",
 					empty: {
-						text: "Moderators can view and vote on submissions.",
-						button: "Let's invite moderators!",
+						text: "No one here yet.",
+					},
+					buttons: {
+						invite: "Invite",
+						revoke: "Revoke Link",
 					},
 					invite: {
 						text: "👮‍♂️ Join the moderation team of {title}",
@@ -362,7 +366,7 @@ const dict = {
 				placements: {
 					announced: "Manage Results",
 					unannounced: "Set Winners",
-					moderators: "Add Moderators",
+					moderators: "Set Moderators",
 				},
 			},
 			admin: {

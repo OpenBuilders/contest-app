@@ -182,9 +182,13 @@ const dict_de = {
 				},
 				moderators: {
 					title: "Moderatoren",
+					description: "Kann Einsendungen ansehen und bewerten.",
 					empty: {
-						text: "Moderatoren können Einreichungen sehen und bewerten.",
-						button: "Moderatoren einladen!",
+						text: "Noch niemand hier.",
+					},
+					buttons: {
+						invite: "Einladen",
+						revoke: "Link widerrufen",
 					},
 					invite: {
 						text: "👮‍♂️ Trete dem Moderationsteam von {title} bei",

@@ -1,7 +1,8 @@
 import { AiOutlineTrophy } from "solid-icons/ai";
 import { BsCheckCircleFill } from "solid-icons/bs";
-import { CgMenu, CgRemove } from "solid-icons/cg";
+import { CgMenu } from "solid-icons/cg";
 import { FaSolidChevronRight } from "solid-icons/fa";
+import { IoRemoveCircle } from "solid-icons/io";
 import { VsVerifiedFilled } from "solid-icons/vs";
 import { WiTime9 } from "solid-icons/wi";
 import type { Component } from "solid-js";
@@ -57,8 +58,8 @@ const predefineSVGSymbols = async () => {
 			component: VsVerifiedFilled,
 		},
 		{
-			id: "CgRemove",
-			component: CgRemove,
+			id: "IoRemoveCircle",
+			component: IoRemoveCircle,
 		},
 		{
 			id: "FaSolidChevronRight",

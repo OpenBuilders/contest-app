@@ -894,9 +894,7 @@ const PageContest: Component = () => {
 									<CustomMainButton
 										text={t("pages.contest.footer.placements.moderators")}
 										onClick={() => {
-											navigator.go(
-												`/contest/${params.slug}/manage/settings/moderators`,
-											);
+											navigator.go(`/contest/${params.slug}/manage/moderators`);
 										}}
 										secondary={true}
 									/>
@@ -934,14 +932,17 @@ const PageContest: Component = () => {
 						</Match>
 					</Switch>
 
-					<Show when={contest.metadata?.submissions_count === 0}>
+					<Show
+						when={
+							contest.metadata?.submissions_count === 0 &&
+							contest.metadata?.role === "owner"
+						}
+					>
 						<footer>
 							<CustomMainButton
 								text={t("pages.contest.footer.placements.moderators")}
 								onClick={() => {
-									navigator.go(
-										`/contest/${params.slug}/manage/settings/moderators`,
-									);
+									navigator.go(`/contest/${params.slug}/manage/moderators`);
 								}}
 								secondary={true}
 							/>
