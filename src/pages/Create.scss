@@ -360,3 +360,24 @@ cropper-shade {
 .create-symbol-picker {
    --height: 15rem;
 }
+
+.container-page-create-section-options-deadline {
+   > div.placeholder {
+      > div.container-datepicker {
+         background: transparent;
+         border-radius: 0;
+         border: none;
+         outline: none;
+         padding: 0.625rem 0;
+         margin: 0;
+         padding-inline-end: 1rem;
+         padding-inline-start: 3rem;
+
+         > div {
+            color: rgba(var(--text-color-rgb), 0.5);
+            font-weight: normal;
+            font-size: 1rem;
+         }
+      }
+   }
+}

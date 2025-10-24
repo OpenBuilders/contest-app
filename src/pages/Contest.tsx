@@ -360,7 +360,7 @@ const PageContest: Component = () => {
 			};
 
 			const onClickSettings = () => {
-				navigator.go(`/contest/${params.slug}/manage/settings`);
+				navigator.go(`/contest/${params.slug}/manage/options`);
 			};
 
 			const headerMenuButtons: ButtonArrayItem[] = [

@@ -241,12 +241,7 @@ const dict_ar = {
 					form: { name: { label: "اسم المسابقة", placeholder: "مسابقتي" } },
 				},
 				settings: {
-					title: "الإعدادات",
 					button: "تحديث الخيارات",
-					tabs: {
-						options: { title: "الخيارات" },
-						moderators: { title: "المشرفون" },
-					},
 				},
 			},
 			results: { empty: "لا يوجد فائزون", self: "إرسالك" },

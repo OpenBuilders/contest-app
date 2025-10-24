@@ -325,16 +325,7 @@ const dict = {
 					},
 				},
 				settings: {
-					title: "Settings",
 					button: "Update Options",
-					tabs: {
-						options: {
-							title: "Options",
-						},
-						moderators: {
-							title: "Moderators",
-						},
-					},
 				},
 			},
 			results: {

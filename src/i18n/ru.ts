@@ -242,12 +242,7 @@ const dict_ru = {
 					},
 				},
 				settings: {
-					title: "Настройки",
 					button: "Обновить Общее",
-					tabs: {
-						options: { title: "Общее" },
-						moderators: { title: "Модераторы" },
-					},
 				},
 			},
 			results: { empty: "Нет победителей", self: "Ваша заявка" },

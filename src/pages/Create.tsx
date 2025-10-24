@@ -1,4 +1,4 @@
-import { createStore, produce } from "solid-js/store";
+import { createStore, produce, type SetStoreFunction } from "solid-js/store";
 import BackButton from "../components/BackButton";
 import MainButton from "../components/MainButton";
 import { useTranslation } from "../contexts/TranslationContext";
@@ -10,6 +10,7 @@ import { FaSolidCircleExclamation } from "solid-icons/fa";
 import { FiInfo } from "solid-icons/fi";
 import { HiSolidPlus } from "solid-icons/hi";
 import {
+	type Accessor,
 	batch,
 	type Component,
 	createEffect,
@@ -26,7 +27,9 @@ import {
 import { Portal } from "solid-js/web";
 import CircularIconPattern from "../components/CircularIconPattern";
 import CustomMainButton from "../components/CustomMainButton";
+import Datepicker from "../components/Datepicker";
 import Editor from "../components/Editor";
+import ImageLoader from "../components/ImageLoader";
 import LottiePlayerMotion from "../components/LottiePlayerMotion";
 import Modal from "../components/Modal";
 import {
@@ -62,6 +65,7 @@ import {
 	invokeHapticFeedbackSelectionChanged,
 } from "../utils/telegram";
 import {
+	type ContestThemeBackdrop,
 	ContestThemeBackdrops,
 	type ContestThemeSymbol,
 } from "../utils/themes";
@@ -104,6 +108,710 @@ type FormCreateStore = {
 };
 
 export const DEFAULT_SYMBOL = "symbol-55";
+
+export const SectionInformation: Component<{
+	form: FormCreateStore;
+	setForm: SetStoreFunction<FormCreateStore>;
+	theme: Accessor<
+		| {
+				backdrop: ContestThemeBackdrop;
+				symbol: ContestThemeSymbol;
+		  }
+		| undefined
+	>;
+	dependencies: {
+		cropper: boolean;
+		[key: string]: boolean;
+	};
+	setDependencies: SetStoreFunction<{
+		cropper: boolean;
+		[key: string]: boolean;
+	}>;
+	mode: "create" | "update";
+}> = (props) => {
+	const { t, td } = useTranslation();
+
+	const SectionHeader = () => {
+		const HeaderBackdrop = () => {
+			let container: HTMLDivElement | undefined;
+
+			const [togglePreviewSymbol, setTogglePreviewSymbol] = createSignal(true);
+			const [patternSize, setPatternSize] = createStore<{
+				width?: number;
+				height?: number;
+			}>();
+
+			createEffect(
+				on(
+					props.theme,
+					() => {
+						setTogglePreviewSymbol(false);
+
+						setTimeout(() => {
+							setTogglePreviewSymbol(true);
+						});
+					},
+					{
+						defer: true,
+					},
+				),
+			);
+
+			onMount(() => {
+				if (!container) return;
+
+				setPatternSize({
+					height: container.clientHeight,
+					width: container.clientWidth,
+				});
+			});
+
+			return (
+				<div id="container-page-create-section-header-backdrop" ref={container}>
+					<Show
+						when={
+							props.theme()?.symbol && patternSize.width && patternSize.height
+						}
+					>
+						<Show when={togglePreviewSymbol()}>
+							<CircularIconPattern
+								backdrop={props.theme()!.backdrop}
+								symbol={props.theme()!.symbol}
+								size={{
+									width: patternSize.width!,
+									height: patternSize.height!,
+								}}
+								layers={[
+									{
+										count: 6,
+										alpha: 0.425,
+										distance: patternSize.height! / 3,
+										size: patternSize.height! / 10,
+									},
+									{
+										count: 9,
+										alpha: 0.25,
+										distance: patternSize.height! / 1.875,
+										size: patternSize.height! / 15,
+									},
+									{
+										count: 15,
+										alpha: 0.125,
+										distance: patternSize.height! / 1.325,
+										size: patternSize.height! / 18,
+									},
+								]}
+							/>
+						</Show>
+					</Show>
+				</div>
+			);
+		};
+
+		const HeaderContent = () => {
+			let filePickerImage: HTMLInputElement | undefined;
+
+			const [imagePicker, setImagePicker] = createStore({
+				active: false,
+				src: "",
+			});
+
+			const onClickImagePicker = () => {
+				if (!props.dependencies.cropper) return;
+				if (!filePickerImage) return;
+
+				filePickerImage.onchange = (event) => {
+					const file = (event.target as HTMLInputElement).files?.[0];
+
+					if (file?.type.startsWith("image/")) {
+						setImagePicker({
+							active: true,
+							src: URL.createObjectURL(file),
+						});
+					}
+				};
+
+				filePickerImage.click();
+			};
+
+			const ImagePicker = () => {
+				const [processing, setProcessing] = createSignal(false);
+
+				const onClickButtonCrop = async () => {
+					setProcessing(true);
+					const cropperCanvas = document.querySelector(
+						"cropper-selection",
+					)! as any;
+					props.setForm("image", await cropperCanvas.$toCanvas());
+					setImagePicker("active", false);
+					setProcessing(false);
+					invokeHapticFeedbackImpact("medium");
+				};
+
+				return (
+					<>
+						<input
+							ref={filePickerImage}
+							type="file"
+							accept="image/*"
+							style={{ display: "none" }}
+						/>
+
+						<Show
+							when={
+								props.dependencies.cropper &&
+								imagePicker.active &&
+								imagePicker.src.length > 0
+							}
+						>
+							<Portal mount={document.body}>
+								<cropper-canvas background>
+									<cropper-image
+										src={imagePicker.src}
+										translatable
+										scalable
+									></cropper-image>
+									<cropper-shade></cropper-shade>
+									<cropper-handle action="move" plain></cropper-handle>
+									<cropper-selection
+										initial-coverage="1"
+										aspect-ratio="1"
+										movable
+										resizable
+									>
+										<cropper-grid covered></cropper-grid>
+										<cropper-crosshair centered></cropper-crosshair>
+										<cropper-handle
+											action="move"
+											theme-color="rgba(255, 255, 255, 0.35)"
+										></cropper-handle>
+										<cropper-handle action="n-resize"></cropper-handle>
+										<cropper-handle action="e-resize"></cropper-handle>
+										<cropper-handle action="s-resize"></cropper-handle>
+										<cropper-handle action="w-resize"></cropper-handle>
+										<cropper-handle action="ne-resize"></cropper-handle>
+										<cropper-handle action="nw-resize"></cropper-handle>
+										<cropper-handle action="se-resize"></cropper-handle>
+										<cropper-handle action="sw-resize"></cropper-handle>
+									</cropper-selection>
+								</cropper-canvas>
+							</Portal>
+
+							<MainButton
+								loading={processing()}
+								disabled={processing()}
+								onClick={onClickButtonCrop}
+								text={t("pages.create.options.image.crop")}
+							/>
+						</Show>
+					</>
+				);
+			};
+
+			return (
+				<div id="container-page-create-section-header-content">
+					<div
+						id="container-page-create-section-header-content-image"
+						onClick={onClickImagePicker}
+					>
+						<button type="button">
+							<Show when={props.form.image} fallback={<HiSolidPlus />}>
+								<Switch fallback={props.form.image}>
+									<Match when={typeof props.form.image === "string"}>
+										<ImageLoader
+											src={`${import.meta.env.VITE_BACKEND_BASE_URL}/images/${props.form.image}`}
+										/>
+									</Match>
+								</Switch>
+							</Show>
+						</button>
+
+						<span class="clickable">
+							{t("pages.create.options.image.label")}
+						</span>
+					</div>
+
+					<ImagePicker />
+				</div>
+			);
+		};
+
+		return (
+			<div id="container-page-create-section-header">
+				<HeaderBackdrop />
+				<HeaderContent />
+			</div>
+		);
+	};
+
+	const SectionThemes = () => {
+		const activeSlideIndex = createMemo(() => {
+			if (props.form.theme.backdrop === undefined) return 0;
+
+			return (
+				ContestThemeBackdrops.findIndex(
+					(item) => item.id === props.form.theme.backdrop,
+				) ?? 0
+			);
+		});
+
+		const onClickBackdrop = (e: MouseEvent) => {
+			const backdrop = (e.currentTarget as HTMLElement).getAttribute(
+				"data-backdrop",
+			);
+
+			if (!backdrop) return;
+			setBackdrop(Number.parseInt(backdrop, 10));
+		};
+
+		const setBackdrop = (backdrop: number | undefined) => {
+			invokeHapticFeedbackSelectionChanged();
+			props.setForm("theme", "backdrop", backdrop);
+		};
+
+		createEffect(
+			on(activeSlideIndex, () => {
+				(
+					document.querySelector(".slider-theme-preview") as any
+				)?.swiper.slideTo(activeSlideIndex());
+			}),
+		);
+
+		const [picker, setPicker] = createSignal(false);
+		const [symbol, setSymbol] = createSignal(
+			props.form.theme.symbol ?? DEFAULT_SYMBOL,
+		);
+
+		createEffect(
+			on(
+				symbol,
+				() => {
+					props.setForm("theme", "symbol", symbol());
+				},
+				{
+					defer: true,
+				},
+			),
+		);
+
+		const selectableContestThemeBackdrops = createMemo(() =>
+			ContestThemeBackdrops.filter((i) => i.id !== 0),
+		);
+
+		return (
+			<div id="container-page-create-section-themes">
+				<section class="container-section">
+					<span>
+						<span>{t("pages.create.options.themes.label")}</span>
+
+						<div
+							class="clickable symbol-picker-anchor"
+							onClick={() => {
+								setPicker(true);
+							}}
+						>
+							<SVGSymbol
+								id={`backdrop-${props.form.theme.symbol ?? DEFAULT_SYMBOL}`}
+							/>
+
+							<SymbolPicker
+								class="create-symbol-picker"
+								anchorSelector="#container-page-create-section-themes .symbol-picker-anchor > svg"
+								signal={[picker, setPicker]}
+								symbol={[symbol, setSymbol]}
+								closeOnClickOutside={true}
+								animated={true}
+								anchorPosition={isRTL() ? "tl" : "tr"}
+							/>
+						</div>
+					</span>
+
+					<div>
+						<swiper-container
+							class="slider-theme-preview"
+							slides-per-view={5}
+							slides-offset-before={16}
+							slides-offset-after={16}
+							space-between={8}
+							initial-slide={activeSlideIndex()}
+							dir={isRTL() ? "rtl" : "ltr"}
+							resistance-ratio="0.25"
+							long-swipes-ratio="0.25"
+						>
+							<swiper-slide>
+								<div
+									class="theme-preview"
+									style="background-color: var(--segmented-bg);"
+									classList={{
+										active: props.form.theme.backdrop === undefined,
+									}}
+									onClick={() => setBackdrop(undefined)}
+								></div>
+							</swiper-slide>
+
+							<For each={selectableContestThemeBackdrops()}>
+								{(theme) => (
+									<swiper-slide>
+										<ThemePreview
+											onClick={onClickBackdrop}
+											classList={{
+												active: props.form.theme.backdrop === theme.id,
+											}}
+											backdrop={
+												ContestThemeBackdrops.find(
+													(item) => item.id === theme.id,
+												)!
+											}
+											symbol={{
+												id: props.form.theme.symbol ?? DEFAULT_SYMBOL,
+												component: getSymbolSVGString(
+													props.form.theme.symbol ?? DEFAULT_SYMBOL,
+												),
+											}}
+										/>
+									</swiper-slide>
+								)}
+							</For>
+						</swiper-container>
+					</div>
+				</section>
+			</div>
+		);
+	};
+
+	const SectionInfo = () => {
+		return (
+			<div id="container-page-create-section-info">
+				<Section>
+					<div>
+						<input
+							class="input"
+							type="text"
+							placeholder={t("pages.create.options.name.placeholder")}
+							value={props.form.title}
+							onInput={(e) => props.setForm("title", e.currentTarget.value)}
+							onBlur={(e) =>
+								props.setForm("title", e.currentTarget.value.trim())
+							}
+							onKeyDown={hideKeyboardOnEnter}
+							maxLength={store.limits!.form.create.title.maxLength}
+						/>
+					</div>
+
+					<div>
+						<Editor
+							value={props.form.description}
+							setValue={(data) => props.setForm("description", data)}
+							placeholder={t("pages.create.options.description.placeholder")}
+							maxLength={store.limits!.form.create.description.maxLength}
+						/>
+					</div>
+				</Section>
+			</div>
+		);
+	};
+
+	const SectionInstruction = () => {
+		return (
+			<div id="container-page-create-section-instruction">
+				<Section>
+					<textarea
+						id="input-instruction"
+						placeholder={t("pages.create.options.instruction.placeholder")}
+						value={props.form.instruction}
+						onInput={(e) => props.setForm("instruction", e.currentTarget.value)}
+						onChange={(e) => {
+							props.setForm("instruction", e.currentTarget.value.trim());
+						}}
+						minLength={store.limits!.form.create.instruction.maxLength}
+						maxLength={store.limits!.form.create.instruction.maxLength}
+					/>
+				</Section>
+			</div>
+		);
+	};
+
+	const SectionOptionsCreate = () => {
+		const [duration, setDuration] = createSignal("7");
+		const [modal, setModal] = createSignal(false);
+
+		createEffect(
+			on(duration, (current, prev) => {
+				if (current === "0") {
+					batch(() => {
+						setDuration(prev ?? "7");
+						setModal(true);
+					});
+					return;
+				}
+
+				props.setForm(
+					"date",
+					"end",
+					Math.trunc(Date.now() / 86400_000) * 86400_000 +
+						Number.parseInt(duration(), 10) * 86400_000,
+				);
+			}),
+		);
+
+		return (
+			<div id="container-page-create-section-options">
+				<SectionList
+					items={[
+						{
+							label: t("pages.create.options.duration.label"),
+							placeholder: () => (
+								<SectionListSelect
+									value={duration()}
+									setValue={setDuration}
+									items={[
+										{
+											value: "1",
+											label: t("pages.create.options.duration.options.day"),
+										},
+										{
+											value: "7",
+											label: t("pages.create.options.duration.options.week"),
+										},
+										{
+											value: "30",
+											label: t("pages.create.options.duration.options.month"),
+										},
+										{
+											value: "0",
+											label: t("pages.create.options.duration.options.custom"),
+										},
+										...Array.from(new Array(90))
+											.map((_, i) => ({
+												value: (i + 1).toString(),
+												label: td(
+													"pages.create.options.duration.custom.plural",
+													{
+														day: (i + 1).toString(),
+													},
+												),
+												disabled: true,
+												hidden: true,
+											}))
+											.filter((_, i) => ![1, 7, 30].includes(i + 1)),
+									]}
+								/>
+							),
+						},
+						{
+							label: t("pages.create.options.prize.label"),
+							placeholder: () => (
+								<SectionListInput
+									type="text"
+									placeholder="$10,000 USDT"
+									value={props.form.prize}
+									setValue={(value) => props.setForm("prize", value)}
+									maxLength={store.limits!.form.create.prize.maxLength}
+									onBlur={() => {
+										props.setForm(
+											"prize",
+											formatNumbersInString(props.form.prize),
+										);
+									}}
+								/>
+							),
+						},
+					]}
+				/>
+
+				<Show when={modal()}>
+					<Modal
+						onClose={() => setModal(false)}
+						portalParent={document.querySelector("#portals")!}
+						class="modal-section-list-picker"
+						withCloseButton={true}
+					>
+						<p>{t("pages.create.options.duration.custom.label")}</p>
+
+						<WheelPicker
+							items={Array.from(new Array(90)).map((_, index) => ({
+								value: (index + 1).toString(),
+								label:
+									index === 0
+										? td("pages.create.options.duration.custom.singular", {
+												day: (index + 1).toString(),
+											})
+										: td("pages.create.options.duration.custom.plural", {
+												day: (index + 1).toString(),
+											}),
+							}))}
+							setValue={setDuration}
+							value={duration()}
+						/>
+
+						<CustomMainButton
+							text={t("general.done")}
+							onClick={() => setModal(false)}
+						/>
+					</Modal>
+				</Show>
+			</div>
+		);
+	};
+
+	const SectionOptionsUpdate = () => {
+		const [deadline, setDeadline] = createSignal(props.form.date.end);
+
+		createEffect(
+			on(
+				deadline,
+				() => {
+					props.setForm("date", "end", deadline());
+				},
+				{ defer: true },
+			),
+		);
+
+		return (
+			<div id="container-page-create-section-options">
+				<SectionList
+					items={[
+						{
+							label: t("pages.contest.header.deadline.title"),
+							class: "container-page-create-section-options-deadline",
+							placeholder: () => (
+								<Datepicker
+									value={deadline()}
+									setValue={setDeadline}
+									minDate={
+										new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)
+											.toISOString()
+											.split("T")[0]
+									}
+									maxDate={
+										new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+											.toISOString()
+											.split("T")[0]
+									}
+								/>
+							),
+						},
+						{
+							label: t("pages.create.options.prize.label"),
+							placeholder: () => (
+								<SectionListInput
+									type="text"
+									placeholder="$10,000 USDT"
+									value={props.form.prize}
+									setValue={(value) => props.setForm("prize", value)}
+									maxLength={store.limits!.form.create.prize.maxLength}
+									onBlur={() => {
+										props.setForm(
+											"prize",
+											formatNumbersInString(props.form.prize),
+										);
+									}}
+								/>
+							),
+						},
+					]}
+				/>
+			</div>
+		);
+	};
+
+	const SectionParticipants = () => {
+		const updateFeeValue = (input: string) => {
+			if (input === "" || input === "0") {
+				props.setForm("fee", 0);
+				return;
+			}
+			const value = clamp(
+				Number.isNaN(Number.parseFloat(input))
+					? store.limits!.form.create.fee.min
+					: Number.parseFloat(input),
+				store.limits!.form.create.fee.min,
+				store.limits!.form.create.fee.max,
+			);
+			props.setForm("fee", value);
+		};
+
+		const feeDisplayValue = createMemo(() =>
+			props.form.fee > 0 ? props.form.fee.toString() : "",
+		);
+
+		return (
+			<div id="container-page-create-section-participants">
+				<SectionList
+					title={t("pages.create.options.participants.label")}
+					items={[
+						{
+							label: () => (
+								<span
+									onClick={() => {
+										setModals("anonymous", "open", true);
+									}}
+									class="clickable"
+									style={{
+										display: "flex",
+										gap: "0.375rem",
+										"align-items": "center",
+									}}
+								>
+									{t("pages.create.options.participants.anonymous.label")}
+									<FiInfo style={{ opacity: "0.5", "font-size": "1.125rem" }} />
+								</span>
+							),
+							placeholder: () => (
+								<SectionListSwitch
+									value={props.form.anonymous}
+									setValue={(value) => props.setForm("anonymous", value)}
+								/>
+							),
+						},
+						{
+							label: t("pages.create.options.fee.label"),
+							placeholder: () => (
+								<SectionListInput
+									class="input-fee"
+									type="number"
+									inputmode="decimal"
+									placeholder={t("pages.create.options.fee.free")}
+									value={feeDisplayValue()}
+									setValue={updateFeeValue}
+									min={store.limits!.form.create.fee.min}
+									max={store.limits!.form.create.fee.max}
+									append={() => <SVGSymbol id="TON" />}
+								/>
+							),
+						},
+					]}
+				/>
+			</div>
+		);
+	};
+
+	return (
+		<>
+			<SectionHeader />
+
+			<div id="container-page-create-sections">
+				<SectionThemes />
+
+				<SectionInfo />
+
+				<SectionInstruction />
+
+				<Switch>
+					<Match when={props.mode === "create"}>
+						<SectionOptionsCreate />
+					</Match>
+
+					<Match when={props.mode === "update"}>
+						<SectionOptionsUpdate />
+					</Match>
+				</Switch>
+
+				<SectionParticipants />
+			</div>
+		</>
+	);
+};
 
 const PageCreate: Component = () => {
 	const { t, td } = useTranslation();
@@ -227,7 +935,7 @@ const PageCreate: Component = () => {
 			}
 		}
 
-		if (form.date.end < Math.trunc(Date.now() / 86400_000 + 1) * 86400_000) {
+		if (form.date.end < Date.now()) {
 			return true;
 		}
 
@@ -389,615 +1097,6 @@ const PageCreate: Component = () => {
 		// });
 
 		navigator.go("/");
-	};
-
-	const SectionInformation = () => {
-		const SectionHeader = () => {
-			const HeaderBackdrop = () => {
-				let container: HTMLDivElement | undefined;
-
-				const [togglePreviewSymbol, setTogglePreviewSymbol] =
-					createSignal(true);
-				const [patternSize, setPatternSize] = createStore<{
-					width?: number;
-					height?: number;
-				}>();
-
-				createEffect(
-					on(
-						theme,
-						() => {
-							setTogglePreviewSymbol(false);
-
-							setTimeout(() => {
-								setTogglePreviewSymbol(true);
-							});
-						},
-						{
-							defer: true,
-						},
-					),
-				);
-
-				onMount(() => {
-					if (!container) return;
-
-					setPatternSize({
-						height: container.clientHeight,
-						width: container.clientWidth,
-					});
-				});
-
-				return (
-					<div
-						id="container-page-create-section-header-backdrop"
-						ref={container}
-					>
-						<Show
-							when={theme()?.symbol && patternSize.width && patternSize.height}
-						>
-							<Show when={togglePreviewSymbol()}>
-								<CircularIconPattern
-									backdrop={theme()!.backdrop}
-									symbol={theme()!.symbol}
-									size={{
-										width: patternSize.width!,
-										height: patternSize.height!,
-									}}
-									layers={[
-										{
-											count: 6,
-											alpha: 0.425,
-											distance: patternSize.height! / 3,
-											size: patternSize.height! / 10,
-										},
-										{
-											count: 9,
-											alpha: 0.25,
-											distance: patternSize.height! / 1.875,
-											size: patternSize.height! / 15,
-										},
-										{
-											count: 15,
-											alpha: 0.125,
-											distance: patternSize.height! / 1.325,
-											size: patternSize.height! / 18,
-										},
-									]}
-								/>
-							</Show>
-						</Show>
-					</div>
-				);
-			};
-
-			const HeaderContent = () => {
-				let filePickerImage: HTMLInputElement | undefined;
-
-				const [imagePicker, setImagePicker] = createStore({
-					active: false,
-					src: "",
-				});
-
-				const onClickImagePicker = () => {
-					if (!dependencies.cropper) return;
-					if (!filePickerImage) return;
-
-					filePickerImage.onchange = (event) => {
-						const file = (event.target as HTMLInputElement).files?.[0];
-
-						if (file?.type.startsWith("image/")) {
-							setImagePicker({
-								active: true,
-								src: URL.createObjectURL(file),
-							});
-						}
-					};
-
-					filePickerImage.click();
-				};
-
-				const ImagePicker = () => {
-					const [processing, setProcessing] = createSignal(false);
-
-					const onClickButtonCrop = async () => {
-						setProcessing(true);
-						const cropperCanvas = document.querySelector(
-							"cropper-selection",
-						)! as any;
-						setForm("image", await cropperCanvas.$toCanvas());
-						setImagePicker("active", false);
-						setProcessing(false);
-						invokeHapticFeedbackImpact("medium");
-					};
-
-					return (
-						<>
-							<input
-								ref={filePickerImage}
-								type="file"
-								accept="image/*"
-								style={{ display: "none" }}
-							/>
-
-							<Show
-								when={
-									dependencies.cropper &&
-									imagePicker.active &&
-									imagePicker.src.length > 0
-								}
-							>
-								<Portal mount={document.body}>
-									<cropper-canvas background>
-										<cropper-image
-											src={imagePicker.src}
-											translatable
-											scalable
-										></cropper-image>
-										<cropper-shade></cropper-shade>
-										<cropper-handle action="move" plain></cropper-handle>
-										<cropper-selection
-											initial-coverage="1"
-											aspect-ratio="1"
-											movable
-											resizable
-										>
-											<cropper-grid covered></cropper-grid>
-											<cropper-crosshair centered></cropper-crosshair>
-											<cropper-handle
-												action="move"
-												theme-color="rgba(255, 255, 255, 0.35)"
-											></cropper-handle>
-											<cropper-handle action="n-resize"></cropper-handle>
-											<cropper-handle action="e-resize"></cropper-handle>
-											<cropper-handle action="s-resize"></cropper-handle>
-											<cropper-handle action="w-resize"></cropper-handle>
-											<cropper-handle action="ne-resize"></cropper-handle>
-											<cropper-handle action="nw-resize"></cropper-handle>
-											<cropper-handle action="se-resize"></cropper-handle>
-											<cropper-handle action="sw-resize"></cropper-handle>
-										</cropper-selection>
-									</cropper-canvas>
-								</Portal>
-
-								<MainButton
-									loading={processing()}
-									disabled={processing()}
-									onClick={onClickButtonCrop}
-									text={t("pages.create.options.image.crop")}
-								/>
-							</Show>
-						</>
-					);
-				};
-
-				return (
-					<div id="container-page-create-section-header-content">
-						<div
-							id="container-page-create-section-header-content-image"
-							onClick={onClickImagePicker}
-						>
-							<button type="button">
-								<Show when={form.image} fallback={<HiSolidPlus />}>
-									{form.image}
-								</Show>
-							</button>
-
-							<span class="clickable">
-								{t("pages.create.options.image.label")}
-							</span>
-						</div>
-
-						<ImagePicker />
-					</div>
-				);
-			};
-
-			return (
-				<div id="container-page-create-section-header">
-					<HeaderBackdrop />
-					<HeaderContent />
-				</div>
-			);
-		};
-
-		const SectionThemes = () => {
-			const activeSlideIndex = createMemo(() => {
-				if (form.theme.backdrop === undefined) return 0;
-
-				return (
-					ContestThemeBackdrops.findIndex(
-						(item) => item.id === form.theme.backdrop,
-					) ?? 0
-				);
-			});
-
-			const onClickBackdrop = (e: MouseEvent) => {
-				const backdrop = (e.currentTarget as HTMLElement).getAttribute(
-					"data-backdrop",
-				);
-
-				if (!backdrop) return;
-				setBackdrop(Number.parseInt(backdrop, 10));
-			};
-
-			const setBackdrop = (backdrop: number | undefined) => {
-				invokeHapticFeedbackSelectionChanged();
-				setForm("theme", "backdrop", backdrop);
-			};
-
-			createEffect(
-				on(activeSlideIndex, () => {
-					(
-						document.querySelector(".slider-theme-preview") as any
-					)?.swiper.slideTo(activeSlideIndex());
-				}),
-			);
-
-			const [picker, setPicker] = createSignal(false);
-			const [symbol, setSymbol] = createSignal(
-				form.theme.symbol ?? DEFAULT_SYMBOL,
-			);
-
-			createEffect(
-				on(
-					symbol,
-					() => {
-						setForm("theme", "symbol", symbol());
-					},
-					{
-						defer: true,
-					},
-				),
-			);
-
-			const selectableContestThemeBackdrops = createMemo(() =>
-				ContestThemeBackdrops.filter((i) => i.id !== 0),
-			);
-
-			return (
-				<div id="container-page-create-section-themes">
-					<section class="container-section">
-						<span>
-							<span>{t("pages.create.options.themes.label")}</span>
-
-							<div
-								class="clickable symbol-picker-anchor"
-								onClick={() => {
-									setPicker(true);
-								}}
-							>
-								<SVGSymbol
-									id={`backdrop-${form.theme.symbol ?? DEFAULT_SYMBOL}`}
-								/>
-
-								<SymbolPicker
-									class="create-symbol-picker"
-									anchorSelector="#container-page-create-section-themes .symbol-picker-anchor > svg"
-									signal={[picker, setPicker]}
-									symbol={[symbol, setSymbol]}
-									closeOnClickOutside={true}
-									animated={true}
-									anchorPosition={isRTL() ? "tl" : "tr"}
-								/>
-							</div>
-						</span>
-
-						<div>
-							<swiper-container
-								class="slider-theme-preview"
-								slides-per-view={5}
-								slides-offset-before={16}
-								slides-offset-after={16}
-								space-between={8}
-								initial-slide={activeSlideIndex()}
-								dir={isRTL() ? "rtl" : "ltr"}
-								resistance-ratio="0.25"
-								long-swipes-ratio="0.25"
-							>
-								<swiper-slide>
-									<div
-										class="theme-preview"
-										style="background-color: var(--segmented-bg);"
-										classList={{
-											active: form.theme.backdrop === undefined,
-										}}
-										onClick={() => setBackdrop(undefined)}
-									></div>
-								</swiper-slide>
-
-								<For each={selectableContestThemeBackdrops()}>
-									{(theme) => (
-										<swiper-slide>
-											<ThemePreview
-												onClick={onClickBackdrop}
-												classList={{
-													active: form.theme.backdrop === theme.id,
-												}}
-												backdrop={
-													ContestThemeBackdrops.find(
-														(item) => item.id === theme.id,
-													)!
-												}
-												symbol={{
-													id: form.theme.symbol ?? DEFAULT_SYMBOL,
-													component: getSymbolSVGString(
-														form.theme.symbol ?? DEFAULT_SYMBOL,
-													),
-												}}
-											/>
-										</swiper-slide>
-									)}
-								</For>
-							</swiper-container>
-						</div>
-					</section>
-				</div>
-			);
-		};
-
-		const SectionInfo = () => {
-			return (
-				<div id="container-page-create-section-info">
-					<Section>
-						<div>
-							<input
-								class="input"
-								type="text"
-								placeholder={t("pages.create.options.name.placeholder")}
-								value={form.title}
-								onInput={(e) => setForm("title", e.currentTarget.value)}
-								onBlur={(e) => setForm("title", e.currentTarget.value.trim())}
-								onKeyDown={hideKeyboardOnEnter}
-								maxLength={store.limits!.form.create.title.maxLength}
-							/>
-						</div>
-
-						<div>
-							<Editor
-								value={form.description}
-								setValue={(data) => setForm("description", data)}
-								placeholder={t("pages.create.options.description.placeholder")}
-								maxLength={store.limits!.form.create.description.maxLength}
-							/>
-						</div>
-					</Section>
-				</div>
-			);
-		};
-
-		const SectionInstruction = () => {
-			return (
-				<div id="container-page-create-section-instruction">
-					<Section>
-						<textarea
-							id="input-instruction"
-							placeholder={t("pages.create.options.instruction.placeholder")}
-							value={form.instruction}
-							onInput={(e) => setForm("instruction", e.currentTarget.value)}
-							onChange={(e) => {
-								setForm("instruction", e.currentTarget.value.trim());
-							}}
-							minLength={store.limits!.form.create.instruction.maxLength}
-							maxLength={store.limits!.form.create.instruction.maxLength}
-						/>
-					</Section>
-				</div>
-			);
-		};
-
-		const SectionOptions = () => {
-			const [duration, setDuration] = createSignal("7");
-			const [modal, setModal] = createSignal(false);
-
-			createEffect(
-				on(duration, (current, prev) => {
-					if (current === "0") {
-						batch(() => {
-							setDuration(prev ?? "7");
-							setModal(true);
-						});
-						return;
-					}
-
-					setForm(
-						"date",
-						"end",
-						Math.trunc(Date.now() / 86400_000) * 86400_000 +
-							Number.parseInt(duration(), 10) * 86400_000,
-					);
-				}),
-			);
-
-			return (
-				<div id="container-page-create-section-options">
-					<SectionList
-						items={[
-							{
-								label: t("pages.create.options.duration.label"),
-								placeholder: () => (
-									<SectionListSelect
-										value={duration()}
-										setValue={setDuration}
-										items={[
-											{
-												value: "1",
-												label: t("pages.create.options.duration.options.day"),
-											},
-											{
-												value: "7",
-												label: t("pages.create.options.duration.options.week"),
-											},
-											{
-												value: "30",
-												label: t("pages.create.options.duration.options.month"),
-											},
-											{
-												value: "0",
-												label: t(
-													"pages.create.options.duration.options.custom",
-												),
-											},
-											...Array.from(new Array(90))
-												.map((_, i) => ({
-													value: (i + 1).toString(),
-													label: td(
-														"pages.create.options.duration.custom.plural",
-														{
-															day: (i + 1).toString(),
-														},
-													),
-													disabled: true,
-													hidden: true,
-												}))
-												.filter((_, i) => ![1, 7, 30].includes(i + 1)),
-										]}
-									/>
-								),
-							},
-							{
-								label: t("pages.create.options.prize.label"),
-								placeholder: () => (
-									<SectionListInput
-										type="text"
-										placeholder="$10,000 USDT"
-										value={form.prize}
-										setValue={(value) => setForm("prize", value)}
-										maxLength={store.limits!.form.create.prize.maxLength}
-										onBlur={() => {
-											setForm("prize", formatNumbersInString(form.prize));
-										}}
-									/>
-								),
-							},
-						]}
-					/>
-
-					<Show when={modal()}>
-						<Modal
-							onClose={() => setModal(false)}
-							portalParent={document.querySelector("#portals")!}
-							class="modal-section-list-picker"
-							withCloseButton={true}
-						>
-							<p>{t("pages.create.options.duration.custom.label")}</p>
-
-							<WheelPicker
-								items={Array.from(new Array(90)).map((_, index) => ({
-									value: (index + 1).toString(),
-									label:
-										index === 0
-											? td("pages.create.options.duration.custom.singular", {
-													day: (index + 1).toString(),
-												})
-											: td("pages.create.options.duration.custom.plural", {
-													day: (index + 1).toString(),
-												}),
-								}))}
-								setValue={setDuration}
-								value={duration()}
-							/>
-
-							<CustomMainButton
-								text={t("general.done")}
-								onClick={() => setModal(false)}
-							/>
-						</Modal>
-					</Show>
-				</div>
-			);
-		};
-
-		const SectionParticipants = () => {
-			const updateFeeValue = (input: string) => {
-				if (input === "" || input === "0") {
-					setForm("fee", 0);
-					return;
-				}
-				const value = clamp(
-					Number.isNaN(Number.parseFloat(input))
-						? store.limits!.form.create.fee.min
-						: Number.parseFloat(input),
-					store.limits!.form.create.fee.min,
-					store.limits!.form.create.fee.max,
-				);
-				setForm("fee", value);
-			};
-
-			const feeDisplayValue = createMemo(() =>
-				form.fee > 0 ? form.fee.toString() : "",
-			);
-
-			return (
-				<div id="container-page-create-section-participants">
-					<SectionList
-						title={t("pages.create.options.participants.label")}
-						items={[
-							{
-								label: () => (
-									<span
-										onClick={() => {
-											setModals("anonymous", "open", true);
-										}}
-										class="clickable"
-										style={{
-											display: "flex",
-											gap: "0.375rem",
-											"align-items": "center",
-										}}
-									>
-										{t("pages.create.options.participants.anonymous.label")}
-										<FiInfo
-											style={{ opacity: "0.5", "font-size": "1.125rem" }}
-										/>
-									</span>
-								),
-								placeholder: () => (
-									<SectionListSwitch
-										value={form.anonymous}
-										setValue={(value) => setForm("anonymous", value)}
-									/>
-								),
-							},
-							{
-								label: t("pages.create.options.fee.label"),
-								placeholder: () => (
-									<SectionListInput
-										class="input-fee"
-										type="number"
-										inputmode="decimal"
-										placeholder={t("pages.create.options.fee.free")}
-										value={feeDisplayValue()}
-										setValue={updateFeeValue}
-										min={store.limits!.form.create.fee.min}
-										max={store.limits!.form.create.fee.max}
-										append={() => <SVGSymbol id="TON" />}
-									/>
-								),
-							},
-						]}
-					/>
-				</div>
-			);
-		};
-
-		return (
-			<>
-				<SectionHeader />
-
-				<div id="container-page-create-sections">
-					<SectionThemes />
-
-					<SectionInfo />
-
-					<SectionInstruction />
-
-					<SectionOptions />
-
-					<SectionParticipants />
-				</div>
-			</>
-		);
 	};
 
 	const SectionWallet = () => {
@@ -1186,7 +1285,14 @@ const PageCreate: Component = () => {
 				>
 					<Switch>
 						<Match when={step() === "information"}>
-							<SectionInformation />
+							<SectionInformation
+								form={form}
+								setForm={setForm}
+								theme={theme}
+								dependencies={dependencies}
+								setDependencies={setDependencies}
+								mode="create"
+							/>
 						</Match>
 
 						<Match when={step() === "wallet"}>

@@ -20,9 +20,9 @@ import {
 import { dict as en_dict } from "./i18n/en.ts";
 import { fetchDictionary, type Locale, localeDirections } from "./locale";
 import PageContestManageModerators from "./pages/Contest/Manage/Moderators.tsx";
+import PageContestManageOptions from "./pages/Contest/Manage/Options.tsx";
 import PageContestManagePlacement from "./pages/Contest/Manage/Placement.tsx";
 import PageContestManageResults from "./pages/Contest/Manage/Results.tsx";
-import PageContestManageSettings from "./pages/Contest/Manage/Settings.tsx";
 import PageContest from "./pages/Contest.tsx";
 import PageCreate from "./pages/Create.tsx";
 import PageError from "./pages/Error";
@@ -153,8 +153,8 @@ const App = () => {
 							component={PageContest}
 						/>
 						<Route
-							path="/contest/:slug/manage/settings/:tab?"
-							component={PageContestManageSettings}
+							path="/contest/:slug/manage/options"
+							component={PageContestManageOptions}
 						/>
 						<Route
 							path="/contest/:slug/manage/moderators"

@@ -253,12 +253,7 @@ const dict_de = {
 					},
 				},
 				settings: {
-					title: "Einstellungen",
 					button: "Optionen aktualisieren",
-					tabs: {
-						options: { title: "Optionen" },
-						moderators: { title: "Moderatoren" },
-					},
 				},
 			},
 			results: { empty: "Keine Gewinner", self: "Ihre Einreichung" },

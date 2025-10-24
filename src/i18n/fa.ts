@@ -247,12 +247,7 @@ const dict_fa = {
 					form: { name: { label: "نام مسابقه", placeholder: "مسابقه من" } },
 				},
 				settings: {
-					title: "تنظیمات",
 					button: "به‌روزرسانی گزینه‌ها",
-					tabs: {
-						options: { title: "گزینه‌ها" },
-						moderators: { title: "مدیران" },
-					},
 				},
 			},
 			results: { empty: "بدون برنده", self: "ارسال شما" },

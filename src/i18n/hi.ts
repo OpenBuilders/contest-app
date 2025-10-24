@@ -243,12 +243,7 @@ const dict_hi = {
 					},
 				},
 				settings: {
-					title: "सेटिंग्स",
 					button: "विकल्प अपडेट करें",
-					tabs: {
-						options: { title: "विकल्प" },
-						moderators: { title: "मॉडरेटर" },
-					},
 				},
 			},
 			results: { empty: "कोई विजेता नहीं", self: "आपकी प्रविष्टि" },
