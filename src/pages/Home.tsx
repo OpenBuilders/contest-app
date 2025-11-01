@@ -311,22 +311,6 @@ const PageHome: Component = () => {
 					<SectionHolder
 						sections={[
 							() => (
-								<Show when={contestsAllOpen().length > 0}>
-									<SectionContests
-										title={t("pages.home.contests.topics.open")}
-										contests={contestsAllOpen()}
-									/>
-								</Show>
-							),
-							() => (
-								<Show when={contestsYoursJoined().length > 0}>
-									<SectionContests
-										title={t("pages.home.contests.topics.joined")}
-										contests={contestsYoursJoined()}
-									/>
-								</Show>
-							),
-							() => (
 								<Show when={contestsYoursModerator().length > 0}>
 									<SectionContests
 										title={t("pages.home.contests.topics.moderator")}
@@ -343,10 +327,26 @@ const PageHome: Component = () => {
 								</Show>
 							),
 							() => (
+								<Show when={contestsYoursJoined().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.joined")}
+										contests={contestsYoursJoined()}
+									/>
+								</Show>
+							),
+							() => (
 								<Show when={contestsSaved().length > 0}>
 									<SectionContests
 										title={t("pages.home.contests.topics.saved")}
 										contests={contestsSaved()}
+									/>
+								</Show>
+							),
+							() => (
+								<Show when={contestsAllOpen().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.open")}
+										contests={contestsAllOpen()}
 									/>
 								</Show>
 							),
