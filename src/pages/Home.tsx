@@ -319,22 +319,6 @@ const PageHome: Component = () => {
 								</Show>
 							),
 							() => (
-								<Show when={contestsAllFinished().length > 0}>
-									<SectionContests
-										title={t("pages.home.contests.topics.finished")}
-										contests={contestsAllFinished()}
-									/>
-								</Show>
-							),
-							() => (
-								<Show when={contestsYoursCreated().length > 0}>
-									<SectionContests
-										title={t("pages.home.contests.topics.created")}
-										contests={contestsYoursCreated()}
-									/>
-								</Show>
-							),
-							() => (
 								<Show when={contestsYoursJoined().length > 0}>
 									<SectionContests
 										title={t("pages.home.contests.topics.joined")}
@@ -351,10 +335,26 @@ const PageHome: Component = () => {
 								</Show>
 							),
 							() => (
+								<Show when={contestsYoursCreated().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.created")}
+										contests={contestsYoursCreated()}
+									/>
+								</Show>
+							),
+							() => (
 								<Show when={contestsSaved().length > 0}>
 									<SectionContests
 										title={t("pages.home.contests.topics.saved")}
 										contests={contestsSaved()}
+									/>
+								</Show>
+							),
+							() => (
+								<Show when={contestsAllFinished().length > 0}>
+									<SectionContests
+										title={t("pages.home.contests.topics.finished")}
+										contests={contestsAllFinished()}
 									/>
 								</Show>
 							),
