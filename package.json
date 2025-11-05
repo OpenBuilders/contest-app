@@ -41,7 +41,7 @@
 		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.3",
+		"@biomejs/biome": "^2.3.4",
 		"@tailwindcss/vite": "^4.1.16",
 		"@types/pako": "^2.0.4",
 		"autoprefixer": "^10.4.21",
@@ -51,7 +51,7 @@
 		"solid-devtools": "^0.34.4",
 		"tailwindcss": "^4.1.16",
 		"typescript": "~5.9.3",
-		"vite": "^7.1.12",
+		"vite": "^7.2.0",
 		"vite-plugin-purgecss": "^0.2.13",
 		"vite-plugin-solid": "^2.11.10",
 		"vite-plugin-solid-svg": "^0.8.1"
