@@ -513,7 +513,7 @@ const PageContest: Component = () => {
 							</li>
 						</Match>
 
-						<Match when={Date.now() / 1000 >= contest.contest?.date_end!}>
+						<Match when={Date.now() / 1000 >= contest.contest!.date_end!}>
 							<li>
 								<div>
 									<span>{t("pages.contest.header.status.closed")}</span>
@@ -538,7 +538,7 @@ const PageContest: Component = () => {
 					<li>
 						<div>
 							<span>
-								{dayjs.unix(contest.contest!.date_end!).format("MMM D")}
+								{dayjs.unix(contest.contest!.date_end).format("MMM D")}
 							</span>
 						</div>
 
@@ -582,7 +582,7 @@ const PageContest: Component = () => {
 								when={
 									contest.metadata?.role === "participant" &&
 									!contest.contest?.announced &&
-									Date.now() / 1000 < contest.contest?.date_end!
+									Date.now() / 1000 < contest.contest!.date_end
 								}
 							>
 								<p class="text-hint">
@@ -594,7 +594,7 @@ const PageContest: Component = () => {
 								when={
 									contest.metadata?.role === undefined &&
 									!contest.contest?.announced &&
-									Date.now() / 1000 < contest.contest?.date_end!
+									Date.now() / 1000 < contest.contest!.date_end
 								}
 							>
 								<CustomMainButton
@@ -612,7 +612,7 @@ const PageContest: Component = () => {
 							<Match
 								when={
 									!contest.contest?.announced &&
-									Date.now() / 1000 >= contest.contest?.date_end!
+									Date.now() / 1000 >= contest.contest!.date_end
 								}
 							>
 								<p class="text-hint">{t("pages.contest.footer.closed.text")}</p>
@@ -877,6 +877,16 @@ const PageContest: Component = () => {
 															>
 																<SVGSymbol id="thumb-down" />
 																<span>{item.submission.dislikes}</span>
+															</li>
+
+															<li
+																classList={{
+																	fill: item.metadata.raised_by_viewer,
+																	empty: !item.metadata.raised_by_viewer,
+																}}
+															>
+																<SVGSymbol id="fire" />
+																<span>{item.submission.raises}</span>
 															</li>
 														</ul>
 													),

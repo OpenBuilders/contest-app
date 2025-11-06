@@ -312,7 +312,14 @@ const dict_ar = {
 		},
 		submission: {
 			description: { title: "الوصف", empty: "لم يتم توفير وصف" },
-			actions: { like: "أعجبني", dislike: "لم يعجبني" },
+			actions: {
+				like: "إعجاب",
+				dislike: "عدم إعجاب",
+				bad: "سيئ",
+				ok: "جيد",
+				great: "رائع",
+				comment: "تعليق",
+			},
 			submission: {
 				description: { label: "الوصف" },
 				link: { label: "رابط المشاركة" },

@@ -90,8 +90,10 @@ export type Submission = {
 	};
 	likes: number;
 	dislikes: number;
+	raises: number;
 	liked_by: SubmissionVoter[];
 	disliked_by: SubmissionVoter[];
+	raised_by: SubmissionVoter[];
 	created_at?: string;
 };
 
@@ -104,6 +106,7 @@ export type SubmissionVoter = {
 };
 
 export type SubmissionMetadata = {
+	raised_by_viewer: boolean;
 	liked_by_viewer: boolean;
 	disliked_by_viewer: boolean;
 };

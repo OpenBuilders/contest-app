@@ -314,7 +314,14 @@ const dict_hi = {
 		},
 		submission: {
 			description: { title: "विवरण", empty: "कोई विवरण प्रदान नहीं किया गया" },
-			actions: { like: "पसंद करें", dislike: "नापसंद" },
+			actions: {
+				like: "पसंद",
+				dislike: "नापसंद",
+				bad: "खराब",
+				ok: "ठीक",
+				great: "बहुत बढ़िया",
+				comment: "टिप्पणी",
+			},
 			submission: {
 				description: { label: "विवरण" },
 				link: { label: "साझा लिंक" },

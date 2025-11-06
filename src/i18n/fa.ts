@@ -318,7 +318,14 @@ const dict_fa = {
 		},
 		submission: {
 			description: { title: "توضیحات", empty: "توضیحی ارائه نشده" },
-			actions: { like: "پسندیدم", dislike: "نپسندیدم" },
+			actions: {
+				like: "پسندیدن",
+				dislike: "نپسندیدن",
+				bad: "بد",
+				ok: "خوب",
+				great: "عالی",
+				comment: "نظر",
+			},
 			submission: {
 				description: { label: "توضیحات" },
 				link: { label: "لینک به اشتراک‌گذاری" },

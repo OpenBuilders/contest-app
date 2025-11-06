@@ -435,6 +435,10 @@ const dict = {
 			actions: {
 				like: "Like",
 				dislike: "Dislike",
+				bad: "Bad",
+				ok: "Ok",
+				great: "Great",
+				comment: "Comment",
 			},
 			submission: {
 				description: {

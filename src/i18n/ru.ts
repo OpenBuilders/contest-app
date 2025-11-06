@@ -313,7 +313,14 @@ const dict_ru = {
 		},
 		submission: {
 			description: { title: "Описание", empty: "Описание не предоставлено" },
-			actions: { like: "Нравится", dislike: "Не нравится" },
+			actions: {
+				like: "Нравится",
+				dislike: "Не нравится",
+				bad: "Плохо",
+				ok: "Хорошо",
+				great: "Отлично",
+				comment: "Комментарий",
+			},
 			submission: {
 				description: { label: "Описание" },
 				link: { label: "Ссылка для поделиться" },

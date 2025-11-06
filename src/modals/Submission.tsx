@@ -25,6 +25,12 @@ import {
 	invokeHapticFeedbackNotification,
 } from "../utils/telegram";
 
+const VoteIcons = {
+	like: "thumb-up",
+	dislike: "thumb-down",
+	raise: "fire",
+};
+
 const ModalSubmission: Component = () => {
 	const { t, td } = useTranslation();
 
@@ -43,9 +49,9 @@ const ModalSubmission: Component = () => {
 		return;
 	}
 
-	const [processing, setProcessing] = createSignal<"like" | "dislike" | false>(
-		false,
-	);
+	const [processing, setProcessing] = createSignal<
+		"like" | "dislike" | "raise" | false
+	>(false);
 
 	onMount(() => {
 		invokeHapticFeedbackImpact("soft");
@@ -70,7 +76,7 @@ const ModalSubmission: Component = () => {
 				.filter(Boolean)
 				.join(" ");
 
-	const onClickAction = async (type: "like" | "dislike") => {
+	const onClickAction = async (type: "like" | "dislike" | "raise") => {
 		if (processing()) return;
 		setProcessing(type);
 		invokeHapticFeedbackImpact("soft");
@@ -99,6 +105,11 @@ const ModalSubmission: Component = () => {
 							item.metadata.disliked_by_viewer = false;
 							item.submission.dislikes--;
 						}
+
+						if (item.metadata.raised_by_viewer) {
+							item.metadata.raised_by_viewer = false;
+							item.submission.raises--;
+						}
 					} else if (type === "dislike") {
 						if (item.metadata.disliked_by_viewer) {
 							item.submission.dislikes--;
@@ -111,6 +122,29 @@ const ModalSubmission: Component = () => {
 						if (item.metadata.liked_by_viewer) {
 							item.metadata.liked_by_viewer = false;
 							item.submission.likes--;
+						}
+
+						if (item.metadata.raised_by_viewer) {
+							item.metadata.raised_by_viewer = false;
+							item.submission.raises--;
+						}
+					} else if (type === "raise") {
+						if (item.metadata.raised_by_viewer) {
+							item.submission.raises--;
+							item.metadata.raised_by_viewer = false;
+						} else {
+							item.submission.raises++;
+							item.metadata.raised_by_viewer = true;
+						}
+
+						if (item.metadata.liked_by_viewer) {
+							item.metadata.liked_by_viewer = false;
+							item.submission.likes--;
+						}
+
+						if (item.metadata.disliked_by_viewer) {
+							item.metadata.disliked_by_viewer = false;
+							item.submission.dislikes--;
 						}
 					}
 				}
@@ -166,11 +200,15 @@ const ModalSubmission: Component = () => {
 		return [
 			...modals.submission.submission!.submission.liked_by.map((i) => ({
 				...i,
-				type: "like",
+				type: "like" satisfies keyof typeof VoteIcons,
 			})),
 			...modals.submission.submission!.submission.disliked_by.map((i) => ({
 				...i,
-				type: "dislike",
+				type: "dislike" satisfies keyof typeof VoteIcons,
+			})),
+			...modals.submission.submission!.submission.raised_by.map((i) => ({
+				...i,
+				type: "raise" satisfies keyof typeof VoteIcons,
 			})),
 		].sort(
 			(a, b) =>
@@ -270,7 +308,7 @@ const ModalSubmission: Component = () => {
 										),
 										prepend: () => (
 											<SVGSymbol
-												id={vote.type === "like" ? "thumb-up" : "thumb-down"}
+												id={VoteIcons[vote.type as keyof typeof VoteIcons]}
 											/>
 										),
 									};
@@ -293,7 +331,7 @@ const ModalSubmission: Component = () => {
 							onClick={() => onClickAction("like")}
 						>
 							<SVGSymbol id="thumb-up" />
-							<span>{t("modals.submission.actions.like")}</span>
+							<span>{t("modals.submission.actions.ok")}</span>
 							<div>
 								<Counter
 									value={modals.submission.submission.submission.likes}
@@ -315,10 +353,31 @@ const ModalSubmission: Component = () => {
 							onClick={() => onClickAction("dislike")}
 						>
 							<SVGSymbol id="thumb-down" />
-							<span>{t("modals.submission.actions.dislike")}</span>
+							<span>{t("modals.submission.actions.bad")}</span>
 							<div>
 								<Counter
 									value={modals.submission.submission.submission.dislikes}
+									initialValue={0}
+									durationMs={250}
+								/>
+							</div>
+						</li>
+
+						<li
+							class="clickable"
+							classList={{
+								fill:
+									modals.submission.submission.metadata.raised_by_viewer ||
+									processing() === "raise",
+								empty: !modals.submission.submission.metadata.raised_by_viewer,
+							}}
+							onClick={() => onClickAction("raise")}
+						>
+							<SVGSymbol id="fire" />
+							<span>{t("modals.submission.actions.great")}</span>
+							<div>
+								<Counter
+									value={modals.submission.submission.submission.raises}
 									initialValue={0}
 									durationMs={250}
 								/>

@@ -328,7 +328,14 @@ const dict_de = {
 				title: "Beschreibung",
 				empty: "Keine Beschreibung angegeben",
 			},
-			actions: { like: "Gefällt mir", dislike: "Gefällt mir nicht" },
+			actions: {
+				like: "Gefällt mir",
+				dislike: "Gefällt mir nicht",
+				bad: "Schlecht",
+				ok: "Okay",
+				great: "Super",
+				comment: "Kommentar",
+			},
 			submission: {
 				description: { label: "Beschreibung" },
 				link: { label: "Geteilter Link" },
