@@ -357,6 +357,16 @@ const PageContestManagePlacement: Component = () => {
 												<SVGSymbol id="thumb-down" />
 												<span>{submission.submission.dislikes}</span>
 											</li>
+
+											<li
+												classList={{
+													fill: submission.metadata.raised_by_viewer,
+													empty: !submission.metadata.raised_by_viewer,
+												}}
+											>
+												<SVGSymbol id="fire" />
+												<span>{submission.submission.raises}</span>
+											</li>
 										</ul>
 									),
 									onClick: () => {
