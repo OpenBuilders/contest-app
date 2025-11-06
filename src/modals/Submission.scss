@@ -152,7 +152,13 @@
                max(var(--tg-viewport-safe-area-inset-bottom), 1rem) +
                   var(--tg-viewport-content-safe-area-inset-bottom)
             );
-         background-color: var(--section-bg-color);
+         background-color: var(--bottom-bar-color);
+
+         > div {
+            > input {
+               height: 2.25rem;
+            }
+         }
 
          > ul {
             flex-shrink: 0;
@@ -177,9 +183,8 @@
                overflow: hidden;
 
                &.fill {
-                  > div {
-                     opacity: 1;
-                  }
+                  background-color: var(--accent);
+                  color: white;
                }
 
                &::before {

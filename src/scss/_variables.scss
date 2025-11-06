@@ -10,6 +10,9 @@
    --bg-color: var(--secondary-color);
    --bg-color-rgb: var(--secondary-color-rgb);
 
+   --bottom-bar-color: #f2f2f2;
+   --bottom-bar-color-rgb: 242, 242, 242;
+
    --modal-bg: var(--bg-color);
 
    --animate-duration: 0.5s;
@@ -60,6 +63,9 @@ body[data-theme="dark"] {
 
    --bg-primary: var(--section-bg-color);
    --bg-secondary: var(--bg-color);
+
+   --bottom-bar-color: #1d1d1d;
+   --bottom-bar-color-rgb: 29, 29, 29;
 
    --segmented-bg: #1c1c1e;
    --segmented-active: #2c2c2e;

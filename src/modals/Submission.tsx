@@ -319,6 +319,14 @@ const ModalSubmission: Component = () => {
 				</div>
 
 				<footer>
+					<div>
+						<input
+							min={0}
+							maxLength={128}
+							placeholder={t("modals.submission.actions.comment")}
+						/>
+					</div>
+
 					<ul>
 						<li
 							class="clickable"
