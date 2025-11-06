@@ -102,6 +102,7 @@ export type SubmissionVoter = {
 	last_name?: User["last_name"];
 	profile_photo?: User["profile_photo"];
 	user_id: User["user_id"];
+	comment?: string;
 	created_at?: string;
 };
 

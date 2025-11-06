@@ -18,11 +18,13 @@ import { useTranslation } from "../contexts/TranslationContext";
 import { setData } from "../pages/Contest";
 import { requestAPI } from "../utils/api";
 import { cloneObject } from "../utils/general";
+import { hideKeyboardOnEnter } from "../utils/input";
 import { modals, setModals } from "../utils/modal";
 import { navigator } from "../utils/navigator";
 import {
 	invokeHapticFeedbackImpact,
 	invokeHapticFeedbackNotification,
+	lp,
 } from "../utils/telegram";
 
 const VoteIcons = {
@@ -50,8 +52,10 @@ const ModalSubmission: Component = () => {
 	}
 
 	const [processing, setProcessing] = createSignal<
-		"like" | "dislike" | "raise" | false
+		"like" | "dislike" | "raise" | boolean
 	>(false);
+
+	const [comment, setComment] = createSignal("");
 
 	onMount(() => {
 		invokeHapticFeedbackImpact("soft");
@@ -60,6 +64,18 @@ const ModalSubmission: Component = () => {
 			invokeHapticFeedbackImpact("soft");
 			onClose();
 		});
+
+		for (const item of [
+			...modals.submission.submission!.submission.liked_by,
+			...modals.submission.submission!.submission.disliked_by,
+			...modals.submission.submission!.submission.raised_by,
+		]) {
+			if (
+				Number.parseInt(item.user_id as any, 10) === lp?.tgWebAppData?.user?.id
+			) {
+				setComment(item.comment ?? "");
+			}
+		}
 	});
 
 	const fullname = modals.submission.submission.submission.user_id
@@ -155,6 +171,7 @@ const ModalSubmission: Component = () => {
 			`/contest/${modals.submission.slug}/submissions/${modals.submission.submission?.submission.id}/vote`,
 			{
 				type,
+				comment: comment(),
 			},
 			"POST",
 		);
@@ -187,6 +204,32 @@ const ModalSubmission: Component = () => {
 					}
 				}),
 			);
+		}
+
+		setProcessing(false);
+	};
+
+	const updateComment = async () => {
+		if (processing()) return;
+		setProcessing(true);
+		invokeHapticFeedbackImpact("soft");
+
+		const request = await requestAPI(
+			`/contest/${modals.submission.slug}/submissions/${modals.submission.submission?.submission.id}/comment`,
+			{
+				comment: comment(),
+			},
+			"POST",
+		);
+
+		if (request) {
+			const { result, status } = request;
+
+			if (status === "success") {
+				invokeHapticFeedbackNotification("success");
+
+				setData("submissions", reconcile(result.submissions));
+			}
 		}
 
 		setProcessing(false);
@@ -292,24 +335,30 @@ const ModalSubmission: Component = () => {
 										class: "item-list-voted",
 										label: () => (
 											<>
-												<Avatar
-													fullname={fullname}
-													peerId={vote.user_id}
-													src={vote.profile_photo}
-												/>
-												<span>{fullname}</span>
-												<span>
-													{td("modals.submission.date", {
-														date: dayjs(created_at).format("MMM D"),
-														time: dayjs(created_at).format("HH:mm"),
-													})}
-												</span>
+												<div>
+													<Avatar
+														fullname={fullname}
+														peerId={vote.user_id}
+														src={vote.profile_photo}
+													/>
+													<span>{fullname}</span>
+													<span>
+														{td("modals.submission.date", {
+															date: dayjs(created_at).format("MMM D"),
+															time: dayjs(created_at).format("HH:mm"),
+														})}
+													</span>
+													<SVGSymbol
+														id={VoteIcons[vote.type as keyof typeof VoteIcons]}
+													/>
+												</div>
+
+												<Show when={vote.comment}>
+													<div>
+														<span>{vote.comment}</span>
+													</div>
+												</Show>
 											</>
-										),
-										prepend: () => (
-											<SVGSymbol
-												id={VoteIcons[vote.type as keyof typeof VoteIcons]}
-											/>
 										),
 									};
 								})}
@@ -324,6 +373,22 @@ const ModalSubmission: Component = () => {
 							min={0}
 							maxLength={128}
 							placeholder={t("modals.submission.actions.comment")}
+							value={comment()}
+							onInput={(e) => {
+								setComment(e.currentTarget.value);
+							}}
+							onChange={(e) => {
+								setComment(e.currentTarget.value.trim());
+
+								if (
+									modals.submission.submission!.metadata.liked_by_viewer ||
+									modals.submission.submission!.metadata.disliked_by_viewer ||
+									modals.submission.submission!.metadata.raised_by_viewer
+								) {
+									updateComment();
+								}
+							}}
+							onKeyUp={hideKeyboardOnEnter}
 						/>
 					</div>
 
