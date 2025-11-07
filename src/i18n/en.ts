@@ -266,6 +266,19 @@ const dict = {
 						subtitle: "Spread the word!",
 						share: "Share contest",
 					},
+					sort: {
+						text: "Sort By",
+						votes: "Vote",
+						date: "Date",
+					},
+					export: {
+						button: "Export",
+						confirm: {
+							title: "Export Submissions",
+							text: "Do you want to export all submissions as a CSV file?",
+							export: "Export",
+						},
+					},
 				},
 				results: {
 					title: "Results",
@@ -438,7 +451,7 @@ const dict = {
 				bad: "Bad",
 				ok: "Ok",
 				great: "Great",
-				comment: "Comment",
+				comment: "Optional Comment",
 			},
 			submission: {
 				description: {

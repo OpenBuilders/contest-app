@@ -211,6 +211,19 @@ const dict_de = {
 						subtitle: "Erzähle es weiter!",
 						share: "Wettbewerb teilen",
 					},
+					sort: {
+						text: "Sortieren nach",
+						votes: "Stimme",
+						date: "Datum",
+					},
+					export: {
+						button: "Exportieren",
+						confirm: {
+							title: "Einsendungen exportieren",
+							text: "Möchten Sie alle Einsendungen als CSV-Datei exportieren?",
+							export: "Exportieren",
+						},
+					},
 				},
 				results: {
 					title: "Ergebnisse",

@@ -342,6 +342,7 @@ const PageContestManagePlacement: Component = () => {
 												classList={{
 													fill: submission.metadata.liked_by_viewer,
 													empty: !submission.metadata.liked_by_viewer,
+													active: submission.submission.likes > 0,
 												}}
 											>
 												<SVGSymbol id="thumb-up" />
@@ -352,6 +353,7 @@ const PageContestManagePlacement: Component = () => {
 												classList={{
 													fill: submission.metadata.disliked_by_viewer,
 													empty: !submission.metadata.disliked_by_viewer,
+													active: submission.submission.dislikes > 0,
 												}}
 											>
 												<SVGSymbol id="thumb-down" />
@@ -362,6 +364,7 @@ const PageContestManagePlacement: Component = () => {
 												classList={{
 													fill: submission.metadata.raised_by_viewer,
 													empty: !submission.metadata.raised_by_viewer,
+													active: submission.submission.raises > 0,
 												}}
 											>
 												<SVGSymbol id="fire" />

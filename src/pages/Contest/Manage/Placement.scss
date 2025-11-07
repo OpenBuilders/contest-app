@@ -178,6 +178,10 @@
             align-items: center;
             color: rgba(var(--text-color-rgb), 0.375);
 
+            &.active:not(.fill) {
+               color: rgba(var(--text-color-rgb), 1);
+            }
+
             &.fill {
                color: var(--accent);
             }

@@ -1,5 +1,6 @@
 import "./Submission.scss";
 import dayjs from "dayjs";
+import { TbShare3 } from "solid-icons/tb";
 import {
 	type Component,
 	createMemo,
@@ -9,6 +10,7 @@ import {
 } from "solid-js";
 import { produce, reconcile } from "solid-js/store";
 import { Avatar, AvatarAlias } from "../components/Avatar";
+import ButtonArray from "../components/ButtonArray";
 import Counter from "../components/Counter";
 import Modal from "../components/Modal";
 import RichText from "../components/RichText";
@@ -24,7 +26,9 @@ import { navigator } from "../utils/navigator";
 import {
 	invokeHapticFeedbackImpact,
 	invokeHapticFeedbackNotification,
+	isVersionAtLeast,
 	lp,
+	postEvent,
 } from "../utils/telegram";
 
 const VoteIcons = {
@@ -259,6 +263,16 @@ const ModalSubmission: Component = () => {
 		);
 	});
 
+	const onClickShare = () => {
+		invokeHapticFeedbackImpact("light");
+
+		if (isVersionAtLeast("6.1")) {
+			postEvent("web_app_open_tg_link", {
+				path_full: `/share/url?url=https://t.me/${import.meta.env.VITE_BOT_USERNAME}/${import.meta.env.VITE_MINIAPP_SLUG}?startapp=submission-${modals.submission.slug}-${modals.submission.submission?.submission.id}`,
+			});
+		}
+	};
+
 	return (
 		<Modal
 			containerClass="container-modal-submission"
@@ -269,6 +283,17 @@ const ModalSubmission: Component = () => {
 			fullscreen={true}
 		>
 			<div>
+				<ButtonArray
+					items={[
+						{
+							component: TbShare3,
+							fontSize: "1.625rem",
+							class: "clickable",
+							onClick: onClickShare,
+						},
+					]}
+				/>
+
 				<div>
 					<Show
 						when={modals.submission.submission.submission.user_id}

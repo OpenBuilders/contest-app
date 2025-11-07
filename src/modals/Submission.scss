@@ -20,6 +20,34 @@
       width: 100%;
       overflow: hidden;
       flex-grow: 1;
+      position: relative;
+
+      > ul.button-array {
+         display: flex;
+         align-items: center;
+         position: absolute;
+         top: calc(
+            var(--tg-viewport-safe-area-inset-top, 0px) +
+               var(--tg-viewport-content-safe-area-inset-top, 0px)
+         );
+         inset-inline-end: 1rem;
+         padding-top: 0.5rem;
+
+         > li {
+            color: rgba(var(--text-color-rgb), 0.625);
+            background-color: rgba(var(--text-color-rgb), 0.125);
+            border-radius: 50%;
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            > svg {
+               font-size: 1.25rem;
+            }
+         }
+      }
 
       > div {
          display: flex;

@@ -1,7 +1,9 @@
 import "./Contest.scss";
 import { useParams } from "@solidjs/router";
+import { downloadFile } from "@telegram-apps/sdk-solid";
 import dayjs from "dayjs";
 import { FaSolidCircleExclamation } from "solid-icons/fa";
+import { HiSolidChevronUpDown } from "solid-icons/hi";
 import { OcBookmark2, OcBookmarkfill3 } from "solid-icons/oc";
 import { TbSettings, TbShare3 } from "solid-icons/tb";
 import {
@@ -41,6 +43,7 @@ import { initializeSortable } from "../utils/lazy";
 import { setModals } from "../utils/modal";
 import { navigator } from "../utils/navigator";
 import { formatNumbersInString } from "../utils/number";
+import { popupManager } from "../utils/popup";
 import { signals } from "../utils/signals";
 import {
 	type AnnotatedContest,
@@ -53,6 +56,7 @@ import { getSymbolSVGString } from "../utils/symbols";
 import {
 	invokeHapticFeedbackImpact,
 	invokeHapticFeedbackNotification,
+	invokeHapticFeedbackSelectionChanged,
 	isVersionAtLeast,
 	postEvent,
 	setHeaderColor,
@@ -624,32 +628,51 @@ const PageContest: Component = () => {
 		};
 
 		const ContestAdminSubmissions = () => {
+			const [sort, setSort] = createSignal<"date" | "vote">("vote");
+
 			const submissions = createMemo(() => {
-				if (!data.submissions) return undefined;
+				const subs = data.submissions;
+				if (!subs) return undefined;
 
-				const submissions: { [key: number]: AnnotatedSubmission[] } = {};
-
-				for (const submission of data.submissions) {
-					const day =
-						Math.floor(
-							new Date(submission.submission.created_at!).getTime() /
-								1000 /
-								86400,
-						) * 86400;
-
-					if (!(day in submissions)) {
-						submissions[day] = [];
-					}
-
-					submissions[day].push(submission);
+				if (sort() === "date") {
+					return [...subs].sort((a, b) => {
+						const t1 = new Date(a.submission.created_at!).getTime();
+						const t2 = new Date(b.submission.created_at!).getTime();
+						return t2 - t1;
+					});
 				}
 
-				return Object.fromEntries(
-					Object.keys(submissions)
-						.map(Number)
-						.sort((a, b) => a - b)
-						.map((key) => [key, submissions[key]]),
-				);
+				if (sort() === "vote") {
+					return [...subs].sort((a, b) => {
+						const aR = a.submission;
+						const bR = b.submission;
+
+						const aHasRaise = aR.raises > 0;
+						const bHasRaise = bR.raises > 0;
+
+						// Step 1: Prioritize items with raises > 0
+						if (aHasRaise && !bHasRaise) return -1;
+						if (!aHasRaise && bHasRaise) return 1;
+
+						// Step 2: If both have raises > 0
+						if (aHasRaise && bHasRaise) {
+							// Sort by raises descending
+							if (bR.raises !== aR.raises) return bR.raises - aR.raises;
+
+							// Then by likes descending
+							if (bR.likes !== aR.likes) return bR.likes - aR.likes;
+
+							// Then by dislikes ascending
+							return aR.dislikes - bR.dislikes;
+						}
+
+						// Step 3: If both have no raises
+						if (bR.likes !== aR.likes) return bR.likes - aR.likes;
+						return aR.dislikes - bR.dislikes;
+					});
+				}
+
+				return subs;
 			});
 
 			const fetchSubmissions = async () => {
@@ -668,6 +691,8 @@ const PageContest: Component = () => {
 						setData({
 							submissions: result.submissions,
 						});
+
+						setContest("contest", "slug_moderator", result.slug_moderator);
 
 						setSubmissionsCount(data.submissions?.length.toString());
 
@@ -725,32 +750,29 @@ const PageContest: Component = () => {
 						class="shimmer-section-bg"
 					>
 						<div>
-							<For each={Array.from(new Array(2))}>
-								{() => (
-									<div>
-										<span class="shimmer"></span>
+							<div>
+								<span class="shimmer"></span>
 
-										<SectionList
-											class="container-submission-entries-shimmer"
-											items={Array.from(new Array(3)).map(() => ({
-												label: () => (
-													<>
-														<span class="shimmer"></span>
-														{/*<span class="shimmer"></span>*/}
-													</>
-												),
-												prepend: () => <div class="shimmer"></div>,
-												placeholder: () => (
-													<ul>
-														<li class="shimmer"></li>
-														<li class="shimmer"></li>
-													</ul>
-												),
-											}))}
-										/>
-									</div>
-								)}
-							</For>
+								<SectionList
+									class="container-submission-entries-shimmer"
+									items={Array.from(new Array(6)).map(() => ({
+										label: () => (
+											<>
+												<span class="shimmer"></span>
+												<span class="shimmer"></span>
+											</>
+										),
+										prepend: () => <div class="shimmer"></div>,
+										placeholder: () => (
+											<ul>
+												<li class="shimmer"></li>
+												<li class="shimmer"></li>
+												<li class="shimmer"></li>
+											</ul>
+										),
+									}))}
+								/>
+							</div>
 						</div>
 
 						<Show when={contest.metadata?.role === "owner"}>
@@ -770,6 +792,44 @@ const PageContest: Component = () => {
 							data.open = true;
 						}),
 					);
+				};
+
+				const onClickExport = async () => {
+					invokeHapticFeedbackImpact("soft");
+
+					const popup = await popupManager.openPopup({
+						title: t("pages.contest.manage.submissions.export.confirm.title"),
+						message: td("pages.contest.manage.submissions.export.confirm.text"),
+						buttons: [
+							{
+								id: "ok",
+								type: "ok",
+								text: t(
+									"pages.contest.manage.submissions.export.confirm.export",
+								),
+							},
+							{
+								id: "cancel",
+								type: "cancel",
+							},
+						],
+					});
+
+					if (!popup.button_id || popup.button_id === "cancel") return;
+
+					const url = `${import.meta.env.VITE_BACKEND_BASE_URL}/contest/${contest.contest?.slug_moderator}/submissions/export`;
+					const filename = "export.csv";
+
+					console.log(url);
+
+					if (downloadFile.isAvailable()) {
+						await downloadFile(url, filename);
+					} else {
+						const anchor = document.createElement("a");
+						anchor.href = url;
+						anchor.download = filename;
+						anchor.click();
+					}
 				};
 
 				onMount(() => {
@@ -798,104 +858,125 @@ const PageContest: Component = () => {
 							id="container-contest-admin-submissions-list"
 							class="shimmer-section-bg"
 						>
-							<For each={Object.entries(submissions()!).reverse()}>
-								{(entry) => {
-									const [timeString, items] = entry;
-									const time = Number.parseInt(timeString, 10);
+							<header>
+								<div>
+									<span>{t("pages.contest.manage.submissions.sort.text")}</span>
 
-									const today = Math.floor(Date.now() / 1000 / 86400) * 86400;
+									<label>
+										<select
+											onChange={(e) => {
+												invokeHapticFeedbackSelectionChanged();
+												setSort(e.currentTarget.value as any);
+											}}
+											value={sort()}
+										>
+											<option value="date">
+												{t("pages.contest.manage.submissions.sort.date")}
+											</option>
+											<option value="vote">
+												{t("pages.contest.manage.submissions.sort.votes")}
+											</option>
+										</select>
 
-									let dateString = dayjs(time * 1000).format("MMM D");
+										<HiSolidChevronUpDown />
+									</label>
+								</div>
 
-									if (time === today) {
-										dateString = t("pages.contest.admin.submissions.today");
-									}
+								<button class="clickable" type="button" onClick={onClickExport}>
+									{t("pages.contest.manage.submissions.export.button")}
+								</button>
+							</header>
 
-									return (
-										<SectionList
-											class="container-submission-entries"
-											title={dateString}
-											items={items.map((item) => {
-												const fullname = item.submission.user_id
-													? [
-															item.submission.first_name,
-															item.submission.last_name,
-														]
-															.filter(Boolean)
-															.join(" ")
-													: [
-															item.submission.anonymous_profile[1][1],
-															item.submission.anonymous_profile[2][1],
-														]
-															.filter(Boolean)
-															.join(" ");
+							<SectionList
+								class="container-submission-entries"
+								items={submissions()!.map((item) => {
+									const fullname = item.submission.user_id
+										? [item.submission.first_name, item.submission.last_name]
+												.filter(Boolean)
+												.join(" ")
+										: [
+												item.submission.anonymous_profile[1][1],
+												item.submission.anonymous_profile[2][1],
+											]
+												.filter(Boolean)
+												.join(" ");
 
-												return {
-													onClick: () => {
-														onClickSubmission(item);
-													},
-													clickable: true,
-													label: () => <span>{fullname}</span>,
-													prepend: () => (
-														<Show
-															when={item.submission.user_id}
-															fallback={
-																<AvatarAlias
-																	colorIndex={
-																		item.submission.anonymous_profile[0]
-																	}
-																	symbol={
-																		item.submission.anonymous_profile[2][0]
-																	}
-																/>
-															}
-														>
-															<Avatar
-																fullname={fullname}
-																peerId={item.submission.user_id}
-																src={item.submission.profile_photo}
-															/>
-														</Show>
-													),
-													placeholder: () => (
-														<ul>
-															<li
-																classList={{
-																	fill: item.metadata.liked_by_viewer,
-																	empty: !item.metadata.liked_by_viewer,
-																}}
-															>
-																<SVGSymbol id="thumb-up" />
-																<span>{item.submission.likes}</span>
-															</li>
+									return {
+										onClick: () => {
+											onClickSubmission(item);
+										},
+										clickable: true,
+										label: () => (
+											<>
+												<span>{fullname}</span>
+												<span>
+													{td("modals.submission.date", {
+														date: dayjs(item.submission.created_at!).format(
+															"MMM D",
+														),
+														time: dayjs(item.submission.created_at!).format(
+															"HH:mm",
+														),
+													})}
+												</span>
+											</>
+										),
+										prepend: () => (
+											<Show
+												when={item.submission.user_id}
+												fallback={
+													<AvatarAlias
+														colorIndex={item.submission.anonymous_profile[0]}
+														symbol={item.submission.anonymous_profile[2][0]}
+													/>
+												}
+											>
+												<Avatar
+													fullname={fullname}
+													peerId={item.submission.user_id}
+													src={item.submission.profile_photo}
+												/>
+											</Show>
+										),
+										placeholder: () => (
+											<ul>
+												<li
+													classList={{
+														fill: item.metadata.liked_by_viewer,
+														empty: !item.metadata.liked_by_viewer,
+														active: item.submission.likes > 0,
+													}}
+												>
+													<SVGSymbol id="thumb-up" />
+													<span>{item.submission.likes}</span>
+												</li>
 
-															<li
-																classList={{
-																	fill: item.metadata.disliked_by_viewer,
-																	empty: !item.metadata.disliked_by_viewer,
-																}}
-															>
-																<SVGSymbol id="thumb-down" />
-																<span>{item.submission.dislikes}</span>
-															</li>
+												<li
+													classList={{
+														fill: item.metadata.disliked_by_viewer,
+														empty: !item.metadata.disliked_by_viewer,
+														active: item.submission.dislikes > 0,
+													}}
+												>
+													<SVGSymbol id="thumb-down" />
+													<span>{item.submission.dislikes}</span>
+												</li>
 
-															<li
-																classList={{
-																	fill: item.metadata.raised_by_viewer,
-																	empty: !item.metadata.raised_by_viewer,
-																}}
-															>
-																<SVGSymbol id="fire" />
-																<span>{item.submission.raises}</span>
-															</li>
-														</ul>
-													),
-												};
-											})}
-										/>
-									);
-								}}
-							</For>
+												<li
+													classList={{
+														fill: item.metadata.raised_by_viewer,
+														empty: !item.metadata.raised_by_viewer,
+														active: item.submission.raises > 0,
+													}}
+												>
+													<SVGSymbol id="fire" />
+													<span>{item.submission.raises}</span>
+												</li>
+											</ul>
+										),
+									};
+								})}
+							/>
 						</div>
 
 						<Switch>

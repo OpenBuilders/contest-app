@@ -206,6 +206,19 @@ const dict_ar = {
 						subtitle: "انشر الكلمة!",
 						share: "شارك المسابقة",
 					},
+					sort: {
+						text: "الترتيب حسب",
+						votes: "التصويت",
+						date: "التاريخ",
+					},
+					export: {
+						button: "تصدير",
+						confirm: {
+							title: "تصدير المشاركات",
+							text: "هل ترغب في تصدير جميع المشاركات كملف CSV؟",
+							export: "تصدير",
+						},
+					},
 				},
 				results: {
 					title: "النتائج",
