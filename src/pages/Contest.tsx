@@ -942,17 +942,6 @@ const PageContest: Component = () => {
 											<ul>
 												<li
 													classList={{
-														fill: item.metadata.liked_by_viewer,
-														empty: !item.metadata.liked_by_viewer,
-														active: item.submission.likes > 0,
-													}}
-												>
-													<SVGSymbol id="thumb-up" />
-													<span>{item.submission.likes}</span>
-												</li>
-
-												<li
-													classList={{
 														fill: item.metadata.disliked_by_viewer,
 														empty: !item.metadata.disliked_by_viewer,
 														active: item.submission.dislikes > 0,
@@ -960,6 +949,17 @@ const PageContest: Component = () => {
 												>
 													<SVGSymbol id="thumb-down" />
 													<span>{item.submission.dislikes}</span>
+												</li>
+
+												<li
+													classList={{
+														fill: item.metadata.liked_by_viewer,
+														empty: !item.metadata.liked_by_viewer,
+														active: item.submission.likes > 0,
+													}}
+												>
+													<SVGSymbol id="thumb-up" />
+													<span>{item.submission.likes}</span>
 												</li>
 
 												<li
