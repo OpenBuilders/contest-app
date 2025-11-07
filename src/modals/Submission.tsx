@@ -330,9 +330,9 @@ const ModalSubmission: Component = () => {
 					<div>
 						<section>
 							<div>
-								<span>
+								{/*<span>
 									{t("modals.submission.submission.description.label")}
-								</span>
+								</span>*/}
 
 								<div>
 									<RichText
@@ -393,30 +393,6 @@ const ModalSubmission: Component = () => {
 				</div>
 
 				<footer>
-					<div>
-						<input
-							min={0}
-							maxLength={128}
-							placeholder={t("modals.submission.actions.comment")}
-							value={comment()}
-							onInput={(e) => {
-								setComment(e.currentTarget.value);
-							}}
-							onChange={(e) => {
-								setComment(e.currentTarget.value.trim());
-
-								if (
-									modals.submission.submission!.metadata.liked_by_viewer ||
-									modals.submission.submission!.metadata.disliked_by_viewer ||
-									modals.submission.submission!.metadata.raised_by_viewer
-								) {
-									updateComment();
-								}
-							}}
-							onKeyUp={hideKeyboardOnEnter}
-						/>
-					</div>
-
 					<ul>
 						<li
 							class="clickable"
@@ -482,6 +458,30 @@ const ModalSubmission: Component = () => {
 							</div>
 						</li>
 					</ul>
+
+					<div>
+						<input
+							min={0}
+							maxLength={128}
+							placeholder={t("modals.submission.actions.comment")}
+							value={comment()}
+							onInput={(e) => {
+								setComment(e.currentTarget.value);
+							}}
+							onChange={(e) => {
+								setComment(e.currentTarget.value.trim());
+
+								if (
+									modals.submission.submission!.metadata.liked_by_viewer ||
+									modals.submission.submission!.metadata.disliked_by_viewer ||
+									modals.submission.submission!.metadata.raised_by_viewer
+								) {
+									updateComment();
+								}
+							}}
+							onKeyUp={hideKeyboardOnEnter}
+						/>
+					</div>
 				</footer>
 			</div>
 		</Modal>

@@ -449,7 +449,7 @@ const dict = {
 				like: "Like",
 				dislike: "Dislike",
 				bad: "Bad",
-				ok: "Ok",
+				ok: "Nice",
 				great: "Great",
 				comment: "Optional Comment",
 			},

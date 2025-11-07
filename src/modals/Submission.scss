@@ -34,8 +34,8 @@
          padding-top: 0.5rem;
 
          > li {
-            color: rgba(var(--text-color-rgb), 0.625);
-            background-color: rgba(var(--text-color-rgb), 0.125);
+            color: rgba(var(--text-color-rgb), 0.5);
+            background-color: rgba(var(--text-color-rgb), 0.0875);
             border-radius: 50%;
             width: 2.25rem;
             height: 2.25rem;
@@ -44,7 +44,7 @@
             justify-content: center;
 
             > svg {
-               font-size: 1.25rem;
+               font-size: 1.375rem;
             }
          }
       }
@@ -214,25 +214,17 @@
                text-align: center;
                gap: 0.25rem;
                flex: 1;
-               height: 3.125rem;
+               height: 2.125rem;
                position: relative;
                z-index: 0;
-               color: var(--accent);
-               border-radius: 0.75rem;
+               color: var(--text-color);
+               border-radius: 10rem;
                overflow: hidden;
+               background-color: rgba(var(--text-color-rgb), 0.0625);
 
                &.fill {
                   background-color: var(--accent);
                   color: white;
-               }
-
-               &::before {
-                  background-color: var(--accent);
-                  z-index: -1;
-                  content: "";
-                  inset: 0;
-                  position: absolute;
-                  opacity: 0.125;
                }
 
                > svg {
@@ -271,7 +263,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      padding: 0.5rem 0;
+      padding: 0.625rem 0;
       gap: 0.25rem;
       flex-shrink: unset !important;
 
@@ -314,8 +306,8 @@
          padding-inline-start: 1.875rem;
 
          > span {
-            font-size: 0.9375rem;
-            color: rgba(var(--text-color-rgb), 0.5);
+            font-size: 1rem;
+            color: rgba(var(--text-color-rgb), 1);
          }
       }
    }
