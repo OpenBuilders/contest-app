@@ -422,27 +422,6 @@ const ModalSubmission: Component = () => {
 							class="clickable"
 							classList={{
 								fill:
-									modals.submission.submission.metadata.liked_by_viewer ||
-									processing() === "like",
-								empty: !modals.submission.submission.metadata.liked_by_viewer,
-							}}
-							onClick={() => onClickAction("like")}
-						>
-							<SVGSymbol id="thumb-up" />
-							<span>{t("modals.submission.actions.ok")}</span>
-							<div>
-								<Counter
-									value={modals.submission.submission.submission.likes}
-									initialValue={0}
-									durationMs={250}
-								/>
-							</div>
-						</li>
-
-						<li
-							class="clickable"
-							classList={{
-								fill:
 									modals.submission.submission.metadata.disliked_by_viewer ||
 									processing() === "dislike",
 								empty:
@@ -455,6 +434,27 @@ const ModalSubmission: Component = () => {
 							<div>
 								<Counter
 									value={modals.submission.submission.submission.dislikes}
+									initialValue={0}
+									durationMs={250}
+								/>
+							</div>
+						</li>
+
+						<li
+							class="clickable"
+							classList={{
+								fill:
+									modals.submission.submission.metadata.liked_by_viewer ||
+									processing() === "like",
+								empty: !modals.submission.submission.metadata.liked_by_viewer,
+							}}
+							onClick={() => onClickAction("like")}
+						>
+							<SVGSymbol id="thumb-up" />
+							<span>{t("modals.submission.actions.ok")}</span>
+							<div>
+								<Counter
+									value={modals.submission.submission.submission.likes}
 									initialValue={0}
 									durationMs={250}
 								/>
