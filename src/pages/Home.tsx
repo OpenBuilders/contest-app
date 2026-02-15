@@ -32,6 +32,9 @@ import {
 	ContestThemeBackdrops,
 	type ContestThemeSymbol,
 } from "../utils/themes";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const PageHome: Component = () => {
 	if (!store.token) {
@@ -243,7 +246,9 @@ const PageHome: Component = () => {
 							</Show>
 
 							<span>
-								{dayjs(props.contest.contest.date_end * 1000).format("MMM D")}
+								{dayjs
+									.utc(props.contest.contest.date_end * 1000)
+									.format("MMM D")}
 							</span>
 						</span>
 					</div>

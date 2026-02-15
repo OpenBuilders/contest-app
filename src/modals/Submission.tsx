@@ -30,6 +30,9 @@ import {
 	lp,
 	postEvent,
 } from "../utils/telegram";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const VoteIcons = {
 	like: "thumb-up",
@@ -321,8 +324,8 @@ const ModalSubmission: Component = () => {
 
 						<span>
 							{td("modals.submission.date", {
-								date: dayjs(created_at).format("MMM D"),
-								time: dayjs(created_at).format("HH:mm"),
+								date: dayjs.utc(created_at).format("MMM D"),
+								time: dayjs.utc(created_at).format("HH:mm"),
 							})}
 						</span>
 					</header>
@@ -369,8 +372,8 @@ const ModalSubmission: Component = () => {
 													<span>{fullname}</span>
 													<span>
 														{td("modals.submission.date", {
-															date: dayjs(created_at).format("MMM D"),
-															time: dayjs(created_at).format("HH:mm"),
+															date: dayjs.utc(created_at).format("MMM D"),
+															time: dayjs.utc(created_at).format("HH:mm"),
 														})}
 													</span>
 													<SVGSymbol

@@ -548,8 +548,8 @@ export const SectionInformation: Component<{
 				props.setForm(
 					"date",
 					"end",
-					Math.trunc(Date.now() / 86400_000) * 86400_000 +
-						Number.parseInt(duration(), 10) * 86400_000,
+					Math.ceil(Date.now() / 86400_000) * 86400_000 +
+						Number.parseInt(duration(), 10) * 86399_000,
 				);
 			}),
 		);
@@ -661,7 +661,11 @@ export const SectionInformation: Component<{
 			on(
 				deadline,
 				() => {
-					props.setForm("date", "end", deadline());
+					props.setForm(
+						"date",
+						"end",
+						Math.floor(deadline() / 86400_000) * 86400_000 + 86399_000,
+					);
 				},
 				{ defer: true },
 			),

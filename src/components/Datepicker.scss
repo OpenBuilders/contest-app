@@ -54,14 +54,28 @@
          border-radius: 0.625rem;
       }
    }
+
+   &.hide-year {
+      > div {
+         grid-template-columns: repeat(2, 1fr);
+      }
+   }
+
+   &.with-time {
+      > div {
+         grid-template-columns: repeat(5, 1fr);
+      }
+   }
+
+   &.hide-year.with-time {
+      > div {
+         grid-template-columns: repeat(4, 1fr);
+      }
+   }
 }
 
-.datepicker-day,
-.datepicker-month,
-.datepicker-year {
-   > div {
-      > div {
-         font-size: 1.125rem !important;
-      }
+.datepicker-wheels {
+   .container-wheel-picker.mask::before {
+      background-color: transparent;
    }
 }

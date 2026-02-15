@@ -66,6 +66,9 @@ import {
 	type ContestThemeSymbol,
 	disableThemeSync,
 } from "../utils/themes";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 const SectionSubmissionsEmpty: Component<{ contest: AnnotatedContest }> = (
 	props,
@@ -542,7 +545,7 @@ const PageContest: Component = () => {
 					<li>
 						<div>
 							<span>
-								{dayjs.unix(contest.contest!.date_end).format("MMM D")}
+								{dayjs.utc(contest.contest!.date_end * 1_000).format("MMM D")}
 							</span>
 						</div>
 
@@ -820,8 +823,6 @@ const PageContest: Component = () => {
 					const url = `${import.meta.env.VITE_BACKEND_BASE_URL}/contest/${contest.contest?.slug_moderator}/submissions/export`;
 					const filename = "export.csv";
 
-					console.log(url);
-
 					if (downloadFile.isAvailable()) {
 						await downloadFile(url, filename);
 					} else {
@@ -910,12 +911,12 @@ const PageContest: Component = () => {
 												<span>{fullname}</span>
 												<span>
 													{td("modals.submission.date", {
-														date: dayjs(item.submission.created_at!).format(
-															"MMM D",
-														),
-														time: dayjs(item.submission.created_at!).format(
-															"HH:mm",
-														),
+														date: dayjs
+															.utc(item.submission.created_at!)
+															.format("MMM D"),
+														time: dayjs
+															.utc(item.submission.created_at!)
+															.format("HH:mm"),
 													})}
 												</span>
 											</>
