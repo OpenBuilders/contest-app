@@ -10,15 +10,16 @@ import {
 	Show,
 } from "solid-js";
 import { createStore } from "solid-js/store";
-import Modal from "./Modal";
-import WheelPicker from "./WheelPicker";
 import { useTranslation } from "../contexts/TranslationContext";
 import { invokeHapticFeedbackImpact } from "../utils/telegram";
+import Modal from "./Modal";
+import WheelPicker from "./WheelPicker";
 
 dayjs.extend(utc);
 
 type DatepickerProps = {
 	label?: string;
+	pickerTitle?: string;
 	pickerLabel?: string;
 	value: number;
 	setValue: (value: number) => void;
@@ -26,6 +27,7 @@ type DatepickerProps = {
 	maxDate?: string;
 	withTime?: boolean;
 	hideYear?: boolean;
+	showUTC?: boolean;
 };
 
 const months = [
@@ -184,11 +186,16 @@ const Datepicker: Component<DatepickerProps> = (props) => {
 				<Show when={props.label}>
 					<span>{props.label}</span>
 				</Show>
-				<div class="text-secondary">
+				<div>
 					{props.value
-						? dayjs
-								.utc(props.value)
-								.format(props.withTime ? "D MMM YYYY HH:mm" : "D MMM YYYY")
+						? [
+								dayjs
+									.utc(props.value)
+									.format(props.withTime ? "D MMM YYYY HH:mm" : "D MMM YYYY"),
+								props.showUTC && "UTC",
+							]
+								.filter(Boolean)
+								.join(" ")
 						: t("components.datepicker.notSet")}
 				</div>
 			</div>

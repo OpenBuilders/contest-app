@@ -680,6 +680,7 @@ export const SectionInformation: Component<{
 							class: "container-page-create-section-options-deadline",
 							placeholder: () => (
 								<Datepicker
+									showUTC
 									value={deadline()}
 									setValue={setDeadline}
 									minDate={
