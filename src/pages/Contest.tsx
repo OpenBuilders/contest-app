@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import { FaSolidCircleExclamation } from "solid-icons/fa";
 import { HiSolidChevronUpDown } from "solid-icons/hi";
 import { OcBookmark2, OcBookmarkfill3 } from "solid-icons/oc";
-import { TbSettings, TbShare3 } from "solid-icons/tb";
+import { TbOutlineSettings, TbOutlineShare3 } from "solid-icons/tb";
 import {
 	batch,
 	type Component,
@@ -369,7 +369,7 @@ const PageContest: Component = () => {
 
 			const headerMenuButtons: ButtonArrayItem[] = [
 				{
-					component: TbShare3,
+					component: TbOutlineShare3,
 					fontSize: "1.625rem",
 					class: "clickable",
 					onClick: onClickShare,
@@ -378,7 +378,7 @@ const PageContest: Component = () => {
 
 			if (contest.metadata?.role === "owner") {
 				headerMenuButtons.unshift({
-					component: TbSettings,
+					component: TbOutlineSettings,
 					fontSize: "1.625rem",
 					class: "clickable",
 					onClick: onClickSettings,
@@ -727,7 +727,7 @@ const PageContest: Component = () => {
 
 				if (data.submissions && params.id) {
 					const submission = data.submissions.find(
-						(item) => item.submission.id === Number.parseInt(params.id, 10),
+						(item) => item.submission.id === Number(params.id),
 					);
 
 					if (submission) {
@@ -835,8 +835,7 @@ const PageContest: Component = () => {
 				onMount(() => {
 					if (data.submissions && params.extra) {
 						const submission = data.submissions.find(
-							(item) =>
-								item.submission.id === Number.parseInt(params.extra, 10),
+							(item) => item.submission.id === Number(params.extra),
 						);
 
 						if (submission) {

@@ -220,7 +220,7 @@ const PageContestManageOptions: Component = () => {
 			message: t("pages.contest.manage.delete.prompt"),
 			buttons: [
 				{
-					id: params.slug,
+					id: params.slug!,
 					type: "destructive",
 					text: t("pages.contest.manage.delete.confirm"),
 				},

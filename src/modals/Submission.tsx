@@ -1,6 +1,6 @@
 import "./Submission.scss";
 import dayjs from "dayjs";
-import { TbShare3 } from "solid-icons/tb";
+import { TbOutlineShare3 } from "solid-icons/tb";
 import {
 	type Component,
 	createMemo,
@@ -286,7 +286,7 @@ const ModalSubmission: Component = () => {
 				<ButtonArray
 					items={[
 						{
-							component: TbShare3,
+							component: TbOutlineShare3,
 							fontSize: "1.625rem",
 							class: "clickable",
 							onClick: onClickShare,

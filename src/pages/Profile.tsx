@@ -1,5 +1,5 @@
 import "./Profile.scss";
-import { TbGhost2 } from "solid-icons/tb";
+import { TbOutlineGhost2 } from "solid-icons/tb";
 import { type Component, For, Match, onMount, Show, Switch } from "solid-js";
 import { createStore } from "solid-js/store";
 import { Avatar, AvatarColors } from "../components/Avatar";
@@ -144,7 +144,7 @@ const PageProfile: Component = () => {
 		return (
 			<section id="container-section-profile-achievements-empty">
 				<div>
-					<TbGhost2 />
+					<TbOutlineGhost2 />
 					<p>{t("pages.profile.achievements.empty")}</p>
 				</div>
 			</section>
