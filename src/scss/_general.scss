@@ -9,7 +9,7 @@
    -webkit-tap-highlight-color: transparent;
    user-select: none;
    line-height: normal;
-   overscroll-behavior: none;
+   // overscroll-behavior: none;
 }
 
 :root {
@@ -77,10 +77,7 @@ svg {
    flex-direction: column;
    flex-grow: 1;
    position: relative;
-   padding-top: calc(
-      var(--tg-viewport-safe-area-inset-top) +
-         var(--tg-viewport-content-safe-area-inset-top)
-   );
+   padding-top: calc(var(--tg-viewport-safe-area-inset-top) + var(--tg-viewport-content-safe-area-inset-top));
    background-color: var(--bg-color);
 }
 
@@ -94,12 +91,7 @@ svg {
 }
 
 .shimmer {
-   background: linear-gradient(
-      90deg,
-      var(--shimmer-bg) 0%,
-      var(--shimmer-highlight) 50%,
-      var(--shimmer-bg) 100%
-   );
+   background: linear-gradient(90deg, var(--shimmer-bg) 0%, var(--shimmer-highlight) 50%, var(--shimmer-bg) 100%);
    background-size: 200% 100%;
    animation: shimmer var(--shimmer-duration, 2s) infinite linear;
 }
