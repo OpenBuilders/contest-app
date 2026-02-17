@@ -252,3 +252,86 @@ export const initializeTMA = async () => {
 		}
 	}
 };
+
+export const normalizeTelegramPath = (input: string): string | null => {
+	let value = input.trim();
+
+	// Handle @username
+	if (value.startsWith("@")) {
+		return `/${value.slice(1)}`;
+	}
+
+	// Handle tg:// scheme
+	if (value.startsWith("tg://")) {
+		try {
+			const url = new URL(value);
+
+			if (url.hostname === "resolve") {
+				const domain = url.searchParams.get("domain");
+				if (!domain) return null;
+
+				const rest = new URLSearchParams(url.searchParams);
+				rest.delete("domain");
+
+				const query = rest.toString();
+				return `/${domain}${query ? "?" + query : ""}`;
+			}
+
+			if (url.hostname === "join") {
+				const invite = url.searchParams.get("invite");
+				if (!invite) return null;
+
+				const rest = new URLSearchParams(url.searchParams);
+				rest.delete("invite");
+
+				const query = rest.toString();
+				return `/joinchat/${invite}${query ? "?" + query : ""}`;
+			}
+
+			return null;
+		} catch {
+			return null;
+		}
+	}
+
+	// Add protocol if missing
+	if (!/^[a-z]+:\/\//i.test(value)) {
+		value = `https://${value}`;
+	}
+
+	try {
+		const url = new URL(value);
+
+		const telegramHosts = new Set([
+			"t.me",
+			"telegram.me",
+			"telegram.dog",
+			"www.t.me",
+			"www.telegram.me",
+			"www.telegram.dog",
+		]);
+
+		if (!telegramHosts.has(url.hostname)) return null;
+
+		const path = url.pathname.replace(/\/+$/, "");
+		if (!path || path === "/") return null;
+
+		return `${path}${url.search}`;
+	} catch {
+		return null;
+	}
+};
+
+export const openLink = (url: string) => {
+	const path = normalizeTelegramPath(url);
+
+	if (path && isVersionAtLeast("6.1")) {
+		postEvent("web_app_open_tg_link", {
+			path_full: path,
+		});
+	} else {
+		postEvent("web_app_open_link", {
+			url,
+		});
+	}
+};

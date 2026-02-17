@@ -1,7 +1,7 @@
 import { useTranslation } from "../contexts/TranslationContext";
 import { popupManager } from "../utils/popup";
 import { linkifyHtml, truncateMiddle } from "../utils/string";
-import { invokeHapticFeedbackImpact, postEvent } from "../utils/telegram";
+import { invokeHapticFeedbackImpact, openLink } from "../utils/telegram";
 import "./RichText.scss";
 import { type Component, onCleanup, onMount } from "solid-js";
 
@@ -40,9 +40,7 @@ const RichText: Component<RichTextProps> = (props) => {
 
 		if (!popup.button_id || popup.button_id === "cancel") return;
 
-		postEvent("web_app_open_link", {
-			url: link,
-		});
+		openLink(link);
 	};
 
 	onMount(() => {
